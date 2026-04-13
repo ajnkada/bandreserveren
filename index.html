@@ -80,6 +80,66 @@ textarea { min-height: 60px; resize: vertical; }
 .tire-card:hover { border-color: var(--border2); }
 .tire-card.sold-out { opacity: .5; }
 .tire-card.in-cart { border-color: var(--amber); background: rgba(245,158,11,.04); }
+.tire-card.sold-out { opacity: 1 !important; }
+
+/* Uitverkocht overlay */
+.sold-out-overlay {
+  position: absolute; inset: 0; border-radius: 12px;
+  background: rgba(10,10,11,.72); display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 6px;
+  backdrop-filter: blur(1px); pointer-events: none; z-index: 2;
+}
+.sold-out-label {
+  font-size: 13px; font-weight: 800; color: var(--text2); letter-spacing: 2px;
+  text-transform: uppercase; border: 1px solid var(--border2); padding: 4px 14px;
+  border-radius: 20px; background: rgba(17,18,20,.8);
+}
+.sold-out-sub { font-size: 10px; color: var(--text4); }
+
+/* Staffelbanner */
+.staffel-banner {
+  background: linear-gradient(90deg, rgba(245,158,11,.12), rgba(245,158,11,.06));
+  border-bottom: 1px solid rgba(245,158,11,.2);
+  padding: 10px 20px; cursor: pointer; user-select: none;
+}
+.staffel-banner-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.staffel-banner-left { display: flex; align-items: center; gap: 10px; }
+.staffel-banner-icon { font-size: 16px; }
+.staffel-banner-text { font-size: 13px; font-weight: 700; color: var(--amber); }
+.staffel-banner-sub { font-size: 11px; color: var(--text3); }
+.staffel-chevron { color: var(--amber); font-size: 12px; transition: transform .2s; }
+.staffel-chevron.open { transform: rotate(180deg); }
+
+/* Staffel dropdown */
+.staffel-dropdown {
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 16px 20px; animation: fadeIn .15s ease;
+}
+@keyframes fadeIn { from { opacity:0; transform:translateY(-4px) } to { opacity:1; transform:translateY(0) } }
+.staffel-dropdown-inner { max-width: 1200px; margin: 0 auto; }
+.staffel-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+.staffel-tier {
+  flex: 1 1 160px; background: var(--border); border-radius: 10px; padding: 12px 16px;
+  border: 1px solid var(--border2); transition: all .15s;
+}
+.staffel-tier.active { border-color: var(--amber); background: rgba(245,158,11,.08); }
+.staffel-tier-range { font-size: 12px; color: var(--text3); margin-bottom: 4px; }
+.staffel-tier-pct { font-size: 22px; font-weight: 800; color: var(--amber); }
+.staffel-tier-label { font-size: 11px; color: var(--text2); margin-top: 2px; }
+.staffel-tier.active .staffel-tier-range { color: var(--amber); }
+
+/* Staffelprijs op kaart */
+.tire-price-staffel { font-weight: 800; font-size: 20px; color: var(--green); }
+.tire-price-original { font-size: 13px; color: var(--text4); text-decoration: line-through; margin-left: 4px; }
+.staffel-saving { font-size: 10px; color: var(--green); font-weight: 600; margin-top: 1px; }
+
+/* Tip banner */
+.staffel-tip {
+  background: rgba(16,185,129,.08); border: 1px solid rgba(16,185,129,.2);
+  border-radius: 8px; padding: 8px 14px; margin-bottom: 14px;
+  font-size: 12px; color: var(--green); display: flex; align-items: center; gap: 8px;
+}
+.staffel-tip strong { font-weight: 700; }
 .tire-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
 .tire-brand { font-weight: 700; font-size: 15px; color: #F5F5F5; }
 .tire-model { font-size: 13px; color: var(--text2); }
@@ -221,6 +281,24 @@ textarea { min-height: 60px; resize: vertical; }
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyZbs96AlMFjZa3DoAWyEJyEZzEHCywyAbk_on4EpcrKcrPLkURcXfe6TXyDqZGHdjo/exec";
 
 // ========== STATE ==========
+// ========== STAFFEL CONFIG ==========
+const STAFFEL = [
+  { min: 0,   max: 9,   pct: 0,  label: "Websiteprijs" },
+  { min: 10,  max: 49,  pct: 40, label: "40% korting" },
+  { min: 50,  max: 99,  pct: 45, label: "45% korting" },
+  { min: 100, max: Infinity, pct: 50, label: "50% korting" }
+];
+
+function getStaffelTier(qty) {
+  return STAFFEL.find(s => qty >= s.min && qty <= s.max) || STAFFEL[0];
+}
+
+function getStaffelPrice(price2C, qty) {
+  const tier = getStaffelTier(qty);
+  if (tier.pct === 0) return price2C;
+  return Math.round(price2C * (1 - tier.pct / 100) * 100) / 100;
+}
+
 let state = {
   view: "shop",
   tires: [],
@@ -236,7 +314,8 @@ let state = {
   notification: null,
   showCartModal: false,
   showPinModal: false,
-  // Winkelmandje: { [tireId]: { tire, qty, cardQty } }
+  showStaffel: false,
+  // Winkelmandje: { [tireId]: { tire, qty } }
   cart: {},
   // Qty selector per kaart (voordat je toevoegt)
   cardQty: {},
@@ -413,7 +492,12 @@ function getCartCount() {
 }
 
 function getCartTotal() {
-  return Object.values(state.cart).reduce((s, i) => s + i.qty * i.tire.priceB2B, 0);
+  return Object.values(state.cart).reduce((s, i) => s + i.qty * i.tire.price2C, 0);
+}
+
+function getCartStaffelTotal() {
+  const cartCount = getCartCount();
+  return Object.values(state.cart).reduce((s, i) => s + i.qty * getStaffelPrice(i.tire.price2C, cartCount), 0);
 }
 
 // ========== HELPERS ==========
@@ -498,6 +582,43 @@ function render() {
     html += `<div class="notify ${state.notification.type}">${esc(state.notification.msg)}</div>`;
   }
 
+  // Staffelbanner (altijd zichtbaar in shop)
+  const cartCount = getCartCount();
+  const currentTier = getStaffelTier(cartCount);
+  const nextTier = STAFFEL.find(s => s.min > cartCount);
+
+  if (state.view === "shop") {
+    html += `
+    <div class="staffel-banner" onclick="toggleStaffel()">
+      <div class="staffel-banner-inner">
+        <div class="staffel-banner-left">
+          <span class="staffel-banner-icon">🏷️</span>
+          <div>
+            <div class="staffel-banner-text">Staffelkorting — hoe meer banden, hoe meer korting</div>
+            <div class="staffel-banner-sub">&lt;10 stuks: websiteprijs · 10–49: 40% · 50–99: 45% · 100+: 50% korting op retailprijs</div>
+          </div>
+        </div>
+        <span class="staffel-chevron ${state.showStaffel ? 'open' : ''}">▼</span>
+      </div>
+    </div>`;
+
+    if (state.showStaffel) {
+      html += `
+      <div class="staffel-dropdown">
+        <div class="staffel-dropdown-inner">
+          <div class="staffel-grid">
+            ${STAFFEL.map(tier => `
+            <div class="staffel-tier ${currentTier === tier ? 'active' : ''}">
+              <div class="staffel-tier-range">${tier.max === Infinity ? tier.min + '+' : tier.min + '–' + tier.max} stuks ${currentTier === tier ? '← jij nu' : ''}</div>
+              <div class="staffel-tier-pct">${tier.pct === 0 ? 'Retail' : '-' + tier.pct + '%'}</div>
+              <div class="staffel-tier-label">${tier.label}</div>
+            </div>`).join('')}
+          </div>
+        </div>
+      </div>`;
+    }
+  }
+
   // Header
   html += `
   <div class="header">
@@ -544,6 +665,9 @@ function render() {
 function renderShop() {
   const filtered = getFiltered();
   const brands = getBrands();
+  const cartCount = getCartCount();
+  const currentTier = getStaffelTier(cartCount);
+  const nextTier = STAFFEL.find(s => s.min > cartCount);
 
   let html = `
   <div class="filters">
@@ -562,19 +686,38 @@ function renderShop() {
       <option value="price" ${state.sortBy==='price'?'selected':''}>Prijs laag-hoog</option>
       <option value="size" ${state.sortBy==='size'?'selected':''}>Maat</option>
     </select>
-  </div>
-  <div class="count">${state.loading ? 'Voorraad laden...' : filtered.length + ' banden gevonden'}</div>
+  </div>`;
+
+  // Staffeltip
+  if (nextTier && cartCount > 0) {
+    const needed = nextTier.min - cartCount;
+    html += `<div class="staffel-tip">💡 <span>Voeg nog <strong>${needed} band${needed !== 1 ? 'en' : ''}</strong> toe en bespaar <strong>${nextTier.pct}%</strong> op je hele bestelling</span></div>`;
+  } else if (cartCount === 0 && STAFFEL[1]) {
+    html += `<div class="staffel-tip">💡 <span>Bestel <strong>${STAFFEL[1].min}+ banden</strong> en ontvang <strong>${STAFFEL[1].pct}%</strong> staffelkorting — klik op de banner voor meer info</span></div>`;
+  }
+
+  html += `<div class="count">${state.loading ? 'Voorraad laden...' : filtered.length + ' banden gevonden'}</div>
   <div class="grid">`;
 
   for (const t of filtered) {
     const avail = t.available ?? t.stock;
+    const soldOut = avail <= 0;
     const inCart = getCartQty(t.id);
     const cardQty = getCardQty(t.id);
     const maxAdd = avail - inCart;
     const isInCart = inCart > 0;
 
+    // Staffelprijs berekening
+    const staffelPrice = getStaffelPrice(t.price2C, cartCount);
+    const showDiscount = currentTier.pct > 0;
+
     html += `
-    <div class="tire-card ${avail <= 0 ? 'sold-out' : ''} ${isInCart ? 'in-cart' : ''}">
+    <div class="tire-card ${soldOut ? 'sold-out' : ''} ${isInCart ? 'in-cart' : ''}">
+      ${soldOut ? `
+      <div class="sold-out-overlay">
+        <div class="sold-out-label">Uitverkocht</div>
+        <div class="sold-out-sub">Tijdelijk niet beschikbaar</div>
+      </div>` : ''}
       <div class="tire-top">
         <div>
           <div class="tire-brand">${esc(t.brand)}</div>
@@ -588,16 +731,22 @@ function renderShop() {
       </div>
       <div class="tire-bottom">
         <div>
-          <span class="tire-price">€${t.priceB2B.toFixed(2)}</span><span class="tire-price-label">B2B</span>
-          <div class="tire-advies">€${t.price2C.toFixed(2)} advies</div>
+          ${showDiscount ? `
+            <span class="tire-price-staffel">€${staffelPrice.toFixed(2)}</span>
+            <span class="tire-price-original">€${t.price2C.toFixed(2)}</span>
+            <div class="staffel-saving">-${currentTier.pct}% staffelkorting</div>
+          ` : `
+            <span class="tire-price">€${t.priceB2B.toFixed(2)}</span><span class="tire-price-label">B2B</span>
+            <div class="tire-advies">€${t.price2C.toFixed(2)} advies</div>
+          `}
         </div>
         <div class="tire-stock">
           ${dots(avail, t.stock)}
-          <div class="tire-avail ${avail > 0 ? 'yes' : 'no'}">${avail > 0 ? avail + ' beschikbaar' : 'Gereserveerd'}</div>
+          <div class="tire-avail ${avail > 0 ? 'yes' : 'no'}">${avail > 0 ? avail + ' beschikbaar' : 'Uitverkocht'}</div>
         </div>
       </div>
       ${t.dot ? `<div class="tire-meta">DOT ${esc(t.dot)} · Ref: ${esc(t.ref)}</div>` : ''}
-      ${avail > 0 ? `
+      ${!soldOut ? `
       <div class="card-footer">
         ${isInCart ? `<div class="in-cart-indicator">✓ ${inCart}× in mandje <button class="remove-from-cart" onclick="removeFromCart('${t.id}')" title="Verwijder uit mandje">✕</button></div>` : ''}
         ${maxAdd > 0 ? `
@@ -624,7 +773,9 @@ function renderShop() {
 function renderCartModal() {
   const cartItems = Object.values(state.cart);
   const f = state.reserveForm;
-  const total = getCartTotal();
+  const cartCount = getCartCount();
+  const currentTier = getStaffelTier(cartCount);
+  const nextTier = STAFFEL.find(s => s.min > cartCount);
 
   let html = `
   <div class="modal-overlay" onclick="closeCart()">
@@ -643,13 +794,18 @@ function renderCartModal() {
       </div>
       <button class="btn-ghost" onclick="closeCart()" style="width:100%;margin-top:12px">Terug naar catalogus</button>`;
   } else {
+    const staffelTotal = getCartStaffelTotal();
+    const regularTotal = getCartTotal();
+    const savings = regularTotal - staffelTotal;
+
     html += `
       <div class="cart-summary">
-        <div class="cart-summary-title">Geselecteerde banden</div>`;
+        <div class="cart-summary-title">Geselecteerde banden${currentTier.pct > 0 ? ` · <span style="color:var(--green)">-${currentTier.pct}% staffelkorting actief</span>` : ''}</div>`;
 
     for (const item of cartItems) {
       const t = item.tire;
       const avail = t.available ?? t.stock;
+      const unitPrice = getStaffelPrice(t.price2C, cartCount);
       html += `
         <div class="cart-summary-item">
           <div class="cart-item-info">
@@ -661,15 +817,22 @@ function renderCartModal() {
             <span style="font-size:14px;font-weight:700;min-width:20px;text-align:center">${item.qty}</span>
             <button class="cart-qty-btn" onclick="updateCartQty('${t.id}', 1)" ${item.qty >= avail ? 'disabled style="opacity:.3"' : ''}>+</button>
           </div>
-          <div class="cart-item-price">€${(item.qty * t.priceB2B).toFixed(2)}</div>
+          <div class="cart-item-price">€${(item.qty * unitPrice).toFixed(2)}</div>
           <button class="cart-remove" onclick="removeFromCart('${t.id}')" title="Verwijderen">✕</button>
         </div>`;
     }
 
     html += `
         <div class="cart-total">
-          <span class="cart-total-label">Totaal B2B</span>
-          <span class="cart-total-val">€${total.toFixed(2)}</span>
+          <div>
+            <div class="cart-total-label">Totaal${currentTier.pct > 0 ? ` (-${currentTier.pct}%)` : ''}</div>
+            ${savings > 0 ? `<div style="font-size:11px;color:var(--green)">Besparing: €${savings.toFixed(2)}</div>` : ''}
+            ${nextTier ? `<div style="font-size:11px;color:var(--text3)">+${nextTier.min - cartCount} banden → ${nextTier.pct}% korting</div>` : ''}
+          </div>
+          <div style="text-align:right">
+            ${savings > 0 ? `<div style="font-size:12px;color:var(--text4);text-decoration:line-through">€${regularTotal.toFixed(2)}</div>` : ''}
+            <div class="cart-total-val">€${staffelTotal.toFixed(2)}</div>
+          </div>
         </div>
       </div>
 
@@ -681,7 +844,7 @@ function renderCartModal() {
         <input id="resPhone" placeholder="Telefoon *" value="${esc(f.phone)}" />
         <textarea id="resNotes" placeholder="Opmerkingen (optioneel)">${esc(f.notes)}</textarea>
         <button class="btn-primary" onclick="doReserve()" ${state.submitting ? 'disabled' : ''} style="width:100%;padding:14px;font-size:15px;margin-top:4px">
-          ${state.submitting ? '<span class="spinner"></span> Bezig...' : `Reservering plaatsen (${getCartCount()} banden)`}
+          ${state.submitting ? '<span class="spinner"></span> Bezig...' : `Reservering plaatsen (${cartCount} banden)`}
         </button>
         <div class="modal-hint">Na reservering ontvangt u een bevestiging en factuur van ons.</div>
       </div>`;
@@ -791,6 +954,7 @@ function bindEvents() {
 
 // ========== ACTIONS ==========
 
+function toggleStaffel() { setState({ showStaffel: !state.showStaffel }); }
 function goShop() { setState({ view: "shop" }); fetchInventory(); }
 function goAdmin() {
   if (state.isAdmin) { setState({ view: "admin" }); fetchReservations(); }
