@@ -33,9 +33,14 @@ textarea { min-height: 60px; resize: vertical; }
   border-radius: 8px; padding: 8px 16px; font-size: 13px; cursor: pointer; font-family: inherit; transition: all .15s;
 }
 .btn-ghost:hover { border-color: var(--text3); color: var(--text); }
+.btn-danger {
+  background: transparent; border: 1px solid var(--red-dark); color: var(--red);
+  border-radius: 8px; padding: 6px 12px; font-size: 12px; cursor: pointer; font-family: inherit; transition: all .15s;
+}
+.btn-danger:hover { background: rgba(239,68,68,.1); }
 
 /* Header */
-.header { border-bottom: 1px solid var(--border); padding: 14px 20px; }
+.header { border-bottom: 1px solid var(--border); padding: 14px 20px; position: sticky; top: 0; z-index: 50; background: var(--bg); }
 .header-inner { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; }
 .logo { display: flex; align-items: center; gap: 12px; }
 .logo-icon { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, var(--amber), var(--amber-dark)); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 16px; color: var(--bg); }
@@ -48,6 +53,17 @@ textarea { min-height: 60px; resize: vertical; }
 .pill-btn.active { background: var(--amber); color: var(--bg); }
 .pill-badge { position: absolute; top: -4px; right: -4px; background: var(--red); color: #fff; border-radius: 10px; padding: 1px 6px; font-size: 10px; font-weight: 800; }
 
+/* Cart button */
+.cart-btn {
+  position: relative; background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 10px; padding: 8px 14px; cursor: pointer; font-family: inherit;
+  display: flex; align-items: center; gap: 8px; color: var(--text); font-size: 13px;
+  font-weight: 600; transition: all .15s;
+}
+.cart-btn:hover { border-color: var(--amber); }
+.cart-btn.has-items { border-color: var(--amber); background: rgba(245,158,11,.08); color: var(--amber); }
+.cart-count { background: var(--amber); color: var(--bg); border-radius: 20px; padding: 2px 8px; font-size: 11px; font-weight: 800; }
+
 /* Main */
 .main { max-width: 1200px; margin: 0 auto; padding: 20px 16px; }
 .filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; align-items: center; }
@@ -59,18 +75,18 @@ textarea { min-height: 60px; resize: vertical; }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
 .tire-card {
   background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-  padding: 16px; cursor: pointer; transition: all .2s;
+  padding: 16px; transition: all .2s; position: relative; overflow: hidden;
 }
-.tire-card:hover { border-color: var(--amber); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245,158,11,.08); }
-.tire-card.sold-out { opacity: .5; cursor: default; }
-.tire-card.sold-out:hover { border-color: var(--border); transform: none; box-shadow: none; }
+.tire-card:hover { border-color: var(--border2); }
+.tire-card.sold-out { opacity: .5; }
+.tire-card.in-cart { border-color: var(--amber); background: rgba(245,158,11,.04); }
 .tire-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
 .tire-brand { font-weight: 700; font-size: 15px; color: #F5F5F5; }
 .tire-model { font-size: 13px; color: var(--text2); }
 .tire-mid { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
 .tire-size { background: var(--border); padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 14px; color: var(--amber); font-family: monospace; }
 .tire-load { font-size: 11px; color: var(--text3); }
-.tire-bottom { display: flex; justify-content: space-between; align-items: center; }
+.tire-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
 .tire-price { font-weight: 800; font-size: 20px; color: #F5F5F5; }
 .tire-price-label { font-size: 11px; color: var(--text3); margin-left: 4px; }
 .tire-advies { font-size: 11px; color: var(--text4); text-decoration: line-through; }
@@ -79,6 +95,24 @@ textarea { min-height: 60px; resize: vertical; }
 .tire-avail.yes { color: var(--green); }
 .tire-avail.no { color: var(--red); }
 .tire-meta { font-size: 10px; color: var(--text4); margin-top: 6px; }
+
+/* Add to cart area on card */
+.card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
+.qty-ctrl { display: flex; align-items: center; gap: 6px; }
+.qty-btn { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border2); background: var(--border); color: var(--text); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; font-family: inherit; line-height: 1; }
+.qty-btn:hover:not(:disabled) { border-color: var(--amber); color: var(--amber); }
+.qty-btn:disabled { opacity: .3; cursor: not-allowed; }
+.qty-val { font-size: 14px; font-weight: 700; min-width: 20px; text-align: center; color: var(--text); }
+.add-btn {
+  background: var(--amber); color: var(--bg); border: none; border-radius: 8px;
+  padding: 7px 14px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit;
+  transition: all .15s; display: flex; align-items: center; gap: 5px;
+}
+.add-btn:hover { background: var(--amber-dark); }
+.add-btn:disabled { opacity: .4; cursor: not-allowed; }
+.in-cart-indicator { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--amber); font-weight: 600; }
+.remove-from-cart { background: none; border: none; color: var(--text4); cursor: pointer; font-size: 14px; padding: 2px 4px; }
+.remove-from-cart:hover { color: var(--red); }
 
 /* Season badge */
 .season { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; color: #fff; }
@@ -111,28 +145,47 @@ textarea { min-height: 60px; resize: vertical; }
 .res-contact { font-size: 12px; color: var(--text3); margin-bottom: 8px; }
 .res-meta { font-size: 11px; color: var(--text4); margin-bottom: 10px; }
 .res-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.res-items { margin-bottom: 8px; }
+.res-item-row { font-size: 12px; color: var(--text2); padding: 3px 0; border-bottom: 1px solid var(--border); }
+.res-item-row:last-child { border-bottom: none; }
 
 /* Modal */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 100; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-.modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; max-width: 440px; width: 92%; max-height: 90vh; overflow-y: auto; }
+.modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; max-width: 480px; width: 92%; max-height: 90vh; overflow-y: auto; }
 .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
 .modal-title { font-size: 18px; font-weight: 800; color: #F5F5F5; }
 .modal-close { background: none; border: none; color: var(--text3); font-size: 20px; cursor: pointer; }
-.modal-tire-info { background: var(--border); border-radius: 10px; padding: 14px; margin-bottom: 16px; }
+
+/* Cart summary in modal */
+.cart-summary { background: var(--border); border-radius: 10px; padding: 14px; margin-bottom: 16px; }
+.cart-summary-title { font-size: 12px; color: var(--text3); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; }
+.cart-summary-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border2); }
+.cart-summary-item:last-child { border-bottom: none; padding-bottom: 0; }
+.cart-item-info { flex: 1; }
+.cart-item-name { font-size: 13px; font-weight: 600; color: #F5F5F5; }
+.cart-item-size { font-size: 11px; color: var(--amber); font-family: monospace; }
+.cart-item-qty { display: flex; align-items: center; gap: 6px; }
+.cart-qty-btn { width: 24px; height: 24px; border-radius: 5px; border: 1px solid var(--border2); background: var(--bg); color: var(--text); font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: inherit; }
+.cart-qty-btn:hover { border-color: var(--amber); color: var(--amber); }
+.cart-item-price { font-size: 12px; color: var(--text2); min-width: 70px; text-align: right; }
+.cart-remove { background: none; border: none; color: var(--text4); cursor: pointer; font-size: 14px; padding: 0 0 0 8px; }
+.cart-remove:hover { color: var(--red); }
+.cart-total { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; margin-top: 4px; border-top: 1px solid var(--border2); }
+.cart-total-label { font-size: 13px; font-weight: 700; color: var(--text2); }
+.cart-total-val { font-size: 16px; font-weight: 800; color: var(--amber); }
+
 .modal-form { display: flex; flex-direction: column; gap: 10px; }
 .modal-hint { font-size: 11px; color: var(--text3); text-align: center; }
+.form-section-title { font-size: 12px; color: var(--text3); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-top: 4px; }
 
 /* Notification */
 .notify { position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 999; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 600; color: #fff; box-shadow: 0 8px 32px rgba(0,0,0,.5); animation: slideDown .3s ease; max-width: 90%; }
-.notify.success { background: var(--green-dark); }
-.notify.error { background: var(--red-dark); }
+.notify.success { background: var(--green-dark); border: 1px solid var(--green); }
+.notify.error { background: var(--red-dark); border: 1px solid var(--red); }
 @keyframes slideDown { from { opacity:0; transform:translateX(-50%) translateY(-20px) } to { opacity:1; transform:translateX(-50%) translateY(0) } }
 
 /* Empty */
 .empty { text-align: center; padding: 60px; color: var(--text4); }
-
-/* Settings link */
-.settings-btn { background: none; border: none; color: var(--text4); cursor: pointer; font-size: 16px; padding: 4px; }
 
 /* Spinner */
 .spinner { width: 18px; height: 18px; border: 2px solid var(--border2); border-top-color: var(--amber); border-radius: 50%; animation: spin .6s linear infinite; display: inline-block; }
@@ -146,17 +199,21 @@ textarea { min-height: 60px; resize: vertical; }
 .admin-title { font-size: 20px; font-weight: 800; color: #F5F5F5; }
 .admin-btns { display: flex; gap: 8px; }
 
+/* Empty cart state */
+.cart-empty { text-align: center; padding: 30px; color: var(--text4); }
+.cart-empty-icon { font-size: 32px; margin-bottom: 8px; }
+
 /* Responsive */
 @media (max-width: 600px) {
   .header-inner { flex-direction: column; gap: 10px; }
   .logo-text { font-size: 14px; }
   .tire-price { font-size: 18px; }
+  .header-right { flex-wrap: wrap; justify-content: center; }
 }
 </style>
 </head>
 <body>
 
-<!-- ============ APP ============ -->
 <div id="app"></div>
 
 <script>
@@ -177,10 +234,13 @@ let state = {
   loading: true,
   submitting: false,
   notification: null,
-  showReserveModal: false,
+  showCartModal: false,
   showPinModal: false,
-  selectedTire: null,
-  reserveForm: { name: "", company: "", email: "", phone: "", qty: 1, notes: "" }
+  // Winkelmandje: { [tireId]: { tire, qty, cardQty } }
+  cart: {},
+  // Qty selector per kaart (voordat je toevoegt)
+  cardQty: {},
+  reserveForm: { name: "", company: "", email: "", phone: "", notes: "" }
 };
 
 function setState(updates) {
@@ -209,9 +269,21 @@ async function apiPost(body) {
 async function fetchInventory() {
   try {
     const data = await apiFetch({ action: "inventory" });
-    if (data?.tires) setState({ tires: data.tires, loading: false });
-    else { notify(data?.error || "Kan voorraad niet laden", "error"); setState({ loading: false }); }
-  } catch (err) { notify("Kan voorraad niet laden: " + err.message, "error"); setState({ loading: false }); }
+    if (data?.tires) {
+      // Initialiseer cardQty voor nieuwe banden
+      const newCardQty = { ...state.cardQty };
+      for (const t of data.tires) {
+        if (!newCardQty[t.id]) newCardQty[t.id] = 1;
+      }
+      setState({ tires: data.tires, loading: false, cardQty: newCardQty });
+    } else {
+      notify(data?.error || "Kan voorraad niet laden", "error");
+      setState({ loading: false });
+    }
+  } catch (err) {
+    notify("Kan voorraad niet laden: " + err.message, "error");
+    setState({ loading: false });
+  }
 }
 
 async function fetchReservations() {
@@ -224,22 +296,50 @@ async function fetchReservations() {
 
 async function submitReservation() {
   const f = state.reserveForm;
-  const t = state.selectedTire;
+  const cartItems = Object.values(state.cart);
   if (!f.name || !f.email || !f.phone) { notify("Vul alle verplichte velden in", "error"); return; }
-  if (!t) return;
+  if (cartItems.length === 0) { notify("Mandje is leeg", "error"); return; }
+
   setState({ submitting: true });
   try {
+    // Stuur als multi-item reservering
+    const items = cartItems.map(item => ({
+      tireId: item.tire.id,
+      brand: item.tire.brand,
+      model: item.tire.model,
+      size: item.tire.size,
+      qty: item.qty,
+      priceB2B: item.tire.priceB2B
+    }));
+
     const result = await apiPost({
-      action: "reserve", tireId: t.id, name: f.name, company: f.company,
-      email: f.email, phone: f.phone, qty: parseInt(f.qty) || 1, notes: f.notes
+      action: "reserveMulti",
+      items,
+      name: f.name,
+      company: f.company,
+      email: f.email,
+      phone: f.phone,
+      notes: f.notes
     });
+
     if (result?.success) {
-      notify(result.message || "Reservering geplaatst!");
-      setState({ showReserveModal: false, selectedTire: null, submitting: false,
-        reserveForm: { name: "", company: "", email: "", phone: "", qty: 1, notes: "" } });
+      notify(result.message || "Reservering geplaatst! We nemen contact op.");
+      setState({
+        showCartModal: false,
+        cart: {},
+        cardQty: {},
+        submitting: false,
+        reserveForm: { name: "", company: "", email: "", phone: "", notes: "" }
+      });
       fetchInventory();
-    } else { notify(result?.error || "Er ging iets mis", "error"); setState({ submitting: false }); }
-  } catch (err) { notify("Fout: " + err.message, "error"); setState({ submitting: false }); }
+    } else {
+      notify(result?.error || "Er ging iets mis", "error");
+      setState({ submitting: false });
+    }
+  } catch (err) {
+    notify("Fout: " + err.message, "error");
+    setState({ submitting: false });
+  }
 }
 
 async function updateStatus(resId, status) {
@@ -248,6 +348,72 @@ async function updateStatus(resId, status) {
     if (result?.success) { notify(resId + " → " + statusLabel(status)); fetchReservations(); fetchInventory(); }
     else notify(result?.error || "Fout", "error");
   } catch (err) { notify("Fout: " + err.message, "error"); }
+}
+
+// ========== CART LOGIC ==========
+
+function getCartQty(tireId) {
+  return state.cart[tireId]?.qty || 0;
+}
+
+function getCardQty(tireId) {
+  return state.cardQty[tireId] || 1;
+}
+
+function setCardQty(tireId, delta) {
+  const tire = state.tires.find(t => t.id === tireId);
+  if (!tire) return;
+  const avail = tire.available ?? tire.stock;
+  const inCart = getCartQty(tireId);
+  const maxAdd = avail - inCart;
+  const current = getCardQty(tireId);
+  const next = Math.max(1, Math.min(maxAdd, current + delta));
+  setState({ cardQty: { ...state.cardQty, [tireId]: next } });
+}
+
+function addToCart(tireId) {
+  const tire = state.tires.find(t => t.id === tireId);
+  if (!tire) return;
+  const qty = getCardQty(tireId);
+  const avail = tire.available ?? tire.stock;
+  const alreadyInCart = getCartQty(tireId);
+  if (alreadyInCart + qty > avail) { notify("Niet genoeg op voorraad", "error"); return; }
+
+  const newCart = { ...state.cart };
+  if (newCart[tireId]) {
+    newCart[tireId] = { ...newCart[tireId], qty: newCart[tireId].qty + qty };
+  } else {
+    newCart[tireId] = { tire, qty };
+  }
+  // Reset card qty
+  const newCardQty = { ...state.cardQty, [tireId]: 1 };
+  setState({ cart: newCart, cardQty: newCardQty });
+  notify(`${qty}× ${tire.brand} ${tire.size} toegevoegd aan mandje`);
+}
+
+function removeFromCart(tireId) {
+  const newCart = { ...state.cart };
+  delete newCart[tireId];
+  setState({ cart: newCart });
+}
+
+function updateCartQty(tireId, delta) {
+  const tire = state.tires.find(t => t.id === tireId);
+  if (!tire) return;
+  const avail = tire.available ?? tire.stock;
+  const current = state.cart[tireId]?.qty || 0;
+  const next = current + delta;
+  if (next <= 0) { removeFromCart(tireId); return; }
+  if (next > avail) { notify("Niet genoeg op voorraad", "error"); return; }
+  setState({ cart: { ...state.cart, [tireId]: { ...state.cart[tireId], qty: next } } });
+}
+
+function getCartCount() {
+  return Object.values(state.cart).reduce((s, i) => s + i.qty, 0);
+}
+
+function getCartTotal() {
+  return Object.values(state.cart).reduce((s, i) => s + i.qty * i.tire.priceB2B, 0);
 }
 
 // ========== HELPERS ==========
@@ -307,7 +473,7 @@ function getBrands() {
   return ["Alle", ...[...new Set(state.tires.map(t => t.brand))].sort()];
 }
 
-function esc(s) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+function esc(s) { const d = document.createElement("div"); d.textContent = String(s); return d.innerHTML; }
 
 function dots(avail, total) {
   const max = Math.min(total, 8);
@@ -323,7 +489,8 @@ function dots(avail, total) {
 function render() {
   const app = document.getElementById("app");
   const pendingCount = state.reservations.filter(r => r.status === "pending").length;
-  
+  const cartCount = getCartCount();
+
   let html = "";
 
   // Notification
@@ -343,6 +510,9 @@ function render() {
         </div>
       </div>
       <div class="header-right">
+        <button class="cart-btn ${cartCount > 0 ? 'has-items' : ''}" onclick="openCart()">
+          🛒 Mandje${cartCount > 0 ? `<span class="cart-count">${cartCount}</span>` : ''}
+        </button>
         <div class="pill-nav">
           <button class="pill-btn ${state.view === 'shop' ? 'active' : ''}" onclick="goShop()">Catalogus</button>
           <button class="pill-btn ${state.view === 'admin' ? 'active' : ''}" onclick="goAdmin()">
@@ -364,7 +534,7 @@ function render() {
   html += '</div>';
 
   // Modals
-  if (state.showReserveModal && state.selectedTire) html += renderReserveModal();
+  if (state.showCartModal) html += renderCartModal();
   if (state.showPinModal) html += renderPinModal();
 
   app.innerHTML = html;
@@ -374,7 +544,7 @@ function render() {
 function renderShop() {
   const filtered = getFiltered();
   const brands = getBrands();
-  
+
   let html = `
   <div class="filters">
     <input id="searchInput" value="${esc(state.search)}" placeholder="Zoek merk, model, maat..." />
@@ -398,8 +568,13 @@ function renderShop() {
 
   for (const t of filtered) {
     const avail = t.available ?? t.stock;
+    const inCart = getCartQty(t.id);
+    const cardQty = getCardQty(t.id);
+    const maxAdd = avail - inCart;
+    const isInCart = inCart > 0;
+
     html += `
-    <div class="tire-card ${avail <= 0 ? 'sold-out' : ''}" onclick="${avail > 0 ? `openReserve('${t.id}')` : ''}">
+    <div class="tire-card ${avail <= 0 ? 'sold-out' : ''} ${isInCart ? 'in-cart' : ''}">
       <div class="tire-top">
         <div>
           <div class="tire-brand">${esc(t.brand)}</div>
@@ -422,6 +597,20 @@ function renderShop() {
         </div>
       </div>
       ${t.dot ? `<div class="tire-meta">DOT ${esc(t.dot)} · Ref: ${esc(t.ref)}</div>` : ''}
+      ${avail > 0 ? `
+      <div class="card-footer">
+        ${isInCart ? `<div class="in-cart-indicator">✓ ${inCart}× in mandje <button class="remove-from-cart" onclick="removeFromCart('${t.id}')" title="Verwijder uit mandje">✕</button></div>` : ''}
+        ${maxAdd > 0 ? `
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="setCardQty('${t.id}', -1)" ${cardQty <= 1 ? 'disabled' : ''}>−</button>
+          <span class="qty-val">${cardQty}</span>
+          <button class="qty-btn" onclick="setCardQty('${t.id}', 1)" ${cardQty >= maxAdd ? 'disabled' : ''}>+</button>
+        </div>
+        <button class="add-btn" onclick="addToCart('${t.id}')">
+          🛒 ${isInCart ? 'Meer' : 'In mandje'}
+        </button>
+        ` : (isInCart ? '' : '<span style="font-size:11px;color:var(--text4)">Volledig gereserveerd</span>')}
+      </div>` : ''}
     </div>`;
   }
 
@@ -429,6 +618,76 @@ function renderShop() {
   if (!state.loading && filtered.length === 0 && state.tires.length > 0) {
     html += '<div class="empty">Geen banden gevonden met deze filters</div>';
   }
+  return html;
+}
+
+function renderCartModal() {
+  const cartItems = Object.values(state.cart);
+  const f = state.reserveForm;
+  const total = getCartTotal();
+
+  let html = `
+  <div class="modal-overlay" onclick="closeCart()">
+    <div class="modal-box" onclick="event.stopPropagation()" style="max-width:520px">
+      <div class="modal-header">
+        <div class="modal-title">🛒 Reserveringsmandje</div>
+        <button class="modal-close" onclick="closeCart()">✕</button>
+      </div>`;
+
+  if (cartItems.length === 0) {
+    html += `
+      <div class="cart-empty">
+        <div class="cart-empty-icon">🛒</div>
+        <div>Mandje is leeg</div>
+        <div style="font-size:12px;color:var(--text4);margin-top:6px">Selecteer banden uit de catalogus</div>
+      </div>
+      <button class="btn-ghost" onclick="closeCart()" style="width:100%;margin-top:12px">Terug naar catalogus</button>`;
+  } else {
+    html += `
+      <div class="cart-summary">
+        <div class="cart-summary-title">Geselecteerde banden</div>`;
+
+    for (const item of cartItems) {
+      const t = item.tire;
+      const avail = t.available ?? t.stock;
+      html += `
+        <div class="cart-summary-item">
+          <div class="cart-item-info">
+            <div class="cart-item-name">${esc(t.brand)} ${esc(t.model)}</div>
+            <div class="cart-item-size">${esc(t.size)} · ${seasonIcon(t.season)} ${esc(t.season)}</div>
+          </div>
+          <div class="cart-item-qty">
+            <button class="cart-qty-btn" onclick="updateCartQty('${t.id}', -1)">−</button>
+            <span style="font-size:14px;font-weight:700;min-width:20px;text-align:center">${item.qty}</span>
+            <button class="cart-qty-btn" onclick="updateCartQty('${t.id}', 1)" ${item.qty >= avail ? 'disabled style="opacity:.3"' : ''}>+</button>
+          </div>
+          <div class="cart-item-price">€${(item.qty * t.priceB2B).toFixed(2)}</div>
+          <button class="cart-remove" onclick="removeFromCart('${t.id}')" title="Verwijderen">✕</button>
+        </div>`;
+    }
+
+    html += `
+        <div class="cart-total">
+          <span class="cart-total-label">Totaal B2B</span>
+          <span class="cart-total-val">€${total.toFixed(2)}</span>
+        </div>
+      </div>
+
+      <div class="modal-form">
+        <div class="form-section-title">Uw gegevens</div>
+        <input id="resName" placeholder="Naam *" value="${esc(f.name)}" />
+        <input id="resCompany" placeholder="Bedrijfsnaam" value="${esc(f.company)}" />
+        <input id="resEmail" placeholder="E-mail *" type="email" value="${esc(f.email)}" />
+        <input id="resPhone" placeholder="Telefoon *" value="${esc(f.phone)}" />
+        <textarea id="resNotes" placeholder="Opmerkingen (optioneel)">${esc(f.notes)}</textarea>
+        <button class="btn-primary" onclick="doReserve()" ${state.submitting ? 'disabled' : ''} style="width:100%;padding:14px;font-size:15px;margin-top:4px">
+          ${state.submitting ? '<span class="spinner"></span> Bezig...' : `Reservering plaatsen (${getCartCount()} banden)`}
+        </button>
+        <div class="modal-hint">Na reservering ontvangt u een bevestiging en factuur van ons.</div>
+      </div>`;
+  }
+
+  html += `</div></div>`;
   return html;
 }
 
@@ -457,13 +716,28 @@ function renderAdmin() {
     for (const r of res) {
       const sc = statusColor(r.status);
       const next = statusNext(r.status);
+      // Parse items als JSON indien aanwezig
+      let itemsHtml = '';
+      if (r.itemsJson) {
+        try {
+          const items = JSON.parse(r.itemsJson);
+          itemsHtml = '<div class="res-items">' +
+            items.map(i => `<div class="res-item-row">${esc(i.brand)} ${esc(i.model)} · ${esc(i.size)} · ${i.qty}× · €${(i.priceB2B || 0).toFixed(2)} B2B</div>`).join('') +
+            '</div>';
+        } catch(e) {
+          itemsHtml = `<div class="res-tire">${esc(r.tireBrand || '')} ${esc(r.tireModel || '')} · ${esc(r.tireSize || '')} · ${r.qty || 1}×</div>`;
+        }
+      } else {
+        itemsHtml = `<div class="res-tire">${esc(r.tireBrand || '')} ${esc(r.tireModel || '')} · ${esc(r.tireSize || '')} · ${r.qty || 1}×</div>`;
+      }
+
       html += `
       <div class="res-card">
         <div class="res-top">
           <div><span class="res-name">${esc(r.name)}</span>${r.company ? `<span class="res-company">${esc(r.company)}</span>` : ''}</div>
           <span class="status-badge" style="background:${sc}22;color:${sc}">${statusLabel(r.status)}</span>
         </div>
-        <div class="res-tire">${esc(r.tireBrand)} ${esc(r.tireModel)} · ${esc(r.tireSize)} · ${r.qty}x</div>
+        ${itemsHtml}
         <div class="res-contact">${esc(r.email)} · ${esc(r.phone)}${r.notes ? ` · "${esc(r.notes)}"` : ''}</div>
         <div class="res-meta">${esc(r.id)} · ${r.createdAt ? new Date(r.createdAt).toLocaleString('nl-NL') : ''}</div>
         ${r.status !== 'cancelled' && r.status !== 'completed' ? `
@@ -476,44 +750,6 @@ function renderAdmin() {
     html += '</div>';
   }
   return html;
-}
-
-function renderReserveModal() {
-  const t = state.selectedTire;
-  const f = state.reserveForm;
-  const avail = t.available ?? t.stock;
-  return `
-  <div class="modal-overlay" onclick="closeReserve()">
-    <div class="modal-box" onclick="event.stopPropagation()">
-      <div class="modal-header">
-        <div class="modal-title">Reserveren</div>
-        <button class="modal-close" onclick="closeReserve()">✕</button>
-      </div>
-      <div class="modal-tire-info">
-        <div style="font-weight:700;color:#F5F5F5">${esc(t.brand)} ${esc(t.model)}</div>
-        <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
-          <span style="font-family:monospace;color:var(--amber);font-weight:700">${esc(t.size)}</span>
-          <span class="season ${seasonClass(t.season)}">${seasonIcon(t.season)} ${esc(t.season)}</span>
-        </div>
-        <div style="margin-top:6px;font-size:13px;color:var(--text2)">€${t.priceB2B.toFixed(2)} B2B · ${avail} beschikbaar</div>
-      </div>
-      <div class="modal-form">
-        <input id="resName" placeholder="Naam *" value="${esc(f.name)}" />
-        <input id="resCompany" placeholder="Bedrijfsnaam" value="${esc(f.company)}" />
-        <input id="resEmail" placeholder="E-mail *" type="email" value="${esc(f.email)}" />
-        <input id="resPhone" placeholder="Telefoon *" value="${esc(f.phone)}" />
-        <div>
-          <label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px">Aantal</label>
-          <input id="resQty" type="number" min="1" max="${avail}" value="${f.qty}" style="width:100%" />
-        </div>
-        <textarea id="resNotes" placeholder="Opmerkingen (optioneel)">${esc(f.notes)}</textarea>
-        <button class="btn-primary" onclick="doReserve()" ${state.submitting ? 'disabled' : ''} style="width:100%;padding:14px;font-size:15px;margin-top:4px">
-          ${state.submitting ? '<span class="spinner"></span> Bezig...' : 'Reservering plaatsen'}
-        </button>
-        <div class="modal-hint">Na reservering ontvangt u een bevestiging en factuur van ons.</div>
-      </div>
-    </div>
-  </div>`;
 }
 
 function renderPinModal() {
@@ -533,16 +769,16 @@ function renderPinModal() {
 
 function bindEvents() {
   const el = (id) => document.getElementById(id);
-  
+
   const searchInput = el("searchInput");
   if (searchInput) searchInput.oninput = (e) => setState({ search: e.target.value });
-  
+
   const seasonFilter = el("seasonFilter");
   if (seasonFilter) seasonFilter.onchange = (e) => setState({ filterSeason: e.target.value });
-  
+
   const brandFilter = el("brandFilter");
   if (brandFilter) brandFilter.onchange = (e) => setState({ filterBrand: e.target.value });
-  
+
   const sortSelect = el("sortSelect");
   if (sortSelect) sortSelect.onchange = (e) => setState({ sortBy: e.target.value });
 
@@ -561,12 +797,8 @@ function goAdmin() {
   else setState({ showPinModal: true });
 }
 function closePin() { setState({ showPinModal: false }); }
-function closeReserve() { setState({ showReserveModal: false, selectedTire: null }); }
-
-function openReserve(tireId) {
-  const tire = state.tires.find(t => t.id === tireId);
-  if (tire) setState({ selectedTire: tire, showReserveModal: true, reserveForm: { ...state.reserveForm, qty: 1 } });
-}
+function openCart() { setState({ showCartModal: true }); }
+function closeCart() { setState({ showCartModal: false }); }
 
 function doReserve() {
   const f = {
@@ -574,7 +806,6 @@ function doReserve() {
     company: document.getElementById("resCompany")?.value || "",
     email: document.getElementById("resEmail")?.value || "",
     phone: document.getElementById("resPhone")?.value || "",
-    qty: parseInt(document.getElementById("resQty")?.value) || 1,
     notes: document.getElementById("resNotes")?.value || ""
   };
   state.reserveForm = f;
@@ -592,9 +823,7 @@ function adminLogout() { setState({ isAdmin: false, adminPin: "", view: "shop", 
 // ========== INIT ==========
 fetchInventory();
 render();
-// Auto-refresh elke minuut
 setInterval(fetchInventory, 60000);
-
 </script>
 </body>
 </html>
