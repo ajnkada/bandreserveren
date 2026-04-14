@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TK Handelsonderneming — Tire Store</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0A0A0B; --surface: #111214; --border: #1F2937; --border2: #374151;
+  --text: #E5E7EB; --text2: #C9CDD5; --text3: #9CA3AF; --text4: #6B7280;
+  --amber: #F59E0B; --amber-dark: #D97706; --green: #10B981; --green-dark: #064E3B;
+  --blue: #3B82F6; --purple: #8B5CF6; --red: #EF4444; --red-dark: #7F1D1D;
+}
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+input, select, textarea {
+  background: var(--border); border: 1px solid var(--border2); color: var(--text);
+  border-radius: 8px; padding: 10px 14px; font-size: 14px; outline: none; font-family: inherit; box-sizing: border-box;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--amber); box-shadow: 0 0 0 2px rgba(245,158,11,.2); }
+input::placeholder, textarea::placeholder { color: var(--text3); }
+textarea { min-height: 60px; resize: vertical; }
+
+.btn-primary {
+  background: var(--amber); color: var(--bg); border: none; border-radius: 8px;
+  padding: 10px 20px; font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit;
+  transition: all .15s; display: inline-flex; align-items: center; gap: 8px; justify-content: center;
+}
+.btn-primary:hover { background: var(--amber-dark); }
+.btn-primary:disabled { opacity: .4; cursor: not-allowed; }
+.btn-ghost {
+  background: transparent; border: 1px solid var(--border2); color: var(--text2);
+  border-radius: 8px; padding: 8px 16px; font-size: 13px; cursor: pointer; font-family: inherit; transition: all .15s;
+}
+.btn-ghost:hover { border-color: var(--text3); color: var(--text); }
+.btn-danger {
+  background: transparent; border: 1px solid var(--red-dark); color: var(--red);
+  border-radius: 8px; padding: 6px 12px; font-size: 12px; cursor: pointer; font-family: inherit; transition: all .15s;
+}
+.btn-danger:hover { background: rgba(239,68,68,.1); }
+
+/* Header */
+.header { border-bottom: 1px solid var(--border); padding: 14px 20px; position: sticky; top: 0; z-index: 50; background: var(--bg); }
+.header-inner { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; }
+.logo { display: flex; align-items: center; gap: 12px; }
+.logo-icon { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, var(--amber), var(--amber-dark)); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 16px; color: var(--bg); }
+.logo-text { font-weight: 800; font-size: 16px; color: #F5F5F5; letter-spacing: -0.5px; }
+.logo-sub { font-size: 11px; color: var(--text3); letter-spacing: 1px; }
+
+/* Nav pills */
+.pill-nav { display: flex; gap: 4px; background: var(--surface); border-radius: 10px; padding: 4px; border: 1px solid var(--border); }
+.pill-btn { padding: 8px 16px; border-radius: 8px; border: none; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .15s; position: relative; background: transparent; color: var(--text2); }
+.pill-btn.active { background: var(--amber); color: var(--bg); }
+.pill-badge { position: absolute; top: -4px; right: -4px; background: var(--red); color: #fff; border-radius: 10px; padding: 1px 6px; font-size: 10px; font-weight: 800; }
+
+/* Cart button */
+.cart-btn {
+  position: relative; background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 10px; padding: 8px 14px; cursor: pointer; font-family: inherit;
+  display: flex; align-items: center; gap: 8px; color: var(--text); font-size: 13px;
+  font-weight: 600; transition: all .15s;
+}
+.cart-btn:hover { border-color: var(--amber); }
+.cart-btn.has-items { border-color: var(--amber); background: rgba(245,158,11,.08); color: var(--amber); }
+.cart-count { background: var(--amber); color: var(--bg); border-radius: 20px; padding: 2px 8px; font-size: 11px; font-weight: 800; }
+
+/* Main */
+.main { max-width: 1200px; margin: 0 auto; padding: 20px 16px; }
+.filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; align-items: center; }
+.filters input { flex: 1 1 200px; min-width: 180px; }
+.filters select { min-width: 120px; }
+.count { font-size: 13px; color: var(--text3); margin-bottom: 14px; }
+
+/* Grid */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.tire-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 16px; transition: all .2s; position: relative; overflow: hidden;
+}
+.tire-card:hover { border-color: var(--border2); }
+.tire-card.sold-out { opacity: .5; }
+.tire-card.in-cart { border-color: var(--amber); background: rgba(245,158,11,.04); }
+.tire-card.sold-out { opacity: 1 !important; }
+
+/* Uitverkocht overlay — rode diagonale streep */
+.sold-out-overlay {
+  position: absolute; inset: 0; border-radius: 12px;
+  pointer-events: none; z-index: 2; overflow: hidden;
+}
+.sold-out-overlay::before {
+  content: '';
+  position: absolute;
+  top: -10px; left: -10px; right: -10px; bottom: -10px;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 18px,
+    rgba(239,68,68,.13) 18px,
+    rgba(239,68,68,.13) 22px
+  );
+}
+.sold-out-overlay::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: rgba(10,10,11,.55);
+  border-radius: 12px;
+}
+.sold-out-label {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-8deg);
+  z-index: 3; font-size: 13px; font-weight: 900; color: #fff; letter-spacing: 2px;
+  text-transform: uppercase; background: var(--red); padding: 5px 16px;
+  border-radius: 6px; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,.5);
+}
+.sold-out-sub {
+  position: absolute; bottom: 12px; left: 0; right: 0; z-index: 3;
+  text-align: center; font-size: 10px; color: rgba(255,255,255,.6);
+}
+
+/* Staffelbanner */
+.staffel-banner {
+  background: linear-gradient(90deg, rgba(245,158,11,.12), rgba(245,158,11,.06));
+  border-bottom: 1px solid rgba(245,158,11,.2);
+  padding: 10px 20px; cursor: pointer; user-select: none;
+}
+.staffel-banner-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.staffel-banner-left { display: flex; align-items: center; gap: 10px; }
+.staffel-banner-icon { font-size: 16px; }
+.staffel-banner-text { font-size: 13px; font-weight: 700; color: var(--amber); }
+.staffel-banner-sub { font-size: 11px; color: var(--text3); }
+.staffel-chevron { color: var(--amber); font-size: 12px; transition: transform .2s; }
+.staffel-chevron.open { transform: rotate(180deg); }
+
+/* Staffel dropdown */
+.staffel-dropdown {
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 16px 20px; animation: fadeIn .15s ease;
+}
+@keyframes fadeIn { from { opacity:0; transform:translateY(-4px) } to { opacity:1; transform:translateY(0) } }
+.staffel-dropdown-inner { max-width: 1200px; margin: 0 auto; }
+.staffel-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+.staffel-tier {
+  flex: 1 1 160px; background: var(--border); border-radius: 10px; padding: 12px 16px;
+  border: 1px solid var(--border2); transition: all .15s;
+}
+.staffel-tier.active { border-color: var(--amber); background: rgba(245,158,11,.08); }
+.staffel-tier-range { font-size: 12px; color: var(--text3); margin-bottom: 4px; }
+.staffel-tier-pct { font-size: 22px; font-weight: 800; color: var(--amber); }
+.staffel-tier-label { font-size: 11px; color: var(--text2); margin-top: 2px; }
+.staffel-tier.active .staffel-tier-range { color: var(--amber); }
+
+/* Staffelprijs op kaart */
+.tire-price-staffel { font-weight: 800; font-size: 20px; color: var(--green); }
+.tire-price-original { font-size: 13px; color: var(--text4); text-decoration: line-through; margin-left: 4px; }
+.staffel-saving { font-size: 10px; color: var(--green); font-weight: 600; margin-top: 1px; }
+
+/* Tip banner */
+.staffel-tip {
+  background: rgba(16,185,129,.08); border: 1px solid rgba(16,185,129,.2);
+  border-radius: 8px; padding: 8px 14px; margin-bottom: 14px;
+  font-size: 12px; color: var(--green); display: flex; align-items: center; gap: 8px;
+}
+.staffel-tip strong { font-weight: 700; }
+.tire-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.tire-brand { font-weight: 700; font-size: 15px; color: #F5F5F5; }
+.tire-model { font-size: 13px; color: var(--text2); }
+.tire-mid { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.tire-size { background: var(--border); padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 14px; color: var(--amber); font-family: monospace; }
+.tire-load { font-size: 11px; color: var(--text3); }
+.tire-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
+.tire-price { font-weight: 800; font-size: 20px; color: #F5F5F5; }
+.tire-price-label { font-size: 11px; color: var(--text3); margin-left: 4px; font-style: italic; }
+.tire-advies { font-size: 11px; color: #E5E7EB; text-decoration: line-through; text-decoration-color: var(--red); text-decoration-thickness: 1.5px; }
+.tire-stock { text-align: right; }
+.tire-avail { font-size: 11px; margin-top: 3px; font-weight: 600; }
+.tire-avail.yes { color: var(--green); }
+.tire-avail.no { color: var(--red); }
+.tire-meta { font-size: 10px; color: var(--text4); margin-top: 6px; }
+
+/* Add to cart area on card */
+.card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
+.qty-ctrl { display: flex; align-items: center; gap: 6px; }
+.qty-btn { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border2); background: var(--border); color: var(--text); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; font-family: inherit; line-height: 1; }
+.qty-btn:hover:not(:disabled) { border-color: var(--amber); color: var(--amber); }
+.qty-btn:disabled { opacity: .3; cursor: not-allowed; }
+.qty-val { font-size: 14px; font-weight: 700; min-width: 20px; text-align: center; color: var(--text); }
+.add-btn {
+  background: var(--amber); color: var(--bg); border: none; border-radius: 8px;
+  padding: 7px 14px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit;
+  transition: all .15s; display: flex; align-items: center; gap: 5px;
+}
+.add-btn:hover { background: var(--amber-dark); }
+.add-btn:disabled { opacity: .4; cursor: not-allowed; }
+.in-cart-indicator { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--amber); font-weight: 600; }
+.remove-from-cart { background: none; border: none; color: var(--text4); cursor: pointer; font-size: 14px; padding: 2px 4px; }
+.remove-from-cart:hover { color: var(--red); }
+
+/* Season badge */
+.season { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; color: #fff; }
+.season.zomer { background: var(--amber); }
+.season.winter { background: var(--blue); }
+.season.all-season { background: var(--green); }
+
+/* Stock dots */
+.dots { display: flex; gap: 3px; justify-content: flex-end; }
+.dot { width: 8px; height: 8px; border-radius: 50%; }
+.dot.on { background: var(--green); border: 1px solid #059669; }
+.dot.off { background: var(--border2); border: 1px solid var(--text4); }
+
+/* Status badge */
+.status-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
+
+/* Stats */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; margin-bottom: 20px; }
+.stat { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px; text-align: center; }
+.stat-val { font-size: 28px; font-weight: 800; }
+.stat-label { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+/* Reservations list */
+.res-list { display: flex; flex-direction: column; gap: 8px; }
+
+/* Onlangs verkocht sectie */
+.sold-section { margin-bottom: 28px; }
+.sold-section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid rgba(239,68,68,.3);
+}
+.sold-section-title { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 800; color: #F5F5F5; }
+.sold-section-badge { background: var(--red); color: #fff; border-radius: 20px; padding: 2px 10px; font-size: 11px; font-weight: 800; }
+.sold-toggle-btn { background: transparent; border: 1px solid rgba(239,68,68,.4); color: var(--red); border-radius: 8px; padding: 6px 14px; font-size: 12px; cursor: pointer; font-family: inherit; transition: all .15s; }
+.sold-toggle-btn:hover { background: rgba(239,68,68,.1); }
+.sold-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.tire-card.sold-card { border-color: rgba(239,68,68,.25); background: rgba(239,68,68,.03); }
+.tire-card.sold-card:hover { border-color: rgba(239,68,68,.4); transform: none; box-shadow: none; }
+.sold-banner { background: var(--red); border-radius: 6px; padding: 7px 12px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.sold-banner-text { font-size: 11px; font-weight: 800; color: #fff; letter-spacing: 1.5px; text-transform: uppercase; }
+.sold-banner-sub { font-size: 10px; color: rgba(255,255,255,.7); margin-left: auto; }
+.res-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+.res-top { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.res-name { font-weight: 700; font-size: 14px; color: #F5F5F5; }
+.res-company { font-size: 12px; color: var(--text3); margin-left: 8px; }
+.res-tire { font-size: 13px; color: var(--text2); margin-bottom: 6px; }
+.res-contact { font-size: 12px; color: var(--text3); margin-bottom: 8px; }
+.res-meta { font-size: 11px; color: var(--text4); margin-bottom: 10px; }
+.res-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.res-items { margin-bottom: 8px; }
+.res-item-row { font-size: 12px; color: var(--text2); padding: 3px 0; border-bottom: 1px solid var(--border); }
+.res-item-row:last-child { border-bottom: none; }
+
+/* Modal */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 100; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+.modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; max-width: 480px; width: 92%; max-height: 90vh; overflow-y: auto; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.modal-title { font-size: 18px; font-weight: 800; color: #F5F5F5; }
+.modal-close { background: none; border: none; color: var(--text3); font-size: 20px; cursor: pointer; }
+
+/* Cart summary in modal */
+.cart-summary { background: var(--border); border-radius: 10px; padding: 14px; margin-bottom: 16px; }
+.cart-summary-title { font-size: 12px; color: var(--text3); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; }
+.cart-summary-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border2); }
+.cart-summary-item:last-child { border-bottom: none; padding-bottom: 0; }
+.cart-item-info { flex: 1; }
+.cart-item-name { font-size: 13px; font-weight: 600; color: #F5F5F5; }
+.cart-item-size { font-size: 11px; color: var(--amber); font-family: monospace; }
+.cart-item-qty { display: flex; align-items: center; gap: 6px; }
+.cart-qty-btn { width: 24px; height: 24px; border-radius: 5px; border: 1px solid var(--border2); background: var(--bg); color: var(--text); font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: inherit; }
+.cart-qty-btn:hover { border-color: var(--amber); color: var(--amber); }
+.cart-item-price { font-size: 12px; color: var(--text2); min-width: 70px; text-align: right; }
+.cart-remove { background: none; border: none; color: var(--text4); cursor: pointer; font-size: 14px; padding: 0 0 0 8px; }
+.cart-remove:hover { color: var(--red); }
+.cart-total { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; margin-top: 4px; border-top: 1px solid var(--border2); }
+.cart-total-label { font-size: 13px; font-weight: 700; color: var(--text2); }
+.cart-total-val { font-size: 16px; font-weight: 800; color: var(--amber); }
+
+.modal-form { display: flex; flex-direction: column; gap: 10px; }
+.modal-hint { font-size: 11px; color: var(--text3); text-align: center; }
+.form-section-title { font-size: 12px; color: var(--text3); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-top: 4px; }
+
+/* Notification */
+.notify { position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 999; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 600; color: #fff; box-shadow: 0 8px 32px rgba(0,0,0,.5); animation: slideDown .3s ease; max-width: 90%; }
+.notify.success { background: var(--green-dark); border: 1px solid var(--green); }
+.notify.error { background: var(--red-dark); border: 1px solid var(--red); }
+@keyframes slideDown { from { opacity:0; transform:translateX(-50%) translateY(-20px) } to { opacity:1; transform:translateX(-50%) translateY(0) } }
+
+/* Empty */
+.empty { text-align: center; padding: 60px; color: var(--text4); }
+
+/* Spinner */
+.spinner { width: 18px; height: 18px; border: 2px solid var(--border2); border-top-color: var(--amber); border-radius: 50%; animation: spin .6s linear infinite; display: inline-block; }
+@keyframes spin { to { transform: rotate(360deg) } }
+
+/* Header right */
+.header-right { display: flex; align-items: center; gap: 8px; }
+
+/* Admin top */
+.admin-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+.admin-title { font-size: 20px; font-weight: 800; color: #F5F5F5; }
+.admin-btns { display: flex; gap: 8px; }
+
+/* Empty cart state */
+.cart-empty { text-align: center; padding: 30px; color: var(--text4); }
+.cart-empty-icon { font-size: 32px; margin-bottom: 8px; }
+
+/* Responsive */
+@media (max-width: 600px) {
+  .header-inner { flex-direction: column; gap: 10px; }
+  .logo-text { font-size: 14px; }
+  .tire-price { font-size: 18px; }
+  .header-right { flex-wrap: wrap; justify-content: center; }
+}
+
+/* Footer */
+.site-footer { border-top: 1px solid var(--border); padding: 24px 20px; margin-top: 40px; text-align: center; }
+.footer-inner { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 6px; }
+.footer-name { font-size: 13px; font-weight: 700; color: var(--text2); letter-spacing: 0.5px; }
+.footer-meta { font-size: 11px; color: var(--text4); display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 16px; }
+.footer-meta span { white-space: nowrap; }
+.footer-legal { font-size: 10px; color: var(--text4); font-style: italic; margin-top: 4px; }
+
+/* Factuur preview modal */
+.factuur-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.85); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.factuur-modal-box { background: #fff; border-radius: 12px; max-width: 680px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; }
+.factuur-modal-actions { position: sticky; top: 0; background: #111214; padding: 12px 20px; display: flex; gap: 10px; align-items: center; border-radius: 12px 12px 0 0; z-index: 10; }
+.factuur-modal-actions span { color: #9ca3af; font-size: 13px; flex: 1; }
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+// ========== CONFIG ==========
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyZbs96AlMFjZa3DoAWyEJyEZzEHCywyAbk_on4EpcrKcrPLkURcXfe6TXyDqZGHdjo/exec";
+
+// ========== STATE ==========
+// ========== STAFFEL CONFIG ==========
+const STAFFEL = [
+  { min: 1,   max: 9,   pct: 25, label: "25% korting" },
+  { min: 10,  max: 49,  pct: 40, label: "40% korting" },
+  { min: 50,  max: 99,  pct: 45, label: "45% korting" },
+  { min: 100, max: Infinity, pct: 50, label: "50% korting" }
+];
+
+// Hulpfunctie: incl. BTW → excl. BTW
+function exclBTW(prijs) { return prijs / 1.21; }
+
+function getStaffelTier(qty) {
+  return STAFFEL.find(s => qty >= s.min && qty <= s.max) || STAFFEL[0];
+}
+
+function getStaffelPrice(tire, qty) {
+  const tier = getStaffelTier(qty);
+  // Basisprijs = kolom M (price2C = incl. BTW) omrekenen naar excl. BTW
+  const basisExcl = exclBTW(tire.price2C);
+  return Math.round(basisExcl * (1 - tier.pct / 100) * 100) / 100;
+}
+
+// Adviesprijs = kolom M excl. BTW (zonder staffelkorting)
+function getAdviesPrijs(tire) {
+  return exclBTW(tire.price2C);
+}
+
+let state = {
+  view: "shop",
+  tires: [],
+  reservations: [],
+  isAdmin: false,
+  adminPin: "",
+  search: "",
+  filterSeason: "Alle",
+  filterBrand: "Alle",
+  sortBy: "brand",
+  loading: true,
+  submitting: false,
+  notification: null,
+  showCartModal: false,
+  showPinModal: false,
+  showStaffel: false,
+  showAllSoldOut: false,
+  // Winkelmandje: { [tireId]: { tire, qty } }
+  cart: {},
+  // Qty selector per kaart (voordat je toevoegt)
+  cardQty: {},
+  reserveForm: { name: "", company: "", email: "", phone: "", notes: "" }
+};
+
+function setState(updates) {
+  Object.assign(state, updates);
+  render();
+}
+
+// ========== API ==========
+
+async function apiFetch(params) {
+  const url = new URL(SCRIPT_URL);
+  for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
+  const res = await fetch(url.toString());
+  return res.json();
+}
+
+async function apiPost(body) {
+  const res = await fetch(SCRIPT_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain" },
+    body: JSON.stringify(body)
+  });
+  return res.json();
+}
+
+async function fetchInventory() {
+  try {
+    const data = await apiFetch({ action: "inventory" });
+    if (data?.tires) {
+      // Initialiseer cardQty voor nieuwe banden
+      const newCardQty = { ...state.cardQty };
+      for (const t of data.tires) {
+        if (!newCardQty[t.id]) newCardQty[t.id] = 1;
+      }
+      setState({ tires: data.tires, loading: false, cardQty: newCardQty });
+    } else {
+      notify(data?.error || "Kan voorraad niet laden", "error");
+      setState({ loading: false });
+    }
+  } catch (err) {
+    notify("Kan voorraad niet laden: " + err.message, "error");
+    setState({ loading: false });
+  }
+}
+
+async function fetchReservations() {
+  try {
+    const data = await apiFetch({ action: "reservations", pin: state.adminPin });
+    if (data?.reservations) setState({ reservations: data.reservations });
+    else notify(data?.error || "Kan reserveringen niet laden", "error");
+  } catch (err) { notify("Fout: " + err.message, "error"); }
+}
+
+async function submitReservation() {
+  const f = state.reserveForm;
+  const cartItems = Object.values(state.cart);
+  if (!f.name || !f.email || !f.phone) { notify("Vul alle verplichte velden in", "error"); return; }
+  if (cartItems.length === 0) { notify("Mandje is leeg", "error"); return; }
+
+  setState({ submitting: true });
+  try {
+    // Stuur als multi-item reservering
+    const cartCount = getCartCount();
+    const items = cartItems.map(item => ({
+      tireId: item.tire.id,
+      brand: item.tire.brand,
+      model: item.tire.model,
+      size: item.tire.size,
+      season: item.tire.season,
+      qty: item.qty,
+      priceB2B: item.tire.price2C,  // kolom M (incl. BTW) → factuur rekent zelf terug
+      staffelPrijs: getStaffelPrice(item.tire, cartCount)
+    }));
+
+    const result = await apiPost({
+      action: "reserveMulti",
+      items,
+      name: f.name,
+      company: f.company,
+      email: f.email,
+      phone: f.phone,
+      notes: f.notes
+    });
+
+    if (result?.success) {
+      notify(result.message || "Reservering geplaatst! We nemen contact op.");
+      setState({
+        showCartModal: false,
+        cart: {},
+        cardQty: {},
+        submitting: false,
+        reserveForm: { name: "", company: "", email: "", phone: "", notes: "" }
+      });
+      fetchInventory();
+    } else {
+      notify(result?.error || "Er ging iets mis", "error");
+      setState({ submitting: false });
+    }
+  } catch (err) {
+    notify("Fout: " + err.message, "error");
+    setState({ submitting: false });
+  }
+}
+
+async function updateStatus(resId, status) {
+  try {
+    const result = await apiPost({ action: "updateStatus", reservationId: resId, status, pin: state.adminPin });
+    if (result?.success) { notify(resId + " → " + statusLabel(status)); fetchReservations(); fetchInventory(); }
+    else notify(result?.error || "Fout", "error");
+  } catch (err) { notify("Fout: " + err.message, "error"); }
+}
+
+// ========== CART LOGIC ==========
+
+function getCartQty(tireId) {
+  return state.cart[tireId]?.qty || 0;
+}
+
+function getCardQty(tireId) {
+  return state.cardQty[tireId] || 1;
+}
+
+function setCardQty(tireId, delta) {
+  const tire = state.tires.find(t => t.id === tireId);
+  if (!tire) return;
+  const avail = tire.available ?? tire.stock;
+  const inCart = getCartQty(tireId);
+  const maxAdd = avail - inCart;
+  const current = getCardQty(tireId);
+  const next = Math.max(1, Math.min(maxAdd, current + delta));
+  setState({ cardQty: { ...state.cardQty, [tireId]: next } });
+}
+
+function addToCart(tireId) {
+  const tire = state.tires.find(t => t.id === tireId);
+  if (!tire) return;
+  const qty = getCardQty(tireId);
+  const avail = tire.available ?? tire.stock;
+  const alreadyInCart = getCartQty(tireId);
+  if (alreadyInCart + qty > avail) { notify("Niet genoeg op voorraad", "error"); return; }
+
+  const newCart = { ...state.cart };
+  if (newCart[tireId]) {
+    newCart[tireId] = { ...newCart[tireId], qty: newCart[tireId].qty + qty };
+  } else {
+    newCart[tireId] = { tire, qty };
+  }
+  // Reset card qty
+  const newCardQty = { ...state.cardQty, [tireId]: 1 };
+  setState({ cart: newCart, cardQty: newCardQty });
+  notify(`${qty}× ${tire.brand} ${tire.size} toegevoegd aan mandje`);
+}
+
+function removeFromCart(tireId) {
+  const newCart = { ...state.cart };
+  delete newCart[tireId];
+  setState({ cart: newCart });
+}
+
+function updateCartQty(tireId, delta) {
+  const tire = state.tires.find(t => t.id === tireId);
+  if (!tire) return;
+  const avail = tire.available ?? tire.stock;
+  const current = state.cart[tireId]?.qty || 0;
+  const next = current + delta;
+  if (next <= 0) { removeFromCart(tireId); return; }
+  if (next > avail) { notify("Niet genoeg op voorraad", "error"); return; }
+  setState({ cart: { ...state.cart, [tireId]: { ...state.cart[tireId], qty: next } } });
+}
+
+function getCartCount() {
+  return Object.values(state.cart).reduce((s, i) => s + i.qty, 0);
+}
+
+function getCartTotal() {
+  // Retailprijs (price2C) als referentie voor besparingberekening
+  return Object.values(state.cart).reduce((s, i) => s + i.qty * i.tire.price2C, 0);
+}
+
+function getCartStaffelTotal() {
+  const cartCount = getCartCount();
+  return Object.values(state.cart).reduce((s, i) => s + i.qty * getStaffelPrice(i.tire, cartCount), 0);
+}
+
+// ========== HELPERS ==========
+
+function notify(msg, type = "success") {
+  setState({ notification: { msg, type } });
+  setTimeout(() => setState({ notification: null }), 4000);
+}
+
+function seasonClass(s) {
+  if (s === "Zomer") return "zomer";
+  if (s === "Winter") return "winter";
+  return "all-season";
+}
+function seasonIcon(s) {
+  if (s === "Zomer") return "☀️";
+  if (s === "Winter") return "❄️";
+  return "🌤️";
+}
+function statusLabel(s) {
+  return { pending: "Nieuw", confirmed: "Bevestigd", invoiced: "Gefactureerd", completed: "Opgehaald", cancelled: "Geannuleerd" }[s] || s;
+}
+function statusColor(s) {
+  return { pending: "#F59E0B", confirmed: "#3B82F6", invoiced: "#8B5CF6", completed: "#10B981", cancelled: "#6B7280" }[s] || "#6B7280";
+}
+function statusNext(s) {
+  return { pending: "confirmed", confirmed: "invoiced", invoiced: "completed" }[s] || null;
+}
+function statusNextLabel(s) {
+  return { pending: "Bevestigen", confirmed: "Factureren", invoiced: "Opgehaald" }[s] || "";
+}
+function statusNextColor(s) {
+  const n = statusNext(s);
+  return n ? statusColor(n) : "";
+}
+
+function getFiltered() {
+  let list = state.tires.filter(t => {
+    if (state.filterSeason !== "Alle" && t.season !== state.filterSeason) return false;
+    if (state.filterBrand !== "Alle" && t.brand !== state.filterBrand) return false;
+    if (state.search) {
+      const q = state.search.toLowerCase();
+      return (t.brand + t.model + t.size + t.ref).toLowerCase().includes(q);
+    }
+    return true;
+  });
+  list.sort((a, b) => {
+    // Uitverkocht altijd achteraan
+    const aOut = (a.available ?? a.stock) <= 0;
+    const bOut = (b.available ?? b.stock) <= 0;
+    if (aOut !== bOut) return aOut ? 1 : -1;
+
+    if (state.sortBy === "brand") return a.brand.localeCompare(b.brand) || a.model.localeCompare(b.model);
+    if (state.sortBy === "price") return a.priceB2B - b.priceB2B;
+    if (state.sortBy === "size") return a.size.localeCompare(b.size);
+    return 0;
+  });
+  return list;
+}
+
+function getBrands() {
+  return ["Alle", ...[...new Set(state.tires.map(t => t.brand))].sort()];
+}
+
+function esc(s) { const d = document.createElement("div"); d.textContent = String(s); return d.innerHTML; }
+
+function dots(avail, total) {
+  const max = Math.min(total, 8);
+  let html = '<div class="dots">';
+  for (let i = 0; i < max; i++) html += `<div class="dot ${i < avail ? 'on' : 'off'}"></div>`;
+  if (total > 8) html += `<span style="font-size:10px;color:var(--text3);margin-left:2px">+${total-8}</span>`;
+  html += '</div>';
+  return html;
+}
+
+// ========== RENDER ==========
+
+function render() {
+  const app = document.getElementById("app");
+  const pendingCount = state.reservations.filter(r => r.status === "pending").length;
+  const cartCount = getCartCount();
+
+  let html = "";
+
+  // Notification
+  if (state.notification) {
+    html += `<div class="notify ${state.notification.type}">${esc(state.notification.msg)}</div>`;
+  }
+
+  // Staffelbanner (altijd zichtbaar in shop)
+  const currentTier = getStaffelTier(cartCount);
+  const nextTier = STAFFEL.find(s => s.min > cartCount);
+
+  if (state.view === "shop") {
+    html += `
+    <div class="staffel-banner" onclick="toggleStaffel()">
+      <div class="staffel-banner-inner">
+        <div class="staffel-banner-left">
+          <span class="staffel-banner-icon">🏷️</span>
+          <div>
+            <div class="staffel-banner-text">Staffelkorting — hoe meer banden, hoe meer korting</div>
+            <div class="staffel-banner-sub">&lt;10 stuks: websiteprijs · 10–49: 40% · 50–99: 45% · 100+: 50% korting op retailprijs</div>
+          </div>
+        </div>
+        <span class="staffel-chevron ${state.showStaffel ? 'open' : ''}">▼</span>
+      </div>
+    </div>`;
+
+    if (state.showStaffel) {
+      html += `
+      <div class="staffel-dropdown">
+        <div class="staffel-dropdown-inner">
+          <div class="staffel-grid">
+            ${STAFFEL.map(tier => `
+            <div class="staffel-tier ${currentTier === tier ? 'active' : ''}">
+              <div class="staffel-tier-range">${tier.max === Infinity ? tier.min + '+' : tier.min + '–' + tier.max} stuks ${currentTier === tier ? '← jij nu' : ''}</div>
+              <div class="staffel-tier-pct">${tier.pct === 0 ? 'Retail' : '-' + tier.pct + '%'}</div>
+              <div class="staffel-tier-label">${tier.label}</div>
+            </div>`).join('')}
+          </div>
+        </div>
+      </div>`;
+    }
+  }
+
+  // Header
+  html += `
+  <div class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-icon">FF</div>
+        <div>
+          <div class="logo-text">TK HANDELSONDERNEMING</div>
+          <div class="logo-sub">TIRE INVENTORY</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <button class="cart-btn ${cartCount > 0 ? 'has-items' : ''}" onclick="openCart()">
+          🛒 Mandje${cartCount > 0 ? `<span class="cart-count">${cartCount}</span>` : ''}
+        </button>
+        <div class="pill-nav">
+          <button class="pill-btn ${state.view === 'shop' ? 'active' : ''}" onclick="goShop()">Catalogus</button>
+          <button class="pill-btn ${state.view === 'admin' ? 'active' : ''}" onclick="goAdmin()">
+            Admin${pendingCount > 0 ? `<span class="pill-badge">${pendingCount}</span>` : ''}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+
+  html += '<div class="main">';
+
+  if (state.view === "shop") {
+    html += renderShop();
+  } else if (state.view === "admin" && state.isAdmin) {
+    html += renderAdmin();
+  }
+
+  html += '</div>';
+
+  // Modals
+  if (state.showCartModal) html += renderCartModal();
+  if (state.showPinModal) html += renderPinModal();
+  if (state.factuurPreviewId) html += renderFactuurPreviewModal();
+
+  // Footer
+  html += `
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-name">TK HANDELSONDERNEMING</div>
+      <div class="footer-meta">
+        <span>📍 Tilburg</span>
+        <span>KvK: 92612253</span>
+        <span>BTW: NL004964775B51</span>
+        <span>✉️ info@tkhandelsonderneming.nl</span>
+        <span>📞 +31 6 43481608</span>
+      </div>
+      <div class="footer-legal">Reserveringen zijn bindend. Door een reservering te plaatsen gaat u akkoord met onze algemene voorwaarden.</div>
+    </div>
+  </footer>`;
+
+  app.innerHTML = html;
+  bindEvents();
+}
+
+function renderShop() {
+  const allTires = state.tires;
+  const cartCount = getCartCount();
+  const currentTier = getStaffelTier(cartCount);
+  const nextTier = STAFFEL.find(s => s.min > cartCount);
+
+  // Splits beschikbaar en uitverkocht
+  const available = getFiltered().filter(t => (t.available ?? t.stock) > 0);
+  const soldOut = state.tires.filter(t => (t.available ?? t.stock) <= 0);
+  const brands = getBrands();
+
+  let html = `
+  <div class="filters">
+    <input id="searchInput" value="${esc(state.search)}" placeholder="Zoek merk, model, maat..." />
+    <select id="seasonFilter">
+      <option value="Alle" ${state.filterSeason==='Alle'?'selected':''}>Alle seizoenen</option>
+      <option value="Zomer" ${state.filterSeason==='Zomer'?'selected':''}>☀️ Zomer</option>
+      <option value="Winter" ${state.filterSeason==='Winter'?'selected':''}>❄️ Winter</option>
+      <option value="All-Season" ${state.filterSeason==='All-Season'?'selected':''}>🌤️ All-Season</option>
+    </select>
+    <select id="brandFilter">
+      ${brands.map(b => `<option value="${esc(b)}" ${state.filterBrand===b?'selected':''}>${esc(b)}</option>`).join('')}
+    </select>
+    <select id="sortSelect">
+      <option value="brand" ${state.sortBy==='brand'?'selected':''}>Merk A-Z</option>
+      <option value="price" ${state.sortBy==='price'?'selected':''}>Prijs laag-hoog</option>
+      <option value="size" ${state.sortBy==='size'?'selected':''}>Maat</option>
+    </select>
+  </div>`;
+
+  // Staffeltip
+  if (nextTier && cartCount > 0) {
+    const needed = nextTier.min - cartCount;
+    html += `<div class="staffel-tip">💡 <span>Voeg nog <strong>${needed} band${needed !== 1 ? 'en' : ''}</strong> toe en bespaar <strong>${nextTier.pct}%</strong> op je hele bestelling</span></div>`;
+  } else if (cartCount === 0 && STAFFEL[1]) {
+    html += `<div class="staffel-tip">💡 <span>Bestel <strong>${STAFFEL[0].min}+ banden</strong> voor <strong>${STAFFEL[0].pct}%</strong> korting, of <strong>${STAFFEL[1].min}+</strong> voor <strong>${STAFFEL[1].pct}%</strong> staffelkorting — klik op de banner voor meer info</span></div>`;
+  }
+
+  // === ONLANGS VERKOCHT SECTIE ===
+  if (soldOut.length > 0) {
+    const showAll = state.showAllSoldOut;
+    const visible = showAll ? soldOut : soldOut.slice(0, 4);
+
+    html += `
+    <div class="sold-section">
+      <div class="sold-section-header">
+        <div class="sold-section-title">
+          🔴 Onlangs verkocht
+          <span class="sold-section-badge">${soldOut.length}</span>
+        </div>
+        ${soldOut.length > 4 ? `<button class="sold-toggle-btn" onclick="toggleSoldOut()">
+          ${showAll ? `▲ Minder tonen` : `▼ Alle ${soldOut.length} tonen`}
+        </button>` : ''}
+      </div>
+      <div class="sold-grid">`;
+
+    for (const t of visible) {
+      html += `
+      <div class="tire-card sold-card">
+        <div class="sold-banner">
+          <span class="sold-banner-text">🔴 Onlangs verkocht</span>
+          <span class="sold-banner-sub">Niet meer beschikbaar</span>
+        </div>
+        <div class="tire-top">
+          <div>
+            <div class="tire-brand">${esc(t.brand)}</div>
+            <div class="tire-model">${esc(t.model)}</div>
+          </div>
+          <span class="season ${seasonClass(t.season)}">${seasonIcon(t.season)} ${esc(t.season)}</span>
+        </div>
+        <div class="tire-mid">
+          <span class="tire-size">${esc(t.size)}</span>
+          ${t.loadIndex ? `<span class="tire-load">${esc(t.loadIndex)}</span>` : ''}
+        </div>
+        <div class="tire-bottom">
+          <div>
+            <span style="font-size:18px;font-weight:800;color:var(--text3)">€${t.priceB2B.toFixed(2)}</span>
+            <span class="tire-price-label">B2B</span>
+            <div class="tire-advies">€${t.price2C.toFixed(2)} advies</div>
+          </div>
+          <div class="tire-stock">
+            <div class="tire-avail no">Uitverkocht</div>
+          </div>
+        </div>
+        ${t.dot ? `<div class="tire-meta">DOT ${esc(t.dot)} · Ref: ${esc(t.ref)}</div>` : ''}
+      </div>`;
+    }
+
+    html += `</div></div>`;
+  }
+
+  // === BESCHIKBARE BANDEN ===
+  html += `<div class="count">${state.loading ? 'Voorraad laden...' : available.length + ' banden beschikbaar'}</div>
+  <div class="grid">`;
+
+  for (const t of available) {
+    const avail = t.available ?? t.stock;
+    const inCart = getCartQty(t.id);
+    const cardQty = getCardQty(t.id);
+    const maxAdd = avail - inCart;
+    const isInCart = inCart > 0;
+    const staffelPrice = getStaffelPrice(t, cartCount);
+    const showDiscount = currentTier.pct > 0;
+
+    html += `
+    <div class="tire-card ${isInCart ? 'in-cart' : ''}">
+      <div class="tire-top">
+        <div>
+          <div class="tire-brand">${esc(t.brand)}</div>
+          <div class="tire-model">${esc(t.model)}</div>
+        </div>
+        <span class="season ${seasonClass(t.season)}">${seasonIcon(t.season)} ${esc(t.season)}</span>
+      </div>
+      <div class="tire-mid">
+        <span class="tire-size">${esc(t.size)}</span>
+        ${t.loadIndex ? `<span class="tire-load">${esc(t.loadIndex)}</span>` : ''}
+      </div>
+      <div class="tire-bottom">
+        <div>
+          ${showDiscount ? `
+            <span class="tire-price-staffel">€${staffelPrice.toFixed(2)}</span><span class="tire-price-label" style="font-size:10px;color:var(--text3);margin-left:3px">excl. BTW</span>
+            <span class="tire-price-original">€${getAdviesPrijs(t).toFixed(2)}</span>
+            <div class="staffel-saving">-${currentTier.pct}% staffelkorting</div>
+          ` : `
+            <span class="tire-price">€${getStaffelPrice(t, 1).toFixed(2)}</span><span class="tire-price-label">excl. BTW</span>
+            <div class="tire-advies">€${getAdviesPrijs(t).toFixed(2)} advies excl. BTW</div>
+          `}
+        </div>
+        <div class="tire-stock">
+          ${dots(avail, t.stock)}
+          <div class="tire-avail yes">${avail} beschikbaar</div>
+        </div>
+      </div>
+      ${t.dot ? `<div class="tire-meta">DOT ${esc(t.dot)} · Ref: ${esc(t.ref)}</div>` : ''}
+      <div class="card-footer">
+        ${isInCart ? `<div class="in-cart-indicator">✓ ${inCart}× in mandje <button class="remove-from-cart" onclick="removeFromCart('${t.id}')" title="Verwijder uit mandje">✕</button></div>` : ''}
+        ${maxAdd > 0 ? `
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="setCardQty('${t.id}', -1)" ${cardQty <= 1 ? 'disabled' : ''}>−</button>
+          <span class="qty-val">${cardQty}</span>
+          <button class="qty-btn" onclick="setCardQty('${t.id}', 1)" ${cardQty >= maxAdd ? 'disabled' : ''}>+</button>
+        </div>
+        <button class="add-btn" onclick="addToCart('${t.id}')">
+          🛒 ${isInCart ? 'Meer' : 'In mandje'}
+        </button>
+        ` : (isInCart ? '' : '')}
+      </div>
+    </div>`;
+  }
+
+  html += '</div>';
+  if (!state.loading && available.length === 0 && state.tires.length > 0) {
+    html += '<div class="empty">Geen banden gevonden met deze filters</div>';
+  }
+  return html;
+}
+
+function renderCartModal() {
+  const cartItems = Object.values(state.cart);
+  const f = state.reserveForm;
+  const cartCount = getCartCount();
+  const currentTier = getStaffelTier(cartCount);
+  const nextTier = STAFFEL.find(s => s.min > cartCount);
+
+  let html = `
+  <div class="modal-overlay" onclick="closeCart()">
+    <div class="modal-box" onclick="event.stopPropagation()" style="max-width:520px">
+      <div class="modal-header">
+        <div class="modal-title">🛒 Reserveringsmandje</div>
+        <button class="modal-close" onclick="closeCart()">✕</button>
+      </div>`;
+
+  if (cartItems.length === 0) {
+    html += `
+      <div class="cart-empty">
+        <div class="cart-empty-icon">🛒</div>
+        <div>Mandje is leeg</div>
+        <div style="font-size:12px;color:var(--text4);margin-top:6px">Selecteer banden uit de catalogus</div>
+      </div>
+      <button class="btn-ghost" onclick="closeCart()" style="width:100%;margin-top:12px">Terug naar catalogus</button>`;
+  } else {
+    const staffelTotal = getCartStaffelTotal();
+    const regularTotal = getCartTotal();
+    const savings = regularTotal - staffelTotal;
+
+    html += `
+      <div class="cart-summary">
+        <div class="cart-summary-title">Geselecteerde banden${currentTier.pct > 0 ? ` · <span style="color:var(--green)">-${currentTier.pct}% staffelkorting actief</span>` : ''}</div>`;
+
+    for (const item of cartItems) {
+      const t = item.tire;
+      const avail = t.available ?? t.stock;
+      const unitPrice = getStaffelPrice(t, cartCount);
+      html += `
+        <div class="cart-summary-item">
+          <div class="cart-item-info">
+            <div class="cart-item-name">${esc(t.brand)} ${esc(t.model)}</div>
+            <div class="cart-item-size">${esc(t.size)} · ${seasonIcon(t.season)} ${esc(t.season)}</div>
+          </div>
+          <div class="cart-item-qty">
+            <button class="cart-qty-btn" onclick="updateCartQty('${t.id}', -1)">−</button>
+            <span style="font-size:14px;font-weight:700;min-width:20px;text-align:center">${item.qty}</span>
+            <button class="cart-qty-btn" onclick="updateCartQty('${t.id}', 1)" ${item.qty >= avail ? 'disabled style="opacity:.3"' : ''}>+</button>
+          </div>
+          <div class="cart-item-price">€${(item.qty * unitPrice).toFixed(2)}</div>
+          <button class="cart-remove" onclick="removeFromCart('${t.id}')" title="Verwijderen">✕</button>
+        </div>`;
+    }
+
+    html += `
+        ${nextTier ? `
+        <div style="
+          margin: 8px 0;
+          background: #10B981;
+          border-radius: 10px;
+          padding: 14px 16px;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        ">
+          <div style="font-size:32px;line-height:1">🎯</div>
+          <div style="flex:1">
+            <div style="font-size:16px;font-weight:900;color:#000;line-height:1.2">
+              Nog <span style="font-size:22px">${nextTier.min - cartCount}</span> band${nextTier.min - cartCount !== 1 ? 'en' : ''} → <span style="font-size:22px">-${nextTier.pct}%</span> korting!
+            </div>
+            <div style="font-size:12px;color:rgba(0,0,0,.7);margin-top:3px">
+              op je <strong>hele</strong> bestelling — voeg toe uit de catalogus
+            </div>
+          </div>
+        </div>` : (currentTier.pct > 0 ? `
+        <div style="
+          margin: 8px 0;
+          background: var(--amber);
+          border-radius: 10px;
+          padding: 14px 16px;
+          display:flex; align-items:center; gap:12px;
+        ">
+          <div style="font-size:28px">🏆</div>
+          <div>
+            <div style="font-size:16px;font-weight:900;color:#000">Maximale korting: -${currentTier.pct}% actief!</div>
+            <div style="font-size:12px;color:rgba(0,0,0,.7);margin-top:2px">Je hebt de hoogste staffelkorting bereikt</div>
+          </div>
+        </div>` : '')}
+        <div class="cart-total">
+          <div>
+            <div class="cart-total-label">Totaal${currentTier.pct > 0 ? ` (-${currentTier.pct}%)` : ''}</div>
+            ${savings > 0 ? `<div style="font-size:11px;color:var(--green)">Besparing: €${savings.toFixed(2)}</div>` : ''}
+          </div>
+          <div style="text-align:right">
+            ${savings > 0 ? `<div style="font-size:12px;color:var(--text4);text-decoration:line-through">€${regularTotal.toFixed(2)}</div>` : ''}
+            <div class="cart-total-val">€${staffelTotal.toFixed(2)}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-form">
+        <div class="form-section-title">Uw gegevens</div>
+        <input id="resName" placeholder="Naam *" value="${esc(f.name)}" />
+        <input id="resCompany" placeholder="Bedrijfsnaam" value="${esc(f.company)}" />
+        <input id="resEmail" placeholder="E-mail *" type="email" value="${esc(f.email)}" />
+        <input id="resPhone" placeholder="Telefoon *" value="${esc(f.phone)}" />
+        <textarea id="resNotes" placeholder="Opmerkingen (optioneel)">${esc(f.notes)}</textarea>
+        <button class="btn-primary" onclick="doReserve()" ${state.submitting ? 'disabled' : ''} style="width:100%;padding:14px;font-size:15px;margin-top:4px">
+          ${state.submitting ? '<span class="spinner"></span> Bezig...' : `Reservering plaatsen (${cartCount} banden)`}
+        </button>
+        <div class="modal-hint">Na reservering ontvangt u een bevestiging en factuur van ons.</div>
+      </div>`;
+  }
+
+  html += `</div></div>`;
+  return html;
+}
+
+function renderAdmin() {
+  const res = [...state.reservations].sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
+  const counts = { total: res.length, pending: 0, confirmed: 0, invoiced: 0, completed: 0 };
+  res.forEach(r => { if (counts[r.status] !== undefined) counts[r.status]++; });
+
+  let html = `
+  <div class="admin-top">
+    <div class="admin-title">Reserveringen beheren</div>
+    <div class="admin-btns">
+      <button class="btn-ghost" onclick="fetchReservations()">Vernieuwen</button>
+      <button class="btn-ghost" onclick="adminLogout()">Uitloggen</button>
+    </div>
+  </div>
+  <div class="stats">
+    ${[{l:'Totaal',v:counts.total,c:'var(--text3)'},{l:'Nieuw',v:counts.pending,c:'var(--amber)'},{l:'Bevestigd',v:counts.confirmed,c:'var(--blue)'},{l:'Gefactureerd',v:counts.invoiced,c:'var(--purple)'},{l:'Opgehaald',v:counts.completed,c:'var(--green)'}]
+      .map(s => `<div class="stat"><div class="stat-val" style="color:${s.c}">${s.v}</div><div class="stat-label">${s.l}</div></div>`).join('')}
+  </div>`;
+
+  if (res.length === 0) {
+    html += '<div class="empty">Nog geen reserveringen</div>';
+  } else {
+    html += '<div class="res-list">';
+    for (const r of res) {
+      const sc = statusColor(r.status);
+      const next = statusNext(r.status);
+      // Parse items als JSON indien aanwezig
+      let itemsHtml = '';
+      if (r.itemsJson) {
+        try {
+          const items = JSON.parse(r.itemsJson);
+          itemsHtml = '<div class="res-items">' +
+            items.map(i => `<div class="res-item-row">${esc(i.brand)} ${esc(i.model)} · ${esc(i.size)} · ${i.qty}× · €${exclBTW(i.priceB2B || 0).toFixed(2)} excl. BTW</div>`).join('') +
+            '</div>';
+        } catch(e) {
+          itemsHtml = `<div class="res-tire">${esc(r.tireBrand || '')} ${esc(r.tireModel || '')} · ${esc(r.tireSize || '')} · ${r.qty || 1}×</div>`;
+        }
+      } else {
+        itemsHtml = `<div class="res-tire">${esc(r.tireBrand || '')} ${esc(r.tireModel || '')} · ${esc(r.tireSize || '')} · ${r.qty || 1}×</div>`;
+      }
+
+      html += `
+      <div class="res-card">
+        <div class="res-top">
+          <div><span class="res-name">${esc(r.name)}</span>${r.company ? `<span class="res-company">${esc(r.company)}</span>` : ''}</div>
+          <span class="status-badge" style="background:${sc}22;color:${sc}">${statusLabel(r.status)}</span>
+        </div>
+        ${itemsHtml}
+        <div class="res-contact">${esc(r.email)} · ${esc(r.phone)}${r.notes ? ` · "${esc(r.notes)}"` : ''}</div>
+        <div class="res-meta">${esc(r.id)} · ${r.createdAt ? new Date(r.createdAt).toLocaleString('nl-NL') : ''}</div>
+        ${r.status !== 'cancelled' && r.status !== 'completed' ? `
+        <div class="res-actions">
+          ${next ? `<button class="btn-primary" style="font-size:12px;padding:6px 14px;background:${statusNextColor(r.status)}" onclick="updateStatus('${r.id}','${next}')">${statusNextLabel(r.status)}</button>` : ''}
+          <button class="btn-ghost" style="font-size:12px;padding:6px 14px" onclick="showFactuurPreview('${r.id}')">📄 Factuur</button>
+          <button class="btn-ghost" style="font-size:12px;padding:6px 14px" onclick="updateStatus('${r.id}','cancelled')">Annuleren</button>
+        </div>` : ''}
+      </div>`;
+    }
+    html += '</div>';
+  }
+  return html;
+}
+
+function renderPinModal() {
+  return `
+  <div class="modal-overlay" onclick="closePin()">
+    <div class="modal-box" onclick="event.stopPropagation()" style="max-width:320px;text-align:center">
+      <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--amber),var(--amber-dark));margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:24px">🔒</div>
+      <div class="modal-title" style="margin-bottom:16px">Admin toegang</div>
+      <input id="pinInput" type="password" placeholder="Pincode" maxlength="6" style="width:100%;text-align:center;font-size:24px;letter-spacing:8px;margin-bottom:12px" />
+      <button class="btn-primary" onclick="doAdminLogin()" style="width:100%;padding:12px">Inloggen</button>
+      <div style="font-size:11px;color:var(--text4);margin-top:10px">Pin staat in de Apps Script (CONFIG.ADMIN_PIN)</div>
+    </div>
+  </div>`;
+}
+
+// ========== EVENT BINDING ==========
+
+function bindEvents() {
+  const el = (id) => document.getElementById(id);
+
+  const searchInput = el("searchInput");
+  if (searchInput) searchInput.oninput = (e) => setState({ search: e.target.value });
+
+  const seasonFilter = el("seasonFilter");
+  if (seasonFilter) seasonFilter.onchange = (e) => setState({ filterSeason: e.target.value });
+
+  const brandFilter = el("brandFilter");
+  if (brandFilter) brandFilter.onchange = (e) => setState({ filterBrand: e.target.value });
+
+  const sortSelect = el("sortSelect");
+  if (sortSelect) sortSelect.onchange = (e) => setState({ sortBy: e.target.value });
+
+  const pinInput = el("pinInput");
+  if (pinInput) {
+    pinInput.focus();
+    pinInput.onkeydown = (e) => { if (e.key === "Enter") doAdminLogin(); };
+  }
+}
+
+// ========== ACTIONS ==========
+
+function buildFactuurHTML(r) {
+  let items = [];
+  try { items = JSON.parse(r.itemsJson || "[]"); } catch(e) {
+    items = [{ brand: r.tireBrand, model: r.tireModel, size: r.tireSize, qty: r.qty || 1, priceB2B: 0 }];
+  }
+
+  const BTW_PCT = 0.21;
+  const datum = new Date().toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  // BTW berekening per regel
+  const itemsRows = items.map(i => {
+    const prijsInclBTW = (i.priceB2B || 0);
+    const prijsExcl = prijsInclBTW / (1 + BTW_PCT);
+    const totaalExcl = i.qty * prijsExcl;
+    const totaalIncl = i.qty * prijsInclBTW;
+    return `
+    <tr>
+      <td style="padding:10px 14px;border-bottom:1px solid #e5e7eb;font-family:'Segoe UI',Arial,sans-serif">${i.brand} ${i.model}<br><span style="font-size:12px;color:#6b7280">${i.size} · ${seasonIcon(i.season || '')}</span></td>
+      <td style="padding:10px 14px;border-bottom:1px solid #e5e7eb;text-align:center;font-family:'Segoe UI',Arial,sans-serif">${i.qty}</td>
+      <td style="padding:10px 14px;border-bottom:1px solid #e5e7eb;text-align:right;font-family:'Segoe UI',Arial,sans-serif">€${prijsExcl.toFixed(2)}</td>
+      <td style="padding:10px 14px;border-bottom:1px solid #e5e7eb;text-align:right;font-family:'Segoe UI',Arial,sans-serif">€${totaalExcl.toFixed(2)}</td>
+    </tr>`;
+  }).join('');
+
+  const totaalExcl = items.reduce((s, i) => s + (i.qty * ((i.priceB2B || 0) / (1 + BTW_PCT))), 0);
+  const totaalBTW  = items.reduce((s, i) => s + (i.qty * ((i.priceB2B || 0) - (i.priceB2B || 0) / (1 + BTW_PCT))), 0);
+  const totaalIncl = items.reduce((s, i) => s + (i.qty * (i.priceB2B || 0)), 0);
+
+  return `<!DOCTYPE html>
+<html lang="nl"><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;background:#f3f4f6;font-family:'Segoe UI',Arial,sans-serif">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f3f4f6;padding:32px 0">
+<tr><td align="center">
+<table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08)">
+
+  <!-- Header -->
+  <tr><td style="background:#111214;padding:28px 32px">
+    <table width="100%"><tr>
+      <td><div style="font-size:20px;font-weight:900;color:#F59E0B;letter-spacing:-0.5px;font-family:'Segoe UI',Arial,sans-serif">TK HANDELSONDERNEMING</div>
+          <div style="font-size:11px;color:#6b7280;letter-spacing:2px;margin-top:2px;font-family:'Segoe UI',Arial,sans-serif">TIRE INVENTORY</div></td>
+      <td align="right"><div style="font-size:12px;color:#9ca3af;line-height:1.8;font-family:'Segoe UI',Arial,sans-serif">
+        info@tkhandelsonderneming.nl<br>
+        +31 6 43481608<br>
+        Tilburg
+      </div></td>
+    </tr></table>
+  </td></tr>
+
+  <!-- Factuur titel -->
+  <tr><td style="padding:28px 32px 0">
+    <table width="100%"><tr>
+      <td><div style="font-size:22px;font-weight:800;color:#111214;font-family:'Segoe UI',Arial,sans-serif">Reserveringsbevestiging</div>
+          <div style="font-size:13px;color:#6b7280;margin-top:4px;font-family:'Segoe UI',Arial,sans-serif">& Factuuroverzicht</div></td>
+      <td align="right" style="font-size:13px;color:#6b7280;line-height:1.8;font-family:'Segoe UI',Arial,sans-serif">
+        <strong style="color:#111214">Factuurnummer:</strong> ${r.id}<br>
+        <strong style="color:#111214">Datum:</strong> ${datum}<br>
+        <strong style="color:#111214">Status:</strong> ${statusLabel(r.status)}
+      </td>
+    </tr></table>
+  </td></tr>
+
+  <!-- Klantgegevens -->
+  <tr><td style="padding:20px 32px">
+    <div style="background:#f9fafb;border-radius:8px;padding:16px 20px;border-left:4px solid #F59E0B">
+      <div style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-family:'Segoe UI',Arial,sans-serif">Geadresseerde</div>
+      <div style="font-weight:700;font-size:15px;color:#111214;font-family:'Segoe UI',Arial,sans-serif">${r.name}</div>
+      ${r.company ? `<div style="color:#6b7280;font-size:13px;font-family:'Segoe UI',Arial,sans-serif">${r.company}</div>` : ''}
+      <div style="color:#6b7280;font-size:13px;margin-top:4px;font-family:'Segoe UI',Arial,sans-serif">${r.email} · ${r.phone}</div>
+    </div>
+  </td></tr>
+
+  <!-- Factuurregels -->
+  <tr><td style="padding:0 32px">
+    <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e5e7eb;border-radius:8px;overflow:hidden">
+      <thead>
+        <tr style="background:#111214">
+          <th style="padding:12px 14px;text-align:left;font-size:12px;color:#9ca3af;font-weight:600;text-transform:uppercase;letter-spacing:.5px;font-family:'Segoe UI',Arial,sans-serif">Omschrijving</th>
+          <th style="padding:12px 14px;text-align:center;font-size:12px;color:#9ca3af;font-weight:600;text-transform:uppercase;letter-spacing:.5px;font-family:'Segoe UI',Arial,sans-serif">Aantal</th>
+          <th style="padding:12px 14px;text-align:right;font-size:12px;color:#9ca3af;font-weight:600;text-transform:uppercase;letter-spacing:.5px;font-family:'Segoe UI',Arial,sans-serif">Stukprijs excl.</th>
+          <th style="padding:12px 14px;text-align:right;font-size:12px;color:#9ca3af;font-weight:600;text-transform:uppercase;letter-spacing:.5px;font-family:'Segoe UI',Arial,sans-serif">Totaal excl.</th>
+        </tr>
+      </thead>
+      <tbody>${itemsRows}</tbody>
+      <tfoot>
+        <tr style="background:#f9fafb">
+          <td colspan="3" style="padding:10px 14px;text-align:right;font-size:13px;color:#374151;font-family:'Segoe UI',Arial,sans-serif">Subtotaal excl. BTW</td>
+          <td style="padding:10px 14px;text-align:right;font-size:13px;font-weight:600;color:#111214;font-family:'Segoe UI',Arial,sans-serif">€${totaalExcl.toFixed(2)}</td>
+        </tr>
+        <tr style="background:#f9fafb">
+          <td colspan="3" style="padding:10px 14px;text-align:right;font-size:13px;color:#374151;font-family:'Segoe UI',Arial,sans-serif">BTW 21%</td>
+          <td style="padding:10px 14px;text-align:right;font-size:13px;font-weight:600;color:#111214;font-family:'Segoe UI',Arial,sans-serif">€${totaalBTW.toFixed(2)}</td>
+        </tr>
+        <tr style="background:#f0fdf4">
+          <td colspan="3" style="padding:14px;text-align:right;font-weight:700;font-size:14px;color:#111214;font-family:'Segoe UI',Arial,sans-serif">Totaal incl. BTW</td>
+          <td style="padding:14px;text-align:right;font-weight:900;font-size:18px;color:#F59E0B;font-family:'Segoe UI',Arial,sans-serif">€${totaalIncl.toFixed(2)}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </td></tr>
+
+  <!-- Info blok -->
+  <tr><td style="padding:24px 32px">
+    <table width="100%" cellpadding="0" cellspacing="0"><tr>
+      <td width="48%" style="background:#f0fdf4;border-radius:8px;padding:16px 20px;border-left:4px solid #10B981;vertical-align:top">
+        <div style="font-weight:700;color:#065f46;margin-bottom:6px;font-family:'Segoe UI',Arial,sans-serif">📦 Ophalen op afspraak</div>
+        <div style="font-size:13px;color:#047857;line-height:1.6;font-family:'Segoe UI',Arial,sans-serif">Uw banden liggen voor u klaar. Neem contact op om een afhaaltijd in te plannen.</div>
+      </td>
+      <td width="4%"></td>
+      <td width="48%" style="background:#fefce8;border-radius:8px;padding:16px 20px;border-left:4px solid #F59E0B;vertical-align:top">
+        <div style="font-weight:700;color:#92400e;margin-bottom:6px;font-family:'Segoe UI',Arial,sans-serif">💳 Betaling</div>
+        <div style="font-size:13px;color:#b45309;line-height:1.6;font-family:'Segoe UI',Arial,sans-serif">Vooraf via bankoverschrijving of bij ophalen op afspraak.</div>
+      </td>
+    </tr></table>
+  </td></tr>
+
+  ${r.notes ? `<tr><td style="padding:0 32px 20px">
+    <div style="background:#fef3c7;border-radius:8px;padding:14px 18px;font-size:13px;color:#92400e;font-family:'Segoe UI',Arial,sans-serif">
+      <strong>Opmerking:</strong> ${r.notes}
+    </div>
+  </td></tr>` : ''}
+
+  <!-- Afsluiting -->
+  <tr><td style="padding:24px 32px;border-top:1px solid #e5e7eb">
+    <div style="font-size:14px;color:#374151;line-height:1.8;margin-bottom:20px;font-family:'Segoe UI',Arial,sans-serif">
+      Met vriendelijke groet,<br>
+      <strong style="font-size:15px;color:#111214">Thomas Kada</strong>
+    </div>
+    <table cellpadding="0" cellspacing="0">
+      <tr>
+        <td style="padding-right:20px;font-size:12px;color:#6b7280;font-family:'Segoe UI',Arial,sans-serif">📞 <a href="tel:+31643481608" style="color:#6b7280;text-decoration:none">+31 6 43481608</a></td>
+        <td style="padding-right:20px;font-size:12px;color:#6b7280;font-family:'Segoe UI',Arial,sans-serif">✉️ <a href="mailto:info@tkhandelsonderneming.nl" style="color:#F59E0B;text-decoration:none">info@tkhandelsonderneming.nl</a></td>
+      </tr>
+    </table>
+  </td></tr>
+
+  <!-- Footer -->
+  <tr><td style="background:#111214;padding:16px 32px;text-align:center">
+    <div style="font-size:11px;color:#4b5563;font-family:'Segoe UI',Arial,sans-serif">TK Handelsonderneming · Tilburg · KVK: 92612253 · BTW: NL004964775B51</div>
+  </td></tr>
+
+</table>
+</td></tr></table>
+</body></html>`;
+}
+
+function showFactuurPreview(resId) {
+  const r = state.reservations.find(x => x.id === resId);
+  if (!r) return;
+  setState({ factuurPreviewId: resId });
+}
+
+function closeFactuurPreview() {
+  setState({ factuurPreviewId: null });
+}
+
+async function copyFactuurRichText(resId) {
+  const r = state.reservations.find(x => x.id === resId);
+  if (!r) return;
+  const htmlStr = buildFactuurHTML(r);
+
+  try {
+    // Moderne clipboard API met rich text
+    const blob = new Blob([htmlStr], { type: 'text/html' });
+    const clipItem = new ClipboardItem({ 'text/html': blob });
+    await navigator.clipboard.write([clipItem]);
+    notify('✅ Factuur gekopieerd als opgemaakte tekst — plak in je mailprogramma');
+  } catch(e) {
+    // Fallback: open in nieuw venster
+    const w = window.open('', '_blank');
+    w.document.write(htmlStr);
+    w.document.close();
+    notify('📋 Factuur geopend in nieuw venster — selecteer alles (Ctrl+A) en kopieer', 'success');
+  }
+}
+
+function openFactuurWindow(resId) {
+  const r = state.reservations.find(x => x.id === resId);
+  if (!r) return;
+  const htmlStr = buildFactuurHTML(r);
+  const w = window.open('', '_blank', 'width=720,height=800');
+  w.document.write(htmlStr);
+  w.document.close();
+}
+
+function renderFactuurPreviewModal() {
+  const r = state.reservations.find(x => x.id === state.factuurPreviewId);
+  if (!r) return '';
+  const htmlStr = buildFactuurHTML(r);
+  return `
+  <div class="factuur-modal-overlay" onclick="closeFactuurPreview()">
+    <div class="factuur-modal-box" onclick="event.stopPropagation()">
+      <div class="factuur-modal-actions">
+        <span>📄 Factuurpreview — ${r.name}</span>
+        <button class="btn-primary" style="font-size:12px;padding:6px 14px" onclick="copyFactuurRichText('${r.id}')">📋 Kopieer voor mail</button>
+        <button class="btn-ghost" style="font-size:12px;padding:6px 14px" onclick="openFactuurWindow('${r.id}')">🔗 Open venster</button>
+        <button class="btn-ghost" style="font-size:12px;padding:6px 14px" onclick="closeFactuurPreview()">✕ Sluiten</button>
+      </div>
+      <iframe srcdoc="${htmlStr.replace(/"/g, '&quot;').replace(/`/g, '&#96;')}" style="width:100%;height:70vh;border:none;border-radius:0 0 12px 12px"></iframe>
+    </div>
+  </div>`;
+}
+
+function toggleSoldOut() { setState({ showAllSoldOut: !state.showAllSoldOut }); }
+function toggleStaffel() { setState({ showStaffel: !state.showStaffel }); }
+function goShop() { setState({ view: "shop" }); fetchInventory(); }
+function goAdmin() {
+  if (state.isAdmin) { setState({ view: "admin" }); fetchReservations(); }
+  else setState({ showPinModal: true });
+}
+function closePin() { setState({ showPinModal: false }); }
+function openCart() { setState({ showCartModal: true }); }
+function closeCart() { setState({ showCartModal: false }); }
+
+function doReserve() {
+  const f = {
+    name: document.getElementById("resName")?.value || "",
+    company: document.getElementById("resCompany")?.value || "",
+    email: document.getElementById("resEmail")?.value || "",
+    phone: document.getElementById("resPhone")?.value || "",
+    notes: document.getElementById("resNotes")?.value || ""
+  };
+  state.reserveForm = f;
+  submitReservation();
+}
+
+function doAdminLogin() {
+  const pin = document.getElementById("pinInput")?.value || "";
+  setState({ adminPin: pin, isAdmin: true, showPinModal: false, view: "admin" });
+  fetchReservations();
+}
+
+function adminLogout() { setState({ isAdmin: false, adminPin: "", view: "shop", reservations: [] }); }
+
+// ========== INIT ==========
+fetchInventory();
+render();
+setInterval(fetchInventory, 60000);
+</script>
+</body>
+</html>
