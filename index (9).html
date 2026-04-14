@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TK Handelsonderneming — Tire Store</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0A0A0B; --surface: #111214; --border: #1F2937; --border2: #374151;
+  --text: #E5E7EB; --text2: #9CA3AF; --text3: #6B7280; --text4: #4B5563;
+  --amber: #F59E0B; --amber-dark: #D97706; --green: #10B981; --green-dark: #064E3B;
+  --blue: #3B82F6; --purple: #8B5CF6; --red: #EF4444; --red-dark: #7F1D1D;
+}
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+input, select, textarea {
+  background: var(--border); border: 1px solid var(--border2); color: var(--text);
+  border-radius: 8px; padding: 10px 14px; font-size: 14px; outline: none; font-family: inherit; box-sizing: border-box;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--amber); box-shadow: 0 0 0 2px rgba(245,158,11,.2); }
+input::placeholder, textarea::placeholder { color: var(--text3); }
+textarea { min-height: 60px; resize: vertical; }
+
+.btn-primary {
+  background: var(--amber); color: var(--bg); border: none; border-radius: 8px;
+  padding: 10px 20px; font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit;
+  transition: all .15s; display: inline-flex; align-items: center; gap: 8px; justify-content: center;
+}
+.btn-primary:hover { background: var(--amber-dark); }
+.btn-primary:disabled { opacity: .4; cursor: not-allowed; }
+.btn-ghost {
+  background: transparent; border: 1px solid var(--border2); color: var(--text2);
+  border-radius: 8px; padding: 8px 16px; font-size: 13px; cursor: pointer; font-family: inherit; transition: all .15s;
+}
+.btn-ghost:hover { border-color: var(--text3); color: var(--text); }
+
+/* Header */
+.header { border-bottom: 1px solid var(--border); padding: 14px 20px; }
+.header-inner { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; }
+.logo { display: flex; align-items: center; gap: 12px; }
+.logo-icon { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, var(--amber), var(--amber-dark)); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 16px; color: var(--bg); }
+.logo-text { font-weight: 800; font-size: 16px; color: #F5F5F5; letter-spacing: -0.5px; }
+.logo-sub { font-size: 11px; color: var(--text3); letter-spacing: 1px; }
+
+/* Nav pills */
+.pill-nav { display: flex; gap: 4px; background: var(--surface); border-radius: 10px; padding: 4px; border: 1px solid var(--border); }
+.pill-btn { padding: 8px 16px; border-radius: 8px; border: none; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .15s; position: relative; background: transparent; color: var(--text2); }
+.pill-btn.active { background: var(--amber); color: var(--bg); }
+.pill-badge { position: absolute; top: -4px; right: -4px; background: var(--red); color: #fff; border-radius: 10px; padding: 1px 6px; font-size: 10px; font-weight: 800; }
+
+/* Main */
+.main { max-width: 1200px; margin: 0 auto; padding: 20px 16px; }
+.filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; align-items: center; }
+.filters input { flex: 1 1 200px; min-width: 180px; }
+.filters select { min-width: 120px; }
+.count { font-size: 13px; color: var(--text3); margin-bottom: 14px; }
+
+/* Grid */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.tire-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 16px; cursor: pointer; transition: all .2s;
+}
+.tire-card:hover { border-color: var(--amber); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245,158,11,.08); }
+.tire-card.sold-out { opacity: .5; cursor: default; }
+.tire-card.sold-out:hover { border-color: var(--border); transform: none; box-shadow: none; }
+.tire-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.tire-brand { font-weight: 700; font-size: 15px; color: #F5F5F5; }
+.tire-model { font-size: 13px; color: var(--text2); }
+.tire-mid { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.tire-size { background: var(--border); padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 14px; color: var(--amber); font-family: monospace; }
+.tire-load { font-size: 11px; color: var(--text3); }
+.tire-bottom { display: flex; justify-content: space-between; align-items: center; }
+.tire-price { font-weight: 800; font-size: 20px; color: #F5F5F5; }
+.tire-price-label { font-size: 11px; color: var(--text3); margin-left: 4px; }
+.tire-advies { font-size: 11px; color: var(--text4); text-decoration: line-through; }
+.tire-stock { text-align: right; }
+.tire-avail { font-size: 11px; margin-top: 3px; font-weight: 600; }
+.tire-avail.yes { color: var(--green); }
+.tire-avail.no { color: var(--red); }
+.tire-meta { font-size: 10px; color: var(--text4); margin-top: 6px; }
+
+/* Season badge */
+.season { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; color: #fff; }
+.season.zomer { background: var(--amber); }
+.season.winter { background: var(--blue); }
+.season.all-season { background: var(--green); }
+
+/* Stock dots */
+.dots { display: flex; gap: 3px; justify-content: flex-end; }
+.dot { width: 8px; height: 8px; border-radius: 50%; }
+.dot.on { background: var(--green); border: 1px solid #059669; }
+.dot.off { background: var(--border2); border: 1px solid var(--text4); }
+
+/* Status badge */
+.status-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
+
+/* Stats */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; margin-bottom: 20px; }
+.stat { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px; text-align: center; }
+.stat-val { font-size: 28px; font-weight: 800; }
+.stat-label { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+/* Reservations list */
+.res-list { display: flex; flex-direction: column; gap: 8px; }
+.res-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+.res-top { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.res-name { font-weight: 700; font-size: 14px; color: #F5F5F5; }
+.res-company { font-size: 12px; color: var(--text3); margin-left: 8px; }
+.res-tire { font-size: 13px; color: var(--text2); margin-bottom: 6px; }
+.res-contact { font-size: 12px; color: var(--text3); margin-bottom: 8px; }
+.res-meta { font-size: 11px; color: var(--text4); margin-bottom: 10px; }
+.res-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* Modal */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 100; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+.modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; max-width: 440px; width: 92%; max-height: 90vh; overflow-y: auto; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.modal-title { font-size: 18px; font-weight: 800; color: #F5F5F5; }
+.modal-close { background: none; border: none; color: var(--text3); font-size: 20px; cursor: pointer; }
+.modal-tire-info { background: var(--border); border-radius: 10px; padding: 14px; margin-bottom: 16px; }
+.modal-form { display: flex; flex-direction: column; gap: 10px; }
+.modal-hint { font-size: 11px; color: var(--text3); text-align: center; }
+
+/* Notification */
+.notify { position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 999; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 600; color: #fff; box-shadow: 0 8px 32px rgba(0,0,0,.5); animation: slideDown .3s ease; max-width: 90%; }
+.notify.success { background: var(--green-dark); }
+.notify.error { background: var(--red-dark); }
+@keyframes slideDown { from { opacity:0; transform:translateX(-50%) translateY(-20px) } to { opacity:1; transform:translateX(-50%) translateY(0) } }
+
+/* Empty */
+.empty { text-align: center; padding: 60px; color: var(--text4); }
+
+/* Settings link */
+.settings-btn { background: none; border: none; color: var(--text4); cursor: pointer; font-size: 16px; padding: 4px; }
+
+/* Spinner */
+.spinner { width: 18px; height: 18px; border: 2px solid var(--border2); border-top-color: var(--amber); border-radius: 50%; animation: spin .6s linear infinite; display: inline-block; }
+@keyframes spin { to { transform: rotate(360deg) } }
+
+/* Header right */
+.header-right { display: flex; align-items: center; gap: 8px; }
+
+/* Admin top */
+.admin-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+.admin-title { font-size: 20px; font-weight: 800; color: #F5F5F5; }
+.admin-btns { display: flex; gap: 8px; }
+
+/* Responsive */
+@media (max-width: 600px) {
+  .header-inner { flex-direction: column; gap: 10px; }
+  .logo-text { font-size: 14px; }
+  .tire-price { font-size: 18px; }
+}
+
+/* Footer */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 24px 20px;
+  margin-top: 40px;
+  text-align: center;
+}
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.footer-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text2);
+  letter-spacing: 0.5px;
+}
+.footer-meta {
+  font-size: 11px;
+  color: var(--text4);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 16px;
+}
+.footer-meta span { white-space: nowrap; }
+.footer-legal {
+  font-size: 10px;
+  color: var(--text4);
+  font-style: italic;
+  margin-top: 4px;
+}
+@media (max-width: 600px) {
+  .footer-meta { flex-direction: column; gap: 4px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============ APP ============ -->
+<div id="app"></div>
+
+<script>
+// ========== CONFIG ==========
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyZbs96AlMFjZa3DoAWyEJyEZzEHCywyAbk_on4EpcrKcrPLkURcXfe6TXyDqZGHdjo/exec";
+
+// ========== STATE ==========
+let state = {
+  view: "shop",
+  tires: [],
+  reservations: [],
+  isAdmin: false,
+  adminPin: "",
+  search: "",
+  filterSeason: "Alle",
+  filterBrand: "Alle",
+  sortBy: "brand",
+  loading: true,
+  submitting: false,
+  notification: null,
+  showReserveModal: false,
+  showPinModal: false,
+  selectedTire: null,
+  reserveForm: { name: "", company: "", email: "", phone: "", qty: 1, notes: "" }
+};
+
+function setState(updates) {
+  Object.assign(state, updates);
+  render();
+}
+
+// ========== API ==========
+
+async function apiFetch(params) {
+  const url = new URL(SCRIPT_URL);
+  for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
+  const res = await fetch(url.toString());
+  return res.json();
+}
+
+async function apiPost(body) {
+  const res = await fetch(SCRIPT_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain" },
+    body: JSON.stringify(body)
+  });
+  return res.json();
+}
+
+async function fetchInventory() {
+  try {
+    const data = await apiFetch({ action: "inventory" });
+    if (data?.tires) setState({ tires: data.tires, loading: false });
+    else { notify(data?.error || "Kan voorraad niet laden", "error"); setState({ loading: false }); }
+  } catch (err) { notify("Kan voorraad niet laden: " + err.message, "error"); setState({ loading: false }); }
+}
+
+async function fetchReservations() {
+  try {
+    const data = await apiFetch({ action: "reservations", pin: state.adminPin });
+    if (data?.reservations) setState({ reservations: data.reservations });
+    else notify(data?.error || "Kan reserveringen niet laden", "error");
+  } catch (err) { notify("Fout: " + err.message, "error"); }
+}
+
+async function submitReservation() {
+  const f = state.reserveForm;
+  const t = state.selectedTire;
+  if (!f.name || !f.email || !f.phone) { notify("Vul alle verplichte velden in", "error"); return; }
+  if (!t) return;
+  setState({ submitting: true });
+  try {
+    const result = await apiPost({
+      action: "reserve", tireId: t.id, name: f.name, company: f.company,
+      email: f.email, phone: f.phone, qty: parseInt(f.qty) || 1, notes: f.notes
+    });
+    if (result?.success) {
+      notify(result.message || "Reservering geplaatst!");
+      setState({ showReserveModal: false, selectedTire: null, submitting: false,
+        reserveForm: { name: "", company: "", email: "", phone: "", qty: 1, notes: "" } });
+      fetchInventory();
+    } else { notify(result?.error || "Er ging iets mis", "error"); setState({ submitting: false }); }
+  } catch (err) { notify("Fout: " + err.message, "error"); setState({ submitting: false }); }
+}
+
+async function updateStatus(resId, status) {
+  try {
+    const result = await apiPost({ action: "updateStatus", reservationId: resId, status, pin: state.adminPin });
+    if (result?.success) { notify(resId + " → " + statusLabel(status)); fetchReservations(); fetchInventory(); }
+    else notify(result?.error || "Fout", "error");
+  } catch (err) { notify("Fout: " + err.message, "error"); }
+}
+
+// ========== HELPERS ==========
+
+function notify(msg, type = "success") {
+  setState({ notification: { msg, type } });
+  setTimeout(() => setState({ notification: null }), 4000);
+}
+
+function seasonClass(s) {
+  if (s === "Zomer") return "zomer";
+  if (s === "Winter") return "winter";
+  return "all-season";
+}
+function seasonIcon(s) {
+  if (s === "Zomer") return "☀️";
+  if (s === "Winter") return "❄️";
+  return "🌤️";
+}
+function statusLabel(s) {
+  return { pending: "Nieuw", confirmed: "Bevestigd", invoiced: "Gefactureerd", completed: "Opgehaald", cancelled: "Geannuleerd" }[s] || s;
+}
+function statusColor(s) {
+  return { pending: "#F59E0B", confirmed: "#3B82F6", invoiced: "#8B5CF6", completed: "#10B981", cancelled: "#6B7280" }[s] || "#6B7280";
+}
+function statusNext(s) {
+  return { pending: "confirmed", confirmed: "invoiced", invoiced: "completed" }[s] || null;
+}
+function statusNextLabel(s) {
+  return { pending: "Bevestigen", confirmed: "Factureren", invoiced: "Opgehaald" }[s] || "";
+}
+function statusNextColor(s) {
+  const n = statusNext(s);
+  return n ? statusColor(n) : "";
+}
+
+function getFiltered() {
+  let list = state.tires.filter(t => {
+    if (state.filterSeason !== "Alle" && t.season !== state.filterSeason) return false;
+    if (state.filterBrand !== "Alle" && t.brand !== state.filterBrand) return false;
+    if (state.search) {
+      const q = state.search.toLowerCase();
+      return (t.brand + t.model + t.size + t.ref).toLowerCase().includes(q);
+    }
+    return true;
+  });
+  list.sort((a, b) => {
+    if (state.sortBy === "brand") return a.brand.localeCompare(b.brand) || a.model.localeCompare(b.model);
+    if (state.sortBy === "price") return a.priceB2B - b.priceB2B;
+    if (state.sortBy === "size") return a.size.localeCompare(b.size);
+    return 0;
+  });
+  return list;
+}
+
+function getBrands() {
+  return ["Alle", ...[...new Set(state.tires.map(t => t.brand))].sort()];
+}
+
+function esc(s) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+
+function dots(avail, total) {
+  const max = Math.min(total, 8);
+  let html = '<div class="dots">';
+  for (let i = 0; i < max; i++) html += `<div class="dot ${i < avail ? 'on' : 'off'}"></div>`;
+  if (total > 8) html += `<span style="font-size:10px;color:var(--text3);margin-left:2px">+${total-8}</span>`;
+  html += '</div>';
+  return html;
+}
+
+// ========== RENDER ==========
+
+function render() {
+  const app = document.getElementById("app");
+  const pendingCount = state.reservations.filter(r => r.status === "pending").length;
+  
+  let html = "";
+
+  // Notification
+  if (state.notification) {
+    html += `<div class="notify ${state.notification.type}">${esc(state.notification.msg)}</div>`;
+  }
+
+  // Header
+  html += `
+  <div class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-icon">TK</div>
+        <div>
+          <div class="logo-text">TK HANDELSONDERNEMING</div>
+          <div class="logo-sub">TIRE INVENTORY</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="pill-nav">
+          <button class="pill-btn ${state.view === 'shop' ? 'active' : ''}" onclick="goShop()">Catalogus</button>
+          <button class="pill-btn ${state.view === 'admin' ? 'active' : ''}" onclick="goAdmin()">
+            Admin${pendingCount > 0 ? `<span class="pill-badge">${pendingCount}</span>` : ''}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+
+  html += '<div class="main">';
+
+  if (state.view === "shop") {
+    html += renderShop();
+  } else if (state.view === "admin" && state.isAdmin) {
+    html += renderAdmin();
+  }
+
+  html += '</div>';
+
+  // Modals
+  if (state.showReserveModal && state.selectedTire) html += renderReserveModal();
+  if (state.showPinModal) html += renderPinModal();
+
+  // Footer
+  html += `
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-name">TK HANDELSONDERNEMING</div>
+      <div class="footer-meta">
+        <span>📍 Tilburg</span>
+        <span>KvK: [KvK-nummer]</span>
+        <span>BTW: [BTW-nummer]</span>
+        <span>✉️ [e-mail]</span>
+        <span>📞 [telefoon]</span>
+      </div>
+      <div class="footer-legal">Reserveringen zijn bindend. Door een reservering te plaatsen gaat u akkoord met onze algemene voorwaarden.</div>
+    </div>
+  </footer>`;
+
+  app.innerHTML = html;
+  bindEvents();
+}
+
+function renderShop() {
+  const filtered = getFiltered();
+  const brands = getBrands();
+  
+  let html = `
+  <div class="filters">
+    <input id="searchInput" value="${esc(state.search)}" placeholder="Zoek merk, model, maat..." />
+    <select id="seasonFilter">
+      <option value="Alle" ${state.filterSeason==='Alle'?'selected':''}>Alle seizoenen</option>
+      <option value="Zomer" ${state.filterSeason==='Zomer'?'selected':''}>☀️ Zomer</option>
+      <option value="Winter" ${state.filterSeason==='Winter'?'selected':''}>❄️ Winter</option>
+      <option value="All-Season" ${state.filterSeason==='All-Season'?'selected':''}>🌤️ All-Season</option>
+    </select>
+    <select id="brandFilter">
+      ${brands.map(b => `<option value="${esc(b)}" ${state.filterBrand===b?'selected':''}>${esc(b)}</option>`).join('')}
+    </select>
+    <select id="sortSelect">
+      <option value="brand" ${state.sortBy==='brand'?'selected':''}>Merk A-Z</option>
+      <option value="price" ${state.sortBy==='price'?'selected':''}>Prijs laag-hoog</option>
+      <option value="size" ${state.sortBy==='size'?'selected':''}>Maat</option>
+    </select>
+  </div>
+  <div class="count">${state.loading ? 'Voorraad laden...' : filtered.length + ' banden gevonden'}</div>
+  <div class="grid">`;
+
+  for (const t of filtered) {
+    const avail = t.available ?? t.stock;
+    html += `
+    <div class="tire-card ${avail <= 0 ? 'sold-out' : ''}" onclick="${avail > 0 ? `openReserve('${t.id}')` : ''}">
+      <div class="tire-top">
+        <div>
+          <div class="tire-brand">${esc(t.brand)}</div>
+          <div class="tire-model">${esc(t.model)}</div>
+        </div>
+        <span class="season ${seasonClass(t.season)}">${seasonIcon(t.season)} ${esc(t.season)}</span>
+      </div>
+      <div class="tire-mid">
+        <span class="tire-size">${esc(t.size)}</span>
+        ${t.loadIndex ? `<span class="tire-load">${esc(t.loadIndex)}</span>` : ''}
+      </div>
+      <div class="tire-bottom">
+        <div>
+          <span class="tire-price">€${t.priceB2B.toFixed(2)}</span><span class="tire-price-label">B2B</span>
+          <div class="tire-advies">€${t.price2C.toFixed(2)} advies</div>
+        </div>
+        <div class="tire-stock">
+          ${dots(avail, t.stock)}
+          <div class="tire-avail ${avail > 0 ? 'yes' : 'no'}">${avail > 0 ? avail + ' beschikbaar' : 'Gereserveerd'}</div>
+        </div>
+      </div>
+      ${t.dot ? `<div class="tire-meta">DOT ${esc(t.dot)} · Ref: ${esc(t.ref)}</div>` : ''}
+    </div>`;
+  }
+
+  html += '</div>';
+  if (!state.loading && filtered.length === 0 && state.tires.length > 0) {
+    html += '<div class="empty">Geen banden gevonden met deze filters</div>';
+  }
+  return html;
+}
+
+function renderAdmin() {
+  const res = [...state.reservations].sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
+  const counts = { total: res.length, pending: 0, confirmed: 0, invoiced: 0, completed: 0 };
+  res.forEach(r => { if (counts[r.status] !== undefined) counts[r.status]++; });
+
+  let html = `
+  <div class="admin-top">
+    <div class="admin-title">Reserveringen beheren</div>
+    <div class="admin-btns">
+      <button class="btn-ghost" onclick="fetchReservations()">Vernieuwen</button>
+      <button class="btn-ghost" onclick="adminLogout()">Uitloggen</button>
+    </div>
+  </div>
+  <div class="stats">
+    ${[{l:'Totaal',v:counts.total,c:'var(--text3)'},{l:'Nieuw',v:counts.pending,c:'var(--amber)'},{l:'Bevestigd',v:counts.confirmed,c:'var(--blue)'},{l:'Gefactureerd',v:counts.invoiced,c:'var(--purple)'},{l:'Opgehaald',v:counts.completed,c:'var(--green)'}]
+      .map(s => `<div class="stat"><div class="stat-val" style="color:${s.c}">${s.v}</div><div class="stat-label">${s.l}</div></div>`).join('')}
+  </div>`;
+
+  if (res.length === 0) {
+    html += '<div class="empty">Nog geen reserveringen</div>';
+  } else {
+    html += '<div class="res-list">';
+    for (const r of res) {
+      const sc = statusColor(r.status);
+      const next = statusNext(r.status);
+      html += `
+      <div class="res-card">
+        <div class="res-top">
+          <div><span class="res-name">${esc(r.name)}</span>${r.company ? `<span class="res-company">${esc(r.company)}</span>` : ''}</div>
+          <span class="status-badge" style="background:${sc}22;color:${sc}">${statusLabel(r.status)}</span>
+        </div>
+        <div class="res-tire">${esc(r.tireBrand)} ${esc(r.tireModel)} · ${esc(r.tireSize)} · ${r.qty}x</div>
+        <div class="res-contact">${esc(r.email)} · ${esc(r.phone)}${r.notes ? ` · "${esc(r.notes)}"` : ''}</div>
+        <div class="res-meta">${esc(r.id)} · ${r.createdAt ? new Date(r.createdAt).toLocaleString('nl-NL') : ''}</div>
+        ${r.status !== 'cancelled' && r.status !== 'completed' ? `
+        <div class="res-actions">
+          ${next ? `<button class="btn-primary" style="font-size:12px;padding:6px 14px;background:${statusNextColor(r.status)}" onclick="updateStatus('${r.id}','${next}')">${statusNextLabel(r.status)}</button>` : ''}
+          <button class="btn-ghost" style="font-size:12px;padding:6px 14px" onclick="updateStatus('${r.id}','cancelled')">Annuleren</button>
+        </div>` : ''}
+      </div>`;
+    }
+    html += '</div>';
+  }
+  return html;
+}
+
+function renderReserveModal() {
+  const t = state.selectedTire;
+  const f = state.reserveForm;
+  const avail = t.available ?? t.stock;
+  return `
+  <div class="modal-overlay" onclick="closeReserve()">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title">Reserveren</div>
+        <button class="modal-close" onclick="closeReserve()">✕</button>
+      </div>
+      <div class="modal-tire-info">
+        <div style="font-weight:700;color:#F5F5F5">${esc(t.brand)} ${esc(t.model)}</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+          <span style="font-family:monospace;color:var(--amber);font-weight:700">${esc(t.size)}</span>
+          <span class="season ${seasonClass(t.season)}">${seasonIcon(t.season)} ${esc(t.season)}</span>
+        </div>
+        <div style="margin-top:6px;font-size:13px;color:var(--text2)">€${t.priceB2B.toFixed(2)} B2B · ${avail} beschikbaar</div>
+      </div>
+      <div class="modal-form">
+        <input id="resName" placeholder="Naam *" value="${esc(f.name)}" />
+        <input id="resCompany" placeholder="Bedrijfsnaam" value="${esc(f.company)}" />
+        <input id="resEmail" placeholder="E-mail *" type="email" value="${esc(f.email)}" />
+        <input id="resPhone" placeholder="Telefoon *" value="${esc(f.phone)}" />
+        <div>
+          <label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px">Aantal</label>
+          <input id="resQty" type="number" min="1" max="${avail}" value="${f.qty}" style="width:100%" />
+        </div>
+        <textarea id="resNotes" placeholder="Opmerkingen (optioneel)">${esc(f.notes)}</textarea>
+        <button class="btn-primary" onclick="doReserve()" ${state.submitting ? 'disabled' : ''} style="width:100%;padding:14px;font-size:15px;margin-top:4px">
+          ${state.submitting ? '<span class="spinner"></span> Bezig...' : 'Reservering plaatsen'}
+        </button>
+        <div class="modal-hint">Na reservering ontvangt u een bevestiging en factuur van ons.</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderPinModal() {
+  return `
+  <div class="modal-overlay" onclick="closePin()">
+    <div class="modal-box" onclick="event.stopPropagation()" style="max-width:320px;text-align:center">
+      <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--amber),var(--amber-dark));margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:24px">🔒</div>
+      <div class="modal-title" style="margin-bottom:16px">Admin toegang</div>
+      <input id="pinInput" type="password" placeholder="Pincode" maxlength="6" style="width:100%;text-align:center;font-size:24px;letter-spacing:8px;margin-bottom:12px" />
+      <button class="btn-primary" onclick="doAdminLogin()" style="width:100%;padding:12px">Inloggen</button>
+      <div style="font-size:11px;color:var(--text4);margin-top:10px">Pin staat in de Apps Script (CONFIG.ADMIN_PIN)</div>
+    </div>
+  </div>`;
+}
+
+// ========== EVENT BINDING ==========
+
+function bindEvents() {
+  const el = (id) => document.getElementById(id);
+  
+  const searchInput = el("searchInput");
+  if (searchInput) searchInput.oninput = (e) => setState({ search: e.target.value });
+  
+  const seasonFilter = el("seasonFilter");
+  if (seasonFilter) seasonFilter.onchange = (e) => setState({ filterSeason: e.target.value });
+  
+  const brandFilter = el("brandFilter");
+  if (brandFilter) brandFilter.onchange = (e) => setState({ filterBrand: e.target.value });
+  
+  const sortSelect = el("sortSelect");
+  if (sortSelect) sortSelect.onchange = (e) => setState({ sortBy: e.target.value });
+
+  const pinInput = el("pinInput");
+  if (pinInput) {
+    pinInput.focus();
+    pinInput.onkeydown = (e) => { if (e.key === "Enter") doAdminLogin(); };
+  }
+}
+
+// ========== ACTIONS ==========
+
+function goShop() { setState({ view: "shop" }); fetchInventory(); }
+function goAdmin() {
+  if (state.isAdmin) { setState({ view: "admin" }); fetchReservations(); }
+  else setState({ showPinModal: true });
+}
+function closePin() { setState({ showPinModal: false }); }
+function closeReserve() { setState({ showReserveModal: false, selectedTire: null }); }
+
+function openReserve(tireId) {
+  const tire = state.tires.find(t => t.id === tireId);
+  if (tire) setState({ selectedTire: tire, showReserveModal: true, reserveForm: { ...state.reserveForm, qty: 1 } });
+}
+
+function doReserve() {
+  const f = {
+    name: document.getElementById("resName")?.value || "",
+    company: document.getElementById("resCompany")?.value || "",
+    email: document.getElementById("resEmail")?.value || "",
+    phone: document.getElementById("resPhone")?.value || "",
+    qty: parseInt(document.getElementById("resQty")?.value) || 1,
+    notes: document.getElementById("resNotes")?.value || ""
+  };
+  state.reserveForm = f;
+  submitReservation();
+}
+
+function doAdminLogin() {
+  const pin = document.getElementById("pinInput")?.value || "";
+  setState({ adminPin: pin, isAdmin: true, showPinModal: false, view: "admin" });
+  fetchReservations();
+}
+
+function adminLogout() { setState({ isAdmin: false, adminPin: "", view: "shop", reservations: [] }); }
+
+// ========== INIT ==========
+fetchInventory();
+render();
+// Auto-refresh elke minuut
+setInterval(fetchInventory, 60000);
+
+</script>
+</body>
+</html>
