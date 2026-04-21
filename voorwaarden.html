@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- v18.6 | Algemene voorwaarden TK Handelsonderneming | apart bestand -->
+<title>Algemene Voorwaarden — TK Handelsonderneming</title>
+<meta name="robots" content="noindex,follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%230A0A0B'/%3E%3Ccircle cx='32' cy='32' r='24' fill='none' stroke='%23F59E0B' stroke-width='5'/%3E%3Ctext x='32' y='40' text-anchor='middle' font-family='system-ui,-apple-system,sans-serif' font-size='20' font-weight='900' fill='%23F59E0B'%3ETK%3C/text%3E%3C/svg%3E">
+
+<style>
+/* ===== BASIS (zelfde variabelen als index.html) ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0A0A0B; --surface: #111214; --border: #1F2937; --border2: #374151;
+  --text: #E5E7EB; --text2: #C9CDD5; --text3: #9CA3AF; --text4: #6B7280;
+  --amber: #F59E0B; --amber-dark: #D97706; --green: #10B981;
+  --blue: #3B82F6; --red: #EF4444;
+}
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.7;
+}
+
+/* ===== HEADER ===== */
+.header {
+  border-bottom: 1px solid var(--border); padding: 14px 20px;
+  position: sticky; top: 0; z-index: 50; background: var(--bg);
+}
+.header-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  max-width: 860px; margin: 0 auto;
+}
+.logo-icon {
+  width: 34px; height: 34px; border-radius: 8px;
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 14px; color: #0A0A0B; flex-shrink: 0;
+}
+.logo-text { font-weight: 800; font-size: 15px; color: #F5F5F5; }
+.logo-sub  { font-size: 10px; color: var(--text3); letter-spacing: 1px; }
+.back-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: transparent; border: 1px solid var(--border2);
+  color: var(--text2); border-radius: 8px; padding: 7px 14px;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  text-decoration: none; font-family: inherit; transition: all .15s;
+}
+.back-btn:hover { border-color: var(--amber); color: var(--amber); }
+
+/* ===== MAIN CONTENT ===== */
+.main { max-width: 860px; margin: 0 auto; padding: 32px 20px 60px; }
+
+.page-title {
+  font-size: 28px; font-weight: 900; color: var(--text);
+  margin-bottom: 6px; letter-spacing: -0.5px;
+}
+.page-subtitle { font-size: 14px; color: var(--text3); margin-bottom: 32px; }
+
+/* Section blokken */
+.section {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; padding: 28px; margin-bottom: 20px;
+}
+.section-tag {
+  display: inline-block; padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+.section-tag.b2c  { background: rgba(16,185,129,.15); color: var(--green); border: 1px solid rgba(16,185,129,.3); }
+.section-tag.b2b  { background: rgba(245,158,11,.12); color: var(--amber); border: 1px solid rgba(245,158,11,.28); }
+.section-tag.alg  { background: rgba(59,130,246,.12); color: var(--blue); border: 1px solid rgba(59,130,246,.28); }
+.section h2 {
+  font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 14px;
+}
+.section h3 {
+  font-size: 14px; font-weight: 700; color: var(--amber);
+  text-transform: uppercase; letter-spacing: 0.5px;
+  margin: 20px 0 8px;
+}
+.section h3:first-of-type { margin-top: 0; }
+.section p { font-size: 14px; color: var(--text2); margin-bottom: 10px; }
+.section ul { margin: 0 0 10px 20px; }
+.section li { font-size: 14px; color: var(--text2); margin-bottom: 5px; }
+.section strong { color: var(--text); font-weight: 700; }
+.section a { color: var(--amber); text-decoration: underline; }
+
+.callout {
+  background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.25);
+  border-radius: 8px; padding: 12px 16px; margin: 14px 0;
+  font-size: 13px; color: var(--text2);
+}
+.callout strong { color: #fca5a5; }
+
+.disclaimer {
+  background: rgba(245,158,11,.07); border: 1px solid rgba(245,158,11,.2);
+  border-radius: 8px; padding: 12px 16px; margin-top: 24px;
+  font-size: 12px; color: var(--text3); line-height: 1.6;
+}
+
+/* ===== RETOURFORMULIER ===== */
+.retour-toggle {
+  background: transparent; border: 1px solid var(--border2);
+  color: var(--text2); border-radius: 8px; padding: 10px 18px;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  font-family: inherit; margin-top: 10px; transition: all .15s;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.retour-toggle:hover { border-color: var(--amber); color: var(--amber); }
+#retourFormWrap { display: none; margin-top: 20px; }
+
+.retour-form {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 12px; padding: 24px;
+}
+.retour-form h3 {
+  font-size: 16px; font-weight: 800; color: var(--text);
+  margin-bottom: 16px; text-transform: none; letter-spacing: 0;
+}
+.form-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.form-row label { font-size: 12px; color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.form-row input, .form-row textarea {
+  background: var(--border); border: 1px solid var(--border2); color: var(--text);
+  border-radius: 8px; padding: 10px 14px; font-size: 14px; font-family: inherit;
+  width: 100%; outline: none;
+}
+.form-row input:focus, .form-row textarea:focus { border-color: var(--amber); }
+.form-row textarea { min-height: 60px; resize: vertical; }
+.form-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.checkbox-group { display: flex; flex-direction: column; gap: 8px; margin: 6px 0 14px; }
+.checkbox-group label { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text2); cursor: pointer; font-weight: normal; text-transform: none; letter-spacing: 0; }
+.checkbox-group input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--amber); flex-shrink: 0; }
+.retour-adres {
+  background: rgba(245,158,11,.06); border: 1px solid rgba(245,158,11,.2);
+  border-radius: 8px; padding: 14px; margin: 16px 0;
+  font-size: 13px; color: var(--text2); line-height: 1.7;
+}
+.retour-adres strong { color: var(--text); display: block; margin-bottom: 4px; }
+.print-btn {
+  background: var(--amber); color: var(--bg); border: none;
+  border-radius: 8px; padding: 10px 22px; font-weight: 700;
+  font-size: 14px; cursor: pointer; font-family: inherit; margin-top: 4px;
+  display: inline-flex; align-items: center; gap: 8px; transition: all .15s;
+}
+.print-btn:hover { background: var(--amber-dark); }
+
+/* ===== FOOTER ===== */
+.site-footer {
+  border-top: 1px solid var(--border); padding: 20px;
+  background: var(--bg); margin-top: 40px;
+}
+.footer-inner { max-width: 860px; margin: 0 auto; text-align: center; }
+.footer-name { font-size: 12px; font-weight: 800; color: var(--text3); letter-spacing: 2px; margin-bottom: 6px; }
+.footer-meta { display: flex; flex-wrap: wrap; gap: 12px 20px; justify-content: center; font-size: 12px; color: var(--text4); }
+
+/* ===== PRINT ===== */
+@media print {
+  .header, .back-btn, .retour-toggle, .print-btn, .site-footer,
+  .disclaimer, .callout, .section:not(#retourSection), .page-title, .page-subtitle { display: none !important; }
+  #retourSection, #retourFormWrap { display: block !important; }
+  body { background: #fff; color: #000; }
+  .retour-form { border: 1px solid #ccc; background: #fff; }
+  .retour-form h3 { color: #000; }
+  .form-row label { color: #555; }
+  .form-row input, .form-row textarea {
+    background: #fff; border: 1px solid #999; color: #000;
+  }
+  .retour-adres { background: #f9f9f9; border: 1px solid #ccc; color: #333; }
+  .retour-adres strong { color: #000; }
+  .checkbox-group label { color: #333; }
+}
+@media (max-width: 600px) {
+  .form-2col { grid-template-columns: 1fr; }
+  .section { padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="header no-print">
+  <div class="header-inner">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="logo-icon">TK</div>
+      <div>
+        <div class="logo-text">TK Handelsonderneming</div>
+        <div class="logo-sub">BANDEN · TILBURG</div>
+      </div>
+    </div>
+    <a href="/" class="back-btn">← Terug naar winkel</a>
+  </div>
+</header>
+
+<!-- ===== MAIN ===== -->
+<main class="main">
+  <h1 class="page-title">Algemene Voorwaarden</h1>
+  <p class="page-subtitle">TK Handelsonderneming · KvK 92612253 · Tilburg · Versie 2025.1</p>
+
+  <!-- ===== SECTIE 1: PARTICULIEREN ===== -->
+  <section class="section">
+    <span class="section-tag b2c">👤 Particulieren</span>
+    <h2>Voorwaarden voor particuliere klanten (B2C)</h2>
+
+    <h3>Herroepingsrecht</h3>
+    <p>Als particuliere klant heeft u het recht uw bestelling te herroepen binnen <strong>14 kalenderdagen</strong> na ontvangst van de banden, zonder opgave van reden. Dit recht vloeit voort uit artikel 6:230o–6:230p van het Burgerlijk Wetboek.</p>
+
+    <h3>Uitzonderingen op het herroepingsrecht</h3>
+    <p>Het herroepingsrecht is <strong>niet</strong> van toepassing op banden die:</p>
+    <ul>
+      <li><strong>Gemonteerd zijn geweest</strong> — banden die op velgen zijn gezet worden beschouwd als samengestelde zaak die niet meer te scheiden is in originele toestand (art. 7:17 BW). Het herroepingsrecht vervalt op het moment van montage.</li>
+      <li><strong>Gebruikssporen vertonen</strong> — banden waarop is gereden, ook kortstondig, zijn niet herroepbaar, ongeacht de rijafstand.</li>
+      <li><strong>Speciaal besteld zijn op maat</strong> — banden die niet op voorraad lagen en specifiek voor u zijn besteld, vallen buiten het herroepingsrecht.</li>
+    </ul>
+
+    <div class="callout">
+      <strong>⚠️ Let op:</strong> Controleer de maat, seizoen en specificaties zorgvuldig vóór montage. Na montage vervalt het retourrecht volledig.
+    </div>
+
+    <h3>Retourprocedure (ongemonteerde banden)</h3>
+    <p>Indien u gebruik wilt maken van het herroepingsrecht:</p>
+    <ul>
+      <li>Meld uw herroeping schriftelijk via e-mail aan <strong>thomas@tkhandelsonderneming.nl</strong> binnen de 14-daagse termijn.</li>
+      <li>Banden dienen <strong>ongemonteerd, ongebruikt en in originele verpakking</strong> te worden geretourneerd.</li>
+      <li>Retourkosten zijn voor rekening van de klant.</li>
+      <li>Retouradres: zie onderaan deze pagina.</li>
+      <li>Terugbetaling vindt plaats binnen 14 dagen na ontvangst en beoordeling van de geretourneerde banden.</li>
+    </ul>
+
+    <h3>Reservering &amp; betaling</h3>
+    <p>Een online reservering is een bindende bestelling. Na bevestiging per e-mail is de overeenkomst tot stand gekomen. Betaling geschiedt conform de op de factuur vermelde betalingstermijn.</p>
+  </section>
+
+  <!-- ===== SECTIE 2: ZAKELIJK ===== -->
+  <section class="section">
+    <span class="section-tag b2b">🏢 Zakelijk</span>
+    <h2>Voorwaarden voor zakelijke klanten (B2B)</h2>
+
+    <h3>Uitsluiting retourrecht</h3>
+    <p>Voor zakelijke klanten geldt <strong>geen wettelijk herroepingsrecht</strong>. Retourzendingen zijn in beginsel <strong>volledig uitgesloten</strong>, tenzij schriftelijk anders overeengekomen vóór levering.</p>
+    <p>Uitzondering: bij aantoonbare <strong>fabrieksfout of beschadiging bij levering</strong> dient u dit binnen <strong>48 uur</strong> na ontvangst schriftelijk te melden, onder bijvoeging van fotodocumentatie. TK Handelsonderneming beoordeelt elk geval afzonderlijk.</p>
+
+    <h3>Reclames</h3>
+    <p>Eventuele reclames dienen binnen <strong>5 werkdagen</strong> na levering schriftelijk te worden ingediend. Na deze termijn worden geen reclames meer geaccepteerd.</p>
+
+    <h3>Eigendomsvoorbehoud</h3>
+    <p>Geleverde banden blijven eigendom van TK Handelsonderneming totdat de volledige betaling is ontvangen.</p>
+
+    <h3>Reservering &amp; betaling</h3>
+    <p>Zakelijke reserveringen zijn bindend. Betaling dient te geschieden binnen de op de factuur vermelde termijn. Bij overschrijding is de wettelijke handelsrente (art. 6:119a BW) verschuldigd zonder nadere ingebrekestelling.</p>
+
+    <h3>Toepasselijk recht &amp; geschillen</h3>
+    <p>Op alle zakelijke overeenkomsten is Nederlands recht van toepassing. Geschillen worden bij uitsluiting voorgelegd aan de bevoegde rechter in het arrondissement Zeeland-West-Brabant.</p>
+  </section>
+
+  <!-- ===== SECTIE 3: ALGEMEEN ===== -->
+  <section class="section">
+    <span class="section-tag alg">📋 Algemeen</span>
+    <h2>Algemene bepalingen</h2>
+
+    <h3>Levering</h3>
+    <p>TK Handelsonderneming levert uitsluitend in Nederland. Levertijden zijn indicatief. Bij vertraging wordt u zo spoedig mogelijk geïnformeerd. Levering geschiedt af afhaallocatie Kaatsheuvel, tenzij schriftelijk bezorging is overeengekomen (meerkosten: € 150,– incl. BTW).</p>
+
+    <h3>Prijzen</h3>
+    <p>Particuliere prijzen zijn inclusief BTW. Zakelijke prijzen zijn exclusief BTW, tenzij anders vermeld. Prijzen gelden voor zover de voorraad strekt. TK Handelsonderneming behoudt zich het recht voor prijzen te wijzigen.</p>
+
+    <h3>Aansprakelijkheid</h3>
+    <p>TK Handelsonderneming is niet aansprakelijk voor schade voortvloeiend uit incorrect gebruik, verkeerde bandenkeuze door de klant, of montagefouten uitgevoerd door derden. De aansprakelijkheid is in alle gevallen beperkt tot het factuurbedrag van de betreffende order.</p>
+
+    <h3>Contactgegevens</h3>
+    <p>
+      TK Handelsonderneming<br>
+      Afhaallocatie: Kaatsheuvel (op afspraak)<br>
+      Correspondentieadres: Tilburg<br>
+      KvK: 92612253 · BTW: NL004964775B51<br>
+      ✉️ <a href="mailto:thomas@tkhandelsonderneming.nl">thomas@tkhandelsonderneming.nl</a><br>
+      📞 <a href="tel:+31643481608">+31 6 43481608</a>
+    </p>
+
+    <div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--border);font-size:12px;color:var(--text4)">
+      Laatste wijziging: april 2025 &nbsp;·&nbsp; Vragen? <a href="mailto:thomas@tkhandelsonderneming.nl">thomas@tkhandelsonderneming.nl</a>
+    </div>
+  </section>
+
+  <!-- ===== SECTIE 4: RETOURFORMULIER ===== -->
+  <section class="section" id="retourSection">
+    <span class="section-tag b2c">📦 Retour</span>
+    <h2>Retourformulier</h2>
+    <p>Alleen voor particuliere klanten die gebruik maken van het herroepingsrecht (ongemonteerde, ongebruikte banden binnen 14 dagen na ontvangst).</p>
+
+    <button class="retour-toggle no-print" onclick="toggleRetour()">
+      📄 Retourformulier invullen &amp; afdrukken
+    </button>
+
+    <div id="retourFormWrap">
+      <div class="retour-form">
+        <h3>Retourformulier — TK Handelsonderneming</h3>
+
+        <div class="form-2col">
+          <div class="form-row">
+            <label>Naam</label>
+            <input type="text" placeholder="Uw volledige naam">
+          </div>
+          <div class="form-row">
+            <label>Reserveringsnummer</label>
+            <input type="text" placeholder="bijv. RES-2025-0012">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>E-mailadres</label>
+          <input type="email" placeholder="uw@email.nl">
+        </div>
+
+        <div class="form-row">
+          <label>Telefoonnummer</label>
+          <input type="tel" placeholder="+31 6 ...">
+        </div>
+
+        <div class="form-row">
+          <label>Retouradres (uw adres)</label>
+          <input type="text" placeholder="Straat + huisnummer, postcode, stad">
+        </div>
+
+        <div class="form-2col">
+          <div class="form-row">
+            <label>Merk band(en)</label>
+            <input type="text" placeholder="bijv. Michelin">
+          </div>
+          <div class="form-row">
+            <label>Maat</label>
+            <input type="text" placeholder="bijv. 205/55 R16">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>Aantal te retourneren banden</label>
+          <input type="number" placeholder="bijv. 4" min="1">
+        </div>
+
+        <div class="form-row">
+          <label>Reden retour (optioneel)</label>
+          <textarea placeholder="Geef kort de reden op..."></textarea>
+        </div>
+
+        <div class="form-row">
+          <label>Controleer — de banden zijn:</label>
+          <div class="checkbox-group">
+            <label><input type="checkbox"> Ongemonteerd (niet op velg gezet)</label>
+            <label><input type="checkbox"> Ongebruikt (niet op gereden)</label>
+            <label><input type="checkbox"> In originele verpakking</label>
+          </div>
+        </div>
+
+        <div class="form-2col">
+          <div class="form-row">
+            <label>Datum</label>
+            <input type="text" placeholder="DD-MM-JJJJ">
+          </div>
+          <div class="form-row">
+            <label>Handtekening (na afdrukken)</label>
+            <input type="text" placeholder="____________________________">
+          </div>
+        </div>
+
+        <div class="retour-adres">
+          <strong>📦 Retouradres:</strong>
+          TK Handelsonderneming<br>
+          T.a.v. Retouradministratie<br>
+          Kaatsheuvel<br>
+          (Neem contact op via WhatsApp of e-mail voor het exacte adres)
+        </div>
+
+        <p style="font-size:12px;color:var(--text3);margin-bottom:14px">
+          Stuur dit formulier mee in de retourzending. Zorg dat de banden goed zijn verpakt. TK Handelsonderneming is niet aansprakelijk voor schade tijdens transport.
+        </p>
+
+        <button class="print-btn" onclick="window.print()">🖨️ Formulier afdrukken</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="site-footer no-print">
+  <div class="footer-inner">
+    <div class="footer-name">TK HANDELSONDERNEMING</div>
+    <div class="footer-meta">
+      <span>📍 Tilburg</span>
+      <span>KvK: 92612253</span>
+      <span>BTW: NL004964775B51</span>
+      <span>✉️ thomas@tkhandelsonderneming.nl</span>
+      <span>📞 +31 6 43481608</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleRetour() {
+  const wrap = document.getElementById('retourFormWrap');
+  const btn = document.querySelector('.retour-toggle');
+  const open = wrap.style.display === 'block';
+  wrap.style.display = open ? 'none' : 'block';
+  btn.textContent = open ? '📄 Retourformulier invullen & afdrukken' : '▲ Formulier sluiten';
+}
+</script>
+
+</body>
+</html>
