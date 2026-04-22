@@ -1,0 +1,3465 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- v18.6 | Bandenfoto op kaart + EPREL info-modal + voorwaarden.html | basis: v18.5.2 -->
+<title>TK Handelsonderneming — Banden reserveren online | Tilburg</title>
+
+<!-- SEO -->
+<meta name="description" content="Online bandenreservering TK Handelsonderneming Tilburg. Particulier & zakelijk. Zomer-, winter- en all-seasonbanden. Ophalen of bezorgen.">
+<meta name="author" content="TK Handelsonderneming">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://banden.tkhandelsonderneming.nl/">
+
+<!-- Favicon (inline SVG — amber ring met TK) -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%230A0A0B'/%3E%3Ccircle cx='32' cy='32' r='24' fill='none' stroke='%23F59E0B' stroke-width='5'/%3E%3Ctext x='32' y='40' text-anchor='middle' font-family='system-ui,-apple-system,sans-serif' font-size='20' font-weight='900' fill='%23F59E0B'%3ETK%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="og-image.png">
+
+<!-- Open Graph (Facebook, WhatsApp, LinkedIn) -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="nl_NL">
+<meta property="og:url" content="https://banden.tkhandelsonderneming.nl/">
+<meta property="og:site_name" content="TK Handelsonderneming">
+<meta property="og:title" content="TK Handelsonderneming — Banden reserveren online">
+<meta property="og:description" content="Online bandenreservering Tilburg. Particulier & zakelijk. Zomer, winter, all-season. Ophalen of bezorgen.">
+<meta property="og:image" content="https://banden.tkhandelsonderneming.nl/og-image.png">
+<meta property="og:image:secure_url" content="https://banden.tkhandelsonderneming.nl/og-image.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="TK Handelsonderneming — Banden reserveren">
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="TK Handelsonderneming — Banden reserveren online">
+<meta name="twitter:description" content="Online bandenreservering Tilburg. Particulier & zakelijk.">
+<meta name="twitter:image" content="https://banden.tkhandelsonderneming.nl/og-image.png">
+
+<!-- Theme color (mobile browser chrome) -->
+<meta name="theme-color" content="#0A0A0B">
+
+<!-- v18.5: Microsoft Clarity (dormant — cookieless mode, activeer door CLARITY_ID te vullen)
+     ePrivacy: cookieless consent mode valt onder strict-necessary, geen opt-in vereist,
+     informatieplicht al afgedekt in privacy-modal. -->
+<script>
+(function(){
+  var CLARITY_ID = null; // <-- vul hier het Clarity project-ID in om te activeren
+  if (!CLARITY_ID) return;
+  (function(c,l,a,r,i,t,y){
+    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+    c[a]("consent", false); // cookieless mode
+    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+  })(window, document, "clarity", "script", CLARITY_ID);
+})();
+</script>
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0A0A0B; --surface: #111214; --border: #1F2937; --border2: #374151;
+  --text: #E5E7EB; --text2: #C9CDD5; --text3: #9CA3AF; --text4: #6B7280;
+  --amber: #F59E0B; --amber-dark: #D97706; --green: #10B981; --green-dark: #064E3B;
+  --blue: #3B82F6; --purple: #8B5CF6; --red: #EF4444; --red-dark: #7F1D1D;
+}
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+input, select, textarea {
+  background: var(--border); border: 1px solid var(--border2); color: var(--text);
+  border-radius: 8px; padding: 10px 14px; font-size: 14px; outline: none; font-family: inherit; box-sizing: border-box;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--amber); box-shadow: 0 0 0 2px rgba(245,158,11,.2); }
+input::placeholder, textarea::placeholder { color: var(--text3); }
+textarea { min-height: 60px; resize: vertical; }
+
+.btn-primary {
+  background: var(--amber); color: var(--bg); border: none; border-radius: 8px;
+  padding: 10px 20px; font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit;
+  transition: all .15s; display: inline-flex; align-items: center; gap: 8px; justify-content: center;
+}
+.btn-primary:hover { background: var(--amber-dark); }
+.btn-primary:disabled { opacity: .4; cursor: not-allowed; }
+.btn-ghost {
+  background: transparent; border: 1px solid var(--border2); color: var(--text2);
+  border-radius: 8px; padding: 8px 16px; font-size: 13px; cursor: pointer; font-family: inherit; transition: all .15s;
+}
+.btn-ghost:hover { border-color: var(--text3); color: var(--text); }
+.btn-danger {
+  background: transparent; border: 1px solid var(--red-dark); color: var(--red);
+  border-radius: 8px; padding: 6px 12px; font-size: 12px; cursor: pointer; font-family: inherit; transition: all .15s;
+}
+.btn-danger:hover { background: rgba(239,68,68,.1); }
+
+/* Header */
+.header { border-bottom: 1px solid var(--border); padding: 14px 20px; position: sticky; top: 0; z-index: 50; background: var(--bg); }
+.header-inner { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; }
+.logo { display: flex; align-items: center; gap: 12px; }
+.logo-img { height: 48px; width: auto; object-fit: contain; }
+.logo-icon { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, var(--amber), var(--amber-dark)); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 16px; color: var(--bg); }
+.logo-text { font-weight: 800; font-size: 16px; color: #F5F5F5; letter-spacing: -0.5px; }
+.logo-sub { font-size: 11px; color: var(--text3); letter-spacing: 1px; }
+
+/* Nav pills */
+.pill-nav { display: flex; gap: 4px; background: var(--surface); border-radius: 10px; padding: 4px; border: 1px solid var(--border); }
+.pill-btn { padding: 8px 16px; border-radius: 8px; border: none; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .15s; position: relative; background: transparent; color: var(--text2); }
+.pill-btn.active { background: var(--amber); color: var(--bg); }
+.pill-badge { position: absolute; top: -4px; right: -4px; background: var(--red); color: #fff; border-radius: 10px; padding: 1px 6px; font-size: 10px; font-weight: 800; }
+
+/* Cart button */
+.cart-btn {
+  position: relative; background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 10px; padding: 8px 14px; cursor: pointer; font-family: inherit;
+  display: flex; align-items: center; gap: 8px; color: var(--text); font-size: 13px;
+  font-weight: 600; transition: all .15s;
+}
+.cart-btn:hover { border-color: var(--amber); }
+.cart-btn.has-items { border-color: var(--amber); background: rgba(245,158,11,.08); color: var(--amber); }
+.cart-count { background: var(--amber); color: var(--bg); border-radius: 20px; padding: 2px 8px; font-size: 11px; font-weight: 800; }
+
+/* Main */
+.main { max-width: 1200px; margin: 0 auto; padding: 20px 16px; }
+.filters {
+  display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; align-items: center;
+  position: sticky; top: 77px; z-index: 40;
+  background: var(--bg); padding: 10px 0 10px;
+  border-bottom: 1px solid var(--border);
+  margin-left: -16px; margin-right: -16px; padding-left: 16px; padding-right: 16px;
+}
+.filters input { flex: 1 1 200px; min-width: 180px; }
+.filters select { min-width: 120px; }
+.count { font-size: 13px; color: var(--text3); margin-bottom: 14px; }
+
+/* Grid */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.tire-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 16px; transition: all .2s; position: relative; overflow: hidden;
+}
+.tire-card:hover { border-color: var(--border2); }
+.tire-card.sold-out { opacity: .5; }
+.tire-card.in-cart { border-color: var(--amber); background: rgba(245,158,11,.04); }
+.tire-card.sold-out { opacity: 1 !important; }
+
+/* Uitverkocht overlay — rode diagonale streep */
+.sold-out-overlay {
+  position: absolute; inset: 0; border-radius: 12px;
+  pointer-events: none; z-index: 2; overflow: hidden;
+}
+.sold-out-overlay::before {
+  content: '';
+  position: absolute;
+  top: -10px; left: -10px; right: -10px; bottom: -10px;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 18px,
+    rgba(239,68,68,.13) 18px,
+    rgba(239,68,68,.13) 22px
+  );
+}
+.sold-out-overlay::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: rgba(10,10,11,.55);
+  border-radius: 12px;
+}
+.sold-out-label {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-8deg);
+  z-index: 3; font-size: 13px; font-weight: 900; color: #fff; letter-spacing: 2px;
+  text-transform: uppercase; background: var(--red); padding: 5px 16px;
+  border-radius: 6px; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,.5);
+}
+.sold-out-sub {
+  position: absolute; bottom: 12px; left: 0; right: 0; z-index: 3;
+  text-align: center; font-size: 10px; color: rgba(255,255,255,.6);
+}
+
+/* Staffelbanner */
+.staffel-banner {
+  background: linear-gradient(90deg, rgba(245,158,11,.12), rgba(245,158,11,.06));
+  border-bottom: 1px solid rgba(245,158,11,.2);
+  padding: 10px 20px; cursor: pointer; user-select: none;
+}
+.staffel-banner-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.staffel-banner-left { display: flex; align-items: center; gap: 10px; }
+.staffel-banner-icon { font-size: 16px; }
+.staffel-banner-text { font-size: 13px; font-weight: 700; color: var(--amber); }
+.staffel-banner-sub { font-size: 11px; color: var(--text3); }
+.staffel-chevron { color: var(--amber); font-size: 12px; transition: transform .2s; }
+.staffel-chevron.open { transform: rotate(180deg); }
+
+/* Staffel dropdown */
+.staffel-dropdown {
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 16px 20px; animation: fadeIn .15s ease;
+}
+@keyframes fadeIn { from { opacity:0; transform:translateY(-4px) } to { opacity:1; transform:translateY(0) } }
+.staffel-dropdown-inner { max-width: 1200px; margin: 0 auto; }
+.staffel-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+.staffel-tier {
+  flex: 1 1 160px; background: var(--border); border-radius: 10px; padding: 12px 16px;
+  border: 1px solid var(--border2); transition: all .15s;
+}
+.staffel-tier.active { border-color: var(--amber); background: rgba(245,158,11,.08); }
+.staffel-tier-range { font-size: 12px; color: var(--text3); margin-bottom: 4px; }
+.staffel-tier-pct { font-size: 22px; font-weight: 800; color: var(--amber); }
+.staffel-tier-label { font-size: 11px; color: var(--text2); margin-top: 2px; }
+.staffel-tier.active .staffel-tier-range { color: var(--amber); }
+
+/* Staffelprijs op kaart */
+.tire-price-staffel { font-weight: 800; font-size: 20px; color: var(--green); }
+.tire-price-original { font-size: 13px; color: var(--text4); text-decoration: line-through; margin-left: 4px; }
+.staffel-saving { font-size: 10px; color: var(--green); font-weight: 600; margin-top: 1px; }
+
+/* Tip banner */
+.staffel-tip {
+  background: rgba(16,185,129,.08); border: 1px solid rgba(16,185,129,.2);
+  border-radius: 8px; padding: 8px 14px; margin-bottom: 14px;
+  font-size: 12px; color: var(--green); display: flex; align-items: center; gap: 8px;
+}
+.staffel-tip strong { font-weight: 700; }
+.tire-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.tire-brand { font-weight: 700; font-size: 15px; color: #F5F5F5; }
+.tire-model { font-size: 13px; color: var(--text2); }
+.tire-mid { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.tire-size { background: var(--border); padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 14px; color: var(--amber); font-family: monospace; }
+.tire-load { font-size: 11px; color: var(--text3); }
+.tire-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
+.tire-price { font-weight: 800; font-size: 20px; color: #F5F5F5; }
+.tire-price-label { font-size: 11px; color: var(--text3); margin-left: 4px; font-style: italic; }
+.tire-advies { font-size: 11px; color: #E5E7EB; text-decoration: line-through; text-decoration-color: var(--red); text-decoration-thickness: 1.5px; }
+.tire-stock { text-align: right; }
+.tire-avail { font-size: 11px; margin-top: 3px; font-weight: 600; }
+.tire-avail.yes { color: var(--green); }
+.tire-avail.no { color: var(--red); }
+.tire-meta { font-size: 10px; color: var(--text4); margin-top: 6px; }
+
+/* Add to cart area on card */
+.card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
+.qty-ctrl { display: flex; align-items: center; gap: 6px; }
+.qty-btn { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border2); background: var(--border); color: var(--text); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; font-family: inherit; line-height: 1; }
+.qty-btn:hover:not(:disabled) { border-color: var(--amber); color: var(--amber); }
+.qty-btn:disabled { opacity: .3; cursor: not-allowed; }
+.qty-val { font-size: 14px; font-weight: 700; min-width: 20px; text-align: center; color: var(--text); }
+.add-btn {
+  background: var(--amber); color: var(--bg); border: none; border-radius: 8px;
+  padding: 7px 14px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit;
+  transition: all .15s; display: flex; align-items: center; gap: 5px;
+}
+.add-btn:hover { background: var(--amber-dark); }
+.add-btn:disabled { opacity: .4; cursor: not-allowed; }
+.in-cart-indicator { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--amber); font-weight: 600; }
+.remove-from-cart { background: none; border: none; color: var(--text4); cursor: pointer; font-size: 14px; padding: 2px 4px; }
+.remove-from-cart:hover { color: var(--red); }
+
+/* Season badge */
+.season { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; color: #fff; }
+.season.zomer { background: var(--amber); }
+.season.winter { background: var(--blue); }
+.season.all-season { background: var(--green); }
+
+/* Stock dots */
+.dots { display: flex; gap: 3px; justify-content: flex-end; }
+.dot { width: 8px; height: 8px; border-radius: 50%; }
+.dot.on { background: var(--green); border: 1px solid #059669; }
+.dot.off { background: var(--border2); border: 1px solid var(--text4); }
+
+/* Status badge */
+.status-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
+
+/* Stats */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; margin-bottom: 20px; }
+.stat { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px; text-align: center; }
+.stat-val { font-size: 28px; font-weight: 800; }
+.stat-label { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+/* Reservations list */
+.res-list { display: flex; flex-direction: column; gap: 8px; }
+
+/* Onlangs verkocht sectie */
+.sold-section { margin-bottom: 28px; }
+.sold-section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid rgba(239,68,68,.3);
+}
+.sold-section-title { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 800; color: #F5F5F5; }
+.sold-section-badge { background: var(--red); color: #fff; border-radius: 20px; padding: 2px 10px; font-size: 11px; font-weight: 800; }
+.sold-toggle-btn { background: transparent; border: 1px solid rgba(239,68,68,.4); color: var(--red); border-radius: 8px; padding: 6px 14px; font-size: 12px; cursor: pointer; font-family: inherit; transition: all .15s; }
+.sold-toggle-btn:hover { background: rgba(239,68,68,.1); }
+.sold-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.tire-card.sold-card { border-color: rgba(239,68,68,.25); background: rgba(239,68,68,.03); }
+.tire-card.sold-card:hover { border-color: rgba(239,68,68,.4); transform: none; box-shadow: none; }
+.sold-banner { background: var(--red); border-radius: 6px; padding: 7px 12px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.sold-banner-text { font-size: 11px; font-weight: 800; color: #fff; letter-spacing: 1.5px; text-transform: uppercase; }
+.sold-banner-sub { font-size: 10px; color: rgba(255,255,255,.7); margin-left: auto; }
+.res-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+.res-top { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.res-name { font-weight: 700; font-size: 14px; color: #F5F5F5; }
+.res-company { font-size: 12px; color: var(--text3); margin-left: 8px; }
+.res-tire { font-size: 13px; color: var(--text2); margin-bottom: 6px; }
+.res-contact { font-size: 12px; color: var(--text3); margin-bottom: 8px; }
+.res-meta { font-size: 11px; color: var(--text4); margin-bottom: 10px; }
+.res-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.res-items { margin-bottom: 8px; }
+.res-item-row { font-size: 12px; color: var(--text2); padding: 3px 0; border-bottom: 1px solid var(--border); }
+.res-item-row:last-child { border-bottom: none; }
+
+/* Modal */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 100; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+.modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; max-width: 480px; width: 92%; max-height: 90vh; overflow-y: auto; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.modal-title { font-size: 18px; font-weight: 800; color: #F5F5F5; }
+.modal-close { background: none; border: none; color: var(--text3); font-size: 20px; cursor: pointer; }
+
+/* Cart summary in modal */
+.cart-summary { background: var(--border); border-radius: 10px; padding: 14px; margin-bottom: 16px; }
+.cart-summary-title { font-size: 12px; color: var(--text3); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; }
+.cart-summary-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border2); }
+.cart-summary-item:last-child { border-bottom: none; padding-bottom: 0; }
+.cart-item-info { flex: 1; }
+.cart-item-name { font-size: 13px; font-weight: 600; color: #F5F5F5; }
+.cart-item-size { font-size: 11px; color: var(--amber); font-family: monospace; }
+.cart-item-qty { display: flex; align-items: center; gap: 6px; }
+.cart-qty-btn { width: 24px; height: 24px; border-radius: 5px; border: 1px solid var(--border2); background: var(--bg); color: var(--text); font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: inherit; }
+.cart-qty-btn:hover { border-color: var(--amber); color: var(--amber); }
+.cart-item-price { font-size: 12px; color: var(--text2); min-width: 70px; text-align: right; }
+.cart-remove { background: none; border: none; color: var(--text4); cursor: pointer; font-size: 14px; padding: 0 0 0 8px; }
+.cart-remove:hover { color: var(--red); }
+.cart-total { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; margin-top: 4px; border-top: 1px solid var(--border2); }
+.cart-total-label { font-size: 13px; font-weight: 700; color: var(--text2); }
+.cart-total-val { font-size: 16px; font-weight: 800; color: var(--amber); }
+
+.modal-form { display: flex; flex-direction: column; gap: 10px; }
+.modal-hint { font-size: 11px; color: var(--text3); text-align: center; }
+.form-section-title { font-size: 12px; color: var(--text3); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-top: 4px; }
+
+/* Notification */
+.notify { position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 999; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 600; color: #fff; box-shadow: 0 8px 32px rgba(0,0,0,.5); animation: slideDown .3s ease; max-width: 90%; }
+.notify.success { background: var(--green-dark); border: 1px solid var(--green); }
+.notify.error { background: var(--red-dark); border: 1px solid var(--red); }
+@keyframes slideDown { from { opacity:0; transform:translateX(-50%) translateY(-20px) } to { opacity:1; transform:translateX(-50%) translateY(0) } }
+
+/* Empty */
+.empty { text-align: center; padding: 60px; color: var(--text4); }
+
+/* Spinner */
+.spinner { width: 18px; height: 18px; border: 2px solid var(--border2); border-top-color: var(--amber); border-radius: 50%; animation: spin .6s linear infinite; display: inline-block; }
+@keyframes spin { to { transform: rotate(360deg) } }
+
+/* Header right */
+.header-right { display: flex; align-items: center; gap: 8px; }
+
+/* Admin top */
+.admin-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+.admin-title { font-size: 20px; font-weight: 800; color: #F5F5F5; }
+.admin-btns { display: flex; gap: 8px; }
+
+/* Empty cart state */
+.cart-empty { text-align: center; padding: 30px; color: var(--text4); }
+.cart-empty-icon { font-size: 32px; margin-bottom: 8px; }
+
+/* Responsive */
+@media (max-width: 600px) {
+  .header-inner { flex-direction: column; gap: 10px; }
+  .logo-text { font-size: 14px; }
+  .tire-price { font-size: 18px; }
+  .header-right { flex-wrap: wrap; justify-content: center; }
+}
+
+/* Footer */
+.site-footer { border-top: 1px solid var(--border); padding: 24px 20px; margin-top: 40px; text-align: center; }
+.footer-inner { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 6px; }
+.footer-name { font-size: 13px; font-weight: 700; color: var(--text2); letter-spacing: 0.5px; }
+.footer-meta { font-size: 11px; color: var(--text4); display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 16px; }
+.footer-meta span { white-space: nowrap; }
+.footer-legal { font-size: 10px; color: var(--text4); font-style: italic; margin-top: 4px; }
+
+/* Factuur preview modal */
+.factuur-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.85); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.factuur-modal-box { background: #fff; border-radius: 12px; max-width: 680px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; }
+.factuur-modal-actions { position: sticky; top: 0; background: #111214; padding: 12px 20px; display: flex; gap: 10px; align-items: center; border-radius: 12px 12px 0 0; z-index: 10; }
+.factuur-modal-actions span { color: #9ca3af; font-size: 13px; flex: 1; }
+
+/* ================= LANDING PAGE ================= */
+.landing {
+  position: fixed; inset: 0; background: radial-gradient(ellipse at center, #1a1a1f 0%, #0A0A0B 60%, #000 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 20px; overflow: hidden; z-index: 100;
+}
+.landing-bg {
+  position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+}
+.landing-bg::before {
+  content: ''; position: absolute; top: 50%; left: 50%;
+  width: 140vmin; height: 140vmin; transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(245,158,11,.15) 0%, rgba(245,158,11,0) 60%);
+  animation: glow-pulse 4s ease-in-out infinite;
+}
+@keyframes glow-pulse {
+  0%, 100% { opacity: .6; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+}
+.landing-tire-svg {
+  position: absolute; top: 50%; left: 50%;
+  width: min(80vmin, 620px); height: min(80vmin, 620px);
+  transform: translate(-50%, -50%) scale(0.2);
+  opacity: 0;
+  animation: tire-zoom-in 900ms cubic-bezier(.2,.8,.3,1) 400ms forwards;
+  pointer-events: none;
+}
+@keyframes tire-zoom-in {
+  0% { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
+  60% { opacity: .4; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: .25; }
+}
+.landing-content {
+  position: relative; z-index: 10; text-align: center;
+  max-width: 900px; width: 100%;
+}
+.landing-logo {
+  display: inline-flex; align-items: center; gap: 14px; margin-bottom: 28px;
+  opacity: 0; transform: scale(.7);
+  animation: fade-scale 500ms cubic-bezier(.2,.8,.3,1) 0ms forwards;
+}
+.landing-logo-icon {
+  width: 56px; height: 56px; border-radius: 14px;
+  background: linear-gradient(135deg, var(--amber), var(--amber-dark));
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 22px; color: var(--bg);
+  box-shadow: 0 8px 32px rgba(245,158,11,.4);
+}
+.landing-logo-text { font-weight: 800; font-size: 22px; color: #F5F5F5; letter-spacing: -0.5px; }
+.landing-logo-sub { font-size: 11px; color: var(--text3); letter-spacing: 1.5px; text-transform: uppercase; }
+
+.landing-headline {
+  font-size: clamp(32px, 6vw, 56px);
+  font-weight: 900; line-height: 1.05; letter-spacing: -1.5px;
+  color: #fff; margin-bottom: 18px;
+  opacity: 0; transform: translateY(30px);
+  animation: slide-up 600ms cubic-bezier(.2,.8,.3,1) 1300ms forwards;
+}
+.landing-headline .accent { color: var(--amber); }
+.landing-subhead {
+  font-size: clamp(15px, 2vw, 19px); color: var(--text2);
+  max-width: 680px; margin: 0 auto 14px; line-height: 1.5;
+  opacity: 0; transform: translateY(20px);
+  animation: slide-up 500ms cubic-bezier(.2,.8,.3,1) 1600ms forwards;
+}
+.landing-usps {
+  display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;
+  margin-bottom: 40px; font-size: 13px; color: var(--text3);
+  opacity: 0;
+  animation: fade-in 400ms ease 2000ms forwards;
+}
+.landing-usps span { display: inline-flex; align-items: center; gap: 6px; }
+.landing-usps .check { color: var(--green); font-weight: 800; }
+
+.landing-choice {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px; max-width: 680px; margin: 0 auto;
+  opacity: 0; transform: translateY(40px);
+  animation: slide-up 600ms cubic-bezier(.2,.8,.3,1) 2200ms forwards;
+}
+.choice-card {
+  background: var(--surface); border: 2px solid var(--border2);
+  border-radius: 16px; padding: 28px 24px; cursor: pointer;
+  transition: all .25s cubic-bezier(.2,.8,.3,1);
+  text-align: left; font-family: inherit;
+  position: relative; overflow: hidden;
+}
+.choice-card:hover {
+  border-color: var(--amber); transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(245,158,11,.2);
+}
+.choice-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, transparent, var(--amber), transparent);
+  transform: scaleX(0); transition: transform .3s;
+}
+.choice-card:hover::before { transform: scaleX(1); }
+.choice-icon { font-size: 32px; margin-bottom: 12px; }
+.choice-title {
+  font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 6px; letter-spacing: -0.3px;
+}
+.choice-desc { font-size: 13px; color: var(--text3); line-height: 1.5; margin-bottom: 14px; }
+.choice-perks { font-size: 12px; color: var(--text2); line-height: 1.8; }
+.choice-perks span { display: block; }
+.choice-perks .perk-icon { color: var(--amber); font-weight: 800; margin-right: 6px; }
+.choice-cta {
+  display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+  font-size: 13px; font-weight: 700; color: var(--amber);
+}
+.choice-card:hover .choice-cta { gap: 10px; }
+
+/* v18.5: TRUST-STROOK (KvK · Sinds 2025 · Kaatsheuvel · Beveiligde bestelling) */
+.landing-trust {
+  display: flex; justify-content: center; align-items: center; gap: 28px;
+  flex-wrap: wrap;
+  max-width: 680px; margin: 32px auto 0;
+  padding-top: 22px;
+  border-top: 1px solid rgba(255,255,255,.06);
+  opacity: 0;
+  animation: fade-in 600ms ease 2600ms forwards;
+}
+.landing-trust-item {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--text3); letter-spacing: .2px;
+}
+.landing-trust-icon {
+  width: 16px; height: 16px; flex-shrink: 0;
+  color: var(--amber); opacity: .85;
+}
+.landing-trust-item strong {
+  color: var(--text2); font-weight: 600;
+}
+
+@keyframes slide-up {
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-scale {
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes fade-in { to { opacity: 1; } }
+
+/* ================= CUSTOMER TYPE TOGGLE IN HEADER ================= */
+.ct-toggle {
+  display: inline-flex; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 3px; font-size: 12px;
+}
+.ct-toggle button {
+  background: transparent; border: none; color: var(--text3);
+  padding: 5px 10px; border-radius: 6px; cursor: pointer;
+  font-family: inherit; font-weight: 600; transition: all .15s;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.ct-toggle button.active { background: var(--border2); color: var(--amber); }
+.ct-toggle button:hover:not(.active) { color: var(--text); }
+.ct-badge-b2c { background: rgba(16,185,129,.15); color: var(--green); border: 1px solid rgba(16,185,129,.3); }
+.ct-badge-b2b { background: rgba(245,158,11,.15); color: var(--amber); border: 1px solid rgba(245,158,11,.3); }
+
+/* ================= B2C PRICE STYLES ================= */
+.price-b2c { font-size: 22px; font-weight: 800; color: var(--green); }
+.price-b2c-from { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: .5px; margin-left: 4px; }
+.price-b2c-original { font-size: 12px; color: var(--text4); text-decoration: line-through; display: block; margin-top: 2px; }
+.price-b2c-label { font-size: 11px; color: var(--green); font-weight: 700; margin-top: 2px; }
+.b2c-banner {
+  background: linear-gradient(135deg, rgba(16,185,129,.12), rgba(16,185,129,.04));
+  border-bottom: 1px solid rgba(16,185,129,.3);
+  padding: 10px 20px; color: var(--green);
+  font-size: 13px; font-weight: 700; text-align: center;
+}
+.b2c-banner .highlight { color: #fff; background: var(--green); padding: 2px 8px; border-radius: 6px; margin: 0 3px; }
+
+/* ================= MOBILE RESPONSIVE ================= */
+@media (max-width: 768px) {
+  /* Header: mobiel-vriendelijk stacken */
+  .header { padding: 10px 12px; }
+  .header-inner { flex-wrap: wrap; gap: 8px; }
+  .logo-icon { width: 32px; height: 32px; font-size: 14px; }
+  .logo > div:nth-child(2) > div:first-child { font-size: 14px !important; }
+  .logo > div:nth-child(2) > div:last-child { font-size: 9px !important; }
+  .header-right { gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+  .ct-toggle { order: 3; width: 100%; justify-content: center; }
+  .ct-toggle button { flex: 1; padding: 8px 6px; font-size: 11px; }
+  .cart-btn { padding: 6px 10px; font-size: 12px; }
+  .pill-nav { padding: 3px; }
+  .pill-btn { padding: 6px 10px; font-size: 12px; }
+
+  /* B2C banner: kleiner + compacter */
+  .b2c-banner { padding: 8px 12px; font-size: 11px; line-height: 1.4; }
+  .b2c-banner .highlight { padding: 1px 5px; font-size: 10px; margin: 0 2px; display: inline-block; }
+
+  /* Staffel banner mobiel: compacter */
+  .staffel-banner { padding: 10px 12px; }
+  .staffel-banner-text { font-size: 12px; }
+  .staffel-banner-sub { font-size: 10px; }
+
+  /* Filters onder elkaar op klein scherm */
+  .filters { gap: 8px; }
+  .filters input, .filters select { font-size: 14px; padding: 8px 12px; }
+  .filters input { flex: 1 1 100%; }
+
+  /* Main padding kleiner */
+  .main { padding: 12px 10px; }
+
+  /* Tire cards: iets kleinere gaten */
+  .grid { gap: 10px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+
+  /* Modal: vol-scherm op mobiel */
+  .modal-overlay { padding: 0; align-items: flex-end; }
+  .modal-box { max-width: 100% !important; max-height: 92vh; border-radius: 16px 16px 0 0; width: 100%; }
+  .modal-form input, .modal-form select, .modal-form textarea { font-size: 16px; /* voorkomt zoom op iOS */ }
+
+  /* ===== LANDING PAGE MOBILE ===== */
+  .landing {
+    /* v18.4: zorg dat content scrollbaar is op kleine schermen
+       (fixed + overflow-y auto ipv hidden; start vanaf boven) */
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    justify-content: flex-start;
+    padding: 24px 12px 40px;
+  }
+  .landing-tire-svg {
+    width: min(90vmin, 400px);
+    height: min(90vmin, 400px);
+  }
+  .landing-logo { margin-bottom: 16px; gap: 10px; }
+  .landing-logo-icon { width: 44px; height: 44px; font-size: 18px; }
+  .landing-logo-text { font-size: 17px; }
+  .landing-headline {
+    font-size: clamp(26px, 8vw, 40px);
+    margin-bottom: 12px;
+    line-height: 1.1;
+  }
+  .landing-subhead {
+    font-size: 14px;
+    margin-bottom: 12px;
+    padding: 0 6px;
+  }
+  .landing-usps {
+    gap: 8px 16px;
+    margin-bottom: 24px;
+    font-size: 12px;
+    flex-direction: column;
+  }
+  .landing-choice {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    max-width: 100%;
+    padding: 0 6px;
+  }
+  .choice-card { padding: 20px 16px; }
+  .choice-icon { font-size: 28px; margin-bottom: 8px; }
+  .choice-title { font-size: 18px; }
+  .choice-desc { font-size: 12px; }
+  .choice-perks { font-size: 11px; line-height: 1.6; }
+
+  /* v18.5: trust-strook compacter op mobile */
+  .landing-trust {
+    gap: 14px 20px;
+    margin-top: 24px;
+    padding: 18px 6px 0;
+  }
+  .landing-trust-item { font-size: 11px; gap: 6px; }
+  .landing-trust-icon { width: 14px; height: 14px; }
+
+  /* Footer compacter */
+  .site-footer { padding: 18px 12px; margin-top: 24px; }
+  .footer-meta { gap: 4px 10px; font-size: 10px; }
+  .footer-name { font-size: 12px; }
+  .footer-legal { font-size: 9px; padding: 0 6px; }
+
+  /* Cart/reservering admin cards */
+  .res-card { padding: 12px; }
+  .res-name { font-size: 14px; }
+  .stats { gap: 8px; }
+  .stat-val { font-size: 20px; }
+
+  /* Cart items: stack beter */
+  .cart-summary-item { flex-wrap: wrap; }
+}
+
+/* Extra-small: <=380px */
+@media (max-width: 380px) {
+  .landing-headline { font-size: 24px; }
+  .landing-subhead { font-size: 13px; }
+  .ct-toggle button { font-size: 10px; padding: 6px 4px; }
+  .cart-btn { padding: 5px 8px; font-size: 11px; }
+}
+
+/* ================= CONFIRMATION MODAL ================= */
+.conf-modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.85);
+  z-index: 1100; display: flex; align-items: center; justify-content: center;
+  padding: 20px; animation: conf-fadein 200ms ease;
+}
+@keyframes conf-fadein { from { opacity: 0; } to { opacity: 1; } }
+
+.conf-box {
+  background: var(--surface); border-radius: 18px;
+  max-width: 560px; width: 100%; max-height: 92vh; overflow-y: auto;
+  border: 1px solid var(--border2); position: relative;
+  animation: conf-pop 350ms cubic-bezier(.2,.8,.3,1);
+}
+@keyframes conf-pop {
+  0% { transform: scale(.92) translateY(20px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+.conf-close {
+  position: absolute; top: 14px; right: 14px;
+  background: transparent; border: none; color: var(--text3);
+  width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
+  font-size: 18px; display: flex; align-items: center; justify-content: center;
+  transition: all .15s; font-family: inherit;
+}
+.conf-close:hover { background: var(--border2); color: var(--text); }
+
+/* Stroke-draw check animatie */
+.conf-check-wrap {
+  display: flex; justify-content: center; padding: 32px 20px 16px;
+  position: relative;
+}
+.conf-check-glow {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 140px; height: 140px; border-radius: 50%;
+  opacity: 0; animation: conf-glow 1200ms ease 600ms forwards;
+}
+.conf-check-glow.b2c { background: radial-gradient(circle, rgba(16,185,129,.35) 0%, transparent 70%); }
+.conf-check-glow.b2b { background: radial-gradient(circle, rgba(245,158,11,.35) 0%, transparent 70%); }
+@keyframes conf-glow {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.5); }
+  50% { opacity: 1; }
+  100% { opacity: .5; transform: translate(-50%, -50%) scale(1); }
+}
+
+.conf-check-svg {
+  width: 84px; height: 84px;
+  position: relative; z-index: 2;
+}
+.conf-check-circle {
+  fill: none; stroke-width: 4;
+  stroke-dasharray: 240; stroke-dashoffset: 240;
+  animation: stroke-draw 700ms cubic-bezier(.65,0,.45,1) 100ms forwards;
+}
+.conf-check-circle.b2c { stroke: var(--green); }
+.conf-check-circle.b2b { stroke: var(--amber); }
+.conf-check-mark {
+  fill: none; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 50; stroke-dashoffset: 50;
+  animation: stroke-draw 400ms cubic-bezier(.65,0,.45,1) 700ms forwards;
+}
+.conf-check-mark.b2c { stroke: var(--green); }
+.conf-check-mark.b2b { stroke: var(--amber); }
+@keyframes stroke-draw { to { stroke-dashoffset: 0; } }
+
+.conf-title {
+  text-align: center; font-size: 22px; font-weight: 800;
+  color: #fff; padding: 0 20px; letter-spacing: -0.3px;
+  opacity: 0; animation: conf-fade-up 500ms ease 1000ms forwards;
+}
+.conf-sub {
+  text-align: center; font-size: 14px; color: var(--text2);
+  padding: 4px 20px 20px; line-height: 1.5;
+  opacity: 0; animation: conf-fade-up 500ms ease 1150ms forwards;
+}
+@keyframes conf-fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.conf-resnum {
+  background: var(--border); border: 1px solid var(--border2);
+  border-radius: 10px; padding: 14px 16px; margin: 0 24px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  opacity: 0; animation: conf-fade-up 500ms ease 1250ms forwards;
+}
+.conf-resnum-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
+.conf-resnum-val { font-size: 18px; font-weight: 800; color: #fff; font-family: 'Courier New', monospace; letter-spacing: 1px; }
+.conf-copy-btn {
+  background: transparent; border: 1px solid var(--border2); color: var(--text2);
+  border-radius: 6px; padding: 6px 10px; cursor: pointer; font-family: inherit;
+  font-size: 11px; font-weight: 600; transition: all .15s;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.conf-copy-btn:hover { border-color: var(--amber); color: var(--amber); }
+.conf-copy-btn.copied { border-color: var(--green); color: var(--green); background: rgba(16,185,129,.08); }
+
+.conf-items {
+  padding: 0 24px 16px;
+  opacity: 0; animation: conf-fade-up 500ms ease 1350ms forwards;
+}
+.conf-item-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 0; border-bottom: 1px solid var(--border);
+  font-size: 13px; color: var(--text2);
+}
+.conf-item-row:last-child { border-bottom: none; }
+.conf-item-name { font-weight: 600; color: var(--text); }
+.conf-item-size { font-size: 11px; color: var(--text3); }
+
+.conf-total {
+  margin: 0 24px 20px; padding: 14px 16px;
+  background: linear-gradient(135deg, rgba(245,158,11,.1), rgba(245,158,11,.03));
+  border: 1px solid rgba(245,158,11,.3); border-radius: 10px;
+  display: flex; justify-content: space-between; align-items: center;
+  opacity: 0; animation: conf-fade-up 500ms ease 1450ms forwards;
+}
+.conf-total.b2c { background: linear-gradient(135deg, rgba(16,185,129,.1), rgba(16,185,129,.03)); border-color: rgba(16,185,129,.3); }
+.conf-total-label { font-size: 12px; color: var(--text3); }
+.conf-total-val { font-size: 22px; font-weight: 900; color: var(--amber); }
+.conf-total.b2c .conf-total-val { color: var(--green); }
+.conf-total-sub { font-size: 10px; color: var(--text3); margin-top: 2px; }
+
+/* Timeline */
+.conf-timeline {
+  padding: 0 24px 20px;
+  opacity: 0; animation: conf-fade-up 500ms ease 1550ms forwards;
+}
+.conf-timeline-title {
+  font-size: 11px; color: var(--text3); text-transform: uppercase;
+  letter-spacing: 1px; margin-bottom: 14px; font-weight: 700;
+}
+.conf-timeline-steps {
+  display: flex; flex-direction: column; gap: 14px;
+}
+.conf-step {
+  display: flex; align-items: flex-start; gap: 12px;
+  position: relative;
+}
+.conf-step:not(:last-child)::before {
+  content: ''; position: absolute;
+  left: 13px; top: 28px; bottom: -14px;
+  width: 2px; background: var(--border2);
+}
+.conf-step-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--border2); color: var(--text2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800; flex-shrink: 0;
+  border: 2px solid var(--border2);
+}
+.conf-step-num.done { background: var(--green); color: #000; border-color: var(--green); }
+.conf-step-num.active { background: transparent; color: var(--amber); border-color: var(--amber); }
+.conf-step-num.active.b2c-active { color: var(--green); border-color: var(--green); }
+.conf-step-text { flex: 1; padding-top: 2px; }
+.conf-step-head { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.conf-step-desc { font-size: 12px; color: var(--text3); line-height: 1.5; }
+
+.conf-actions {
+  padding: 16px 24px 24px; display: flex; gap: 10px; flex-wrap: wrap;
+  border-top: 1px solid var(--border);
+  opacity: 0; animation: conf-fade-up 500ms ease 1650ms forwards;
+}
+.conf-btn-primary {
+  flex: 1; min-width: 140px;
+  background: var(--amber); color: var(--bg); border: none;
+  border-radius: 8px; padding: 12px 16px; font-weight: 700; font-size: 14px;
+  cursor: pointer; font-family: inherit; transition: all .15s;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+}
+.conf-btn-primary:hover { background: var(--amber-dark); }
+.conf-btn-secondary {
+  flex: 1; min-width: 140px;
+  background: transparent; border: 1px solid var(--border2); color: var(--text2);
+  border-radius: 8px; padding: 12px 16px; font-weight: 600; font-size: 13px;
+  cursor: pointer; font-family: inherit; transition: all .15s;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+}
+.conf-btn-secondary:hover { border-color: var(--amber); color: var(--amber); }
+
+.conf-contact {
+  text-align: center; padding: 0 24px 20px;
+  font-size: 12px; color: var(--text3);
+  opacity: 0; animation: conf-fade-up 500ms ease 1750ms forwards;
+}
+.conf-contact a { color: var(--amber); text-decoration: none; font-weight: 600; }
+
+/* Mobile tweaks confirmation */
+@media (max-width: 768px) {
+  .conf-modal-overlay { padding: 0; align-items: flex-end; }
+  .conf-box { max-width: 100%; border-radius: 18px 18px 0 0; max-height: 95vh; }
+  .conf-check-wrap { padding: 24px 20px 12px; }
+  .conf-check-svg { width: 68px; height: 68px; }
+  .conf-title { font-size: 19px; }
+  .conf-total-val { font-size: 20px; }
+  .conf-btn-primary, .conf-btn-secondary { min-width: 100%; padding: 14px; font-size: 14px; }
+  .conf-actions { flex-direction: column; }
+}
+
+/* ===== v18.3 PRIVACY BANNER (onderaan, auto-slide-up) ===== */
+.privacy-banner {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 9500;
+  background: rgba(17,18,20,0.98); backdrop-filter: blur(10px);
+  border-top: 2px solid var(--amber);
+  padding: 16px 20px;
+  transform: translateY(100%);
+  transition: transform .4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 -8px 32px rgba(0,0,0,0.5);
+}
+.privacy-banner.visible { transform: translateY(0); }
+.privacy-banner-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.privacy-icon {
+  width: 40px; height: 40px; flex-shrink: 0;
+  background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3);
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  color: var(--amber);
+}
+.privacy-text {
+  flex: 1; min-width: 260px; font-size: 13px; color: var(--text2); line-height: 1.5;
+}
+.privacy-text strong { color: var(--text); font-weight: 700; }
+.privacy-link {
+  color: var(--amber); text-decoration: underline; cursor: pointer;
+  background: none; border: none; padding: 0; font-family: inherit; font-size: inherit;
+}
+.privacy-link:hover { color: var(--amber-dark); }
+.privacy-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.privacy-btn-ok {
+  background: var(--amber); color: var(--bg); border: none;
+  padding: 10px 22px; border-radius: 8px; font-weight: 700; font-size: 13px;
+  cursor: pointer; font-family: inherit; transition: all .15s;
+}
+.privacy-btn-ok:hover { background: var(--amber-dark); }
+@media (max-width: 640px) {
+  .privacy-banner { padding: 14px 16px; }
+  .privacy-banner-inner { gap: 12px; }
+  .privacy-icon { width: 36px; height: 36px; }
+  .privacy-text { font-size: 12px; min-width: 0; flex-basis: 100%; order: 2; }
+  .privacy-actions { order: 3; width: 100%; }
+  .privacy-btn-ok { width: 100%; padding: 12px; }
+}
+
+/* ===== v18.3 PRIVACY INFO MODAL ===== */
+.privacy-modal-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px);
+  z-index: 9600; display: flex; align-items: center; justify-content: center; padding: 20px;
+  opacity: 0; pointer-events: none; transition: opacity .2s;
+}
+.privacy-modal-backdrop.visible { opacity: 1; pointer-events: auto; }
+.privacy-modal {
+  background: var(--surface); border: 1px solid var(--border2); border-radius: 16px;
+  max-width: 560px; width: 100%; max-height: 85vh; overflow-y: auto;
+  padding: 28px; box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  transform: scale(0.95); transition: transform .2s;
+}
+.privacy-modal-backdrop.visible .privacy-modal { transform: scale(1); }
+.privacy-modal h2 { font-size: 20px; color: var(--text); margin-bottom: 8px; }
+.privacy-modal .subtitle { font-size: 13px; color: var(--text3); margin-bottom: 20px; }
+.privacy-modal h3 { font-size: 14px; color: var(--amber); margin: 20px 0 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+.privacy-modal p, .privacy-modal li { font-size: 13px; color: var(--text2); line-height: 1.6; }
+.privacy-modal ul { margin: 8px 0 8px 20px; }
+.privacy-modal li { margin-bottom: 4px; }
+.privacy-modal-close-row { display: flex; justify-content: flex-end; margin-top: 24px; }
+
+/* ===== v18.3 WHATSAPP FLOATING BUTTON ===== */
+.wa-fab {
+  position: fixed; bottom: 24px; right: 24px; z-index: 900;
+  width: 60px; height: 60px; border-radius: 50%;
+  background: #25D366;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 20px rgba(37,211,102,0.4), 0 2px 6px rgba(0,0,0,0.3);
+  cursor: pointer; text-decoration: none;
+  transition: all .25s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: wa-bounce-in .5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.wa-fab:hover {
+  background: #1FBE5B;
+  transform: scale(1.08);
+  box-shadow: 0 8px 28px rgba(37,211,102,0.5), 0 3px 8px rgba(0,0,0,0.35);
+}
+.wa-fab:active { transform: scale(0.96); }
+.wa-fab svg { width: 32px; height: 32px; color: #fff; }
+.wa-fab-pulse {
+  position: absolute; inset: 0; border-radius: 50%;
+  background: #25D366; opacity: 0.6; z-index: -1;
+  animation: wa-pulse 2.4s ease-out infinite;
+}
+.wa-fab-tooltip {
+  position: absolute; right: calc(100% + 12px); top: 50%; transform: translateY(-50%);
+  background: var(--surface); color: var(--text); border: 1px solid var(--border2);
+  padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  white-space: nowrap; pointer-events: none;
+  opacity: 0; transform: translateY(-50%) translateX(8px);
+  transition: all .2s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+.wa-fab-tooltip::after {
+  content: ''; position: absolute; left: 100%; top: 50%; transform: translateY(-50%);
+  border: 6px solid transparent; border-left-color: var(--border2);
+}
+.wa-fab:hover .wa-fab-tooltip { opacity: 1; transform: translateY(-50%) translateX(0); }
+@keyframes wa-pulse {
+  0%   { transform: scale(1); opacity: 0.6; }
+  70%  { transform: scale(1.6); opacity: 0; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+@keyframes wa-bounce-in {
+  0%   { opacity: 0; transform: scale(0) translateY(40px); }
+  60%  { opacity: 1; transform: scale(1.1) translateY(0); }
+  100% { transform: scale(1) translateY(0); }
+}
+@media (max-width: 640px) {
+  .wa-fab { width: 56px; height: 56px; bottom: 18px; right: 18px; }
+  .wa-fab svg { width: 28px; height: 28px; }
+  .wa-fab-tooltip { display: none; }
+}
+/* Verberg FAB wanneer een modal open is (z-index gelaagd, maar visueel rustiger) */
+.wa-fab.hidden { opacity: 0; pointer-events: none; transform: scale(0.8); }
+
+/* v18.4: schuif FAB omhoog als privacy-banner zichtbaar is (desktop) */
+body.privacy-banner-visible .wa-fab { bottom: 110px; }
+@media (max-width: 640px) {
+  body.privacy-banner-visible .wa-fab { bottom: 200px; }
+}
+
+/* ===== v18.5: STICKY MOBILE CART-BAR (alleen mobile, alleen in shop-view met items) ===== */
+.sticky-cart-bar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 850;
+  display: none; /* default verborgen, JS zet display via body.sticky-cart-visible */
+  padding: 10px 14px calc(10px + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(180deg, rgba(10,10,11,.88), rgba(10,10,11,.98));
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -4px 20px rgba(0,0,0,.5);
+  transform: translateY(100%);
+  animation: sticky-cart-slide-up .35s cubic-bezier(.2,.8,.3,1) forwards;
+}
+@keyframes sticky-cart-slide-up {
+  to { transform: translateY(0); }
+}
+.sticky-cart-bar-inner {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  max-width: 640px; margin: 0 auto;
+}
+.sticky-cart-info { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.sticky-cart-badge {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: rgba(245,158,11,.15); color: var(--amber);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 14px; flex-shrink: 0;
+  border: 1px solid rgba(245,158,11,.3);
+}
+.sticky-cart-text { display: flex; flex-direction: column; min-width: 0; }
+.sticky-cart-count {
+  font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.2;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sticky-cart-total {
+  font-size: 11px; color: var(--text3); line-height: 1.3;
+}
+.sticky-cart-btn {
+  background: var(--amber); color: var(--bg); border: none; border-radius: 10px;
+  padding: 10px 18px; font-weight: 800; font-size: 13px; cursor: pointer;
+  font-family: inherit; display: inline-flex; align-items: center; gap: 6px;
+  flex-shrink: 0; transition: all .15s;
+}
+.sticky-cart-btn:hover { background: var(--amber-dark); }
+.sticky-cart-btn:active { transform: scale(.97); }
+
+/* Alleen tonen op mobile én wanneer body-class actief is */
+@media (max-width: 768px) {
+  body.sticky-cart-visible .sticky-cart-bar { display: block; }
+  /* FAB schuift boven sticky bar (85px = bar + marge) */
+  body.sticky-cart-visible .wa-fab { bottom: 85px; }
+  /* Beide zichtbaar? dan nog hoger (260px = privacy + bar + marges) */
+  body.sticky-cart-visible.privacy-banner-visible .wa-fab { bottom: 260px; }
+}
+
+/* ===== v18.6 MERKRANGSCHIKKING HEADERS ===== */
+.tier-grid-wrap { display: flex; flex-direction: column; gap: 0; }
+.tier-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 4px 8px; margin-top: 8px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+.tier-header:first-child { margin-top: 0; }
+.tier-header-icon { font-size: 18px; line-height: 1; }
+.tier-header-label {
+  font-size: 12px; font-weight: 800; color: var(--text3);
+  text-transform: uppercase; letter-spacing: 2px;
+}
+
+.tire-img-wrap { display: flex; justify-content: center; margin-bottom: 10px; }
+.tire-img {
+  width: 80px; height: 80px; object-fit: contain; border-radius: 8px;
+  background: var(--border); display: block;
+}
+.tire-img-sold { opacity: 0.45; filter: grayscale(60%); }
+
+/* ===== v18.6 INFO-KNOP ===== */
+.tire-info-btn {
+  background: rgba(245,158,11,0.10); border: 1px solid rgba(245,158,11,0.28);
+  color: var(--amber); border-radius: 6px; padding: 3px 8px 3px 6px;
+  font-size: 11px; font-weight: 700; cursor: pointer; font-family: inherit;
+  transition: all .15s; display: inline-flex; align-items: center; gap: 3px;
+  line-height: 1.4; flex-shrink: 0;
+}
+.tire-info-btn:hover { background: rgba(245,158,11,0.22); border-color: var(--amber); }
+
+/* ===== v18.6 EPREL INFO-MODAL ===== */
+.eprel-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.78);
+  backdrop-filter: blur(5px); z-index: 9100;
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.eprel-box {
+  background: var(--surface); border: 1px solid var(--border2); border-radius: 16px;
+  max-width: 460px; width: 100%; max-height: 92vh; overflow-y: auto; padding: 24px;
+  position: relative;
+  animation: eprel-pop 280ms cubic-bezier(.2,.8,.3,1);
+}
+@keyframes eprel-pop {
+  from { transform: scale(.94) translateY(16px); opacity: 0; }
+  to   { transform: scale(1)   translateY(0);    opacity: 1; }
+}
+.eprel-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.eprel-title { font-size: 17px; font-weight: 800; color: var(--text); line-height: 1.2; }
+.eprel-subtitle { font-size: 12px; color: var(--text3); margin-top: 3px; }
+.eprel-close {
+  background: transparent; border: none; color: var(--text3); cursor: pointer;
+  font-size: 20px; font-family: inherit; padding: 2px 6px; border-radius: 6px;
+  transition: all .15s; flex-shrink: 0;
+}
+.eprel-close:hover { background: var(--border2); color: var(--text); }
+.eprel-body { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.eprel-brand-img {
+  width: 100px; height: 100px; object-fit: contain; border-radius: 10px;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+}
+.eprel-label-wrap { text-align: center; }
+.eprel-label-title { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+.eprel-label-img { max-width: 180px; border-radius: 8px; display: block; margin: 0 auto; }
+.eprel-label-none { font-size: 12px; color: var(--text4); font-style: italic; padding: 12px; background: var(--border); border-radius: 8px; text-align: center; }
+.eprel-specs { width: 100%; border-collapse: collapse; font-size: 13px; }
+.eprel-specs tr:not(:last-child) td { border-bottom: 1px solid var(--border); }
+.eprel-specs td { padding: 8px 10px; color: var(--text2); vertical-align: top; }
+.eprel-specs td:first-child { color: var(--text3); width: 44%; font-size: 12px; }
+.eprel-specs td:last-child { font-weight: 600; }
+.eprel-link-row { text-align: center; margin-top: 4px; }
+.eprel-ext-link {
+  display: inline-flex; align-items: center; gap: 5px;
+  color: var(--amber); font-size: 12px; text-decoration: underline; cursor: pointer;
+}
+.eprel-ext-link:hover { color: var(--amber-dark); }
+
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+
+<div id="app"></div>
+
+<!-- ===== v18.5.2 NOTIFICATION TOAST (statisch, los van app-render — voorkomt flitsende re-renders) ===== -->
+<div id="notificationToast" class="notify" style="display:none;" role="status" aria-live="polite"></div>
+
+<!-- ===== v18.3 PRIVACY BANNER (statisch, los van app-render) ===== -->
+<div id="privacyBanner" class="privacy-banner" role="region" aria-label="Privacymelding">
+  <div class="privacy-banner-inner">
+    <div class="privacy-icon" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+    </div>
+    <div class="privacy-text">
+      <strong>Wij gebruiken functionele opslag</strong> om je voorkeur (particulier/zakelijk) te onthouden en je winkelmandje te bewaren. Geen tracking, geen derden, geen reclame.
+      <button class="privacy-link" onclick="openPrivacyModal()">Meer info</button>
+    </div>
+    <div class="privacy-actions">
+      <button class="privacy-btn-ok" onclick="acknowledgePrivacy()">Begrepen</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== v18.3 PRIVACY INFO MODAL ===== -->
+<div id="privacyModal" class="privacy-modal-backdrop" onclick="if(event.target===this)closePrivacyModal()">
+  <div class="privacy-modal">
+    <h2>Privacy & opslag</h2>
+    <p class="subtitle">Hoe TK Handelsonderneming jouw gegevens behandelt</p>
+
+    <h3>Wat slaan we op in je browser?</h3>
+    <p>Deze website gebruikt <strong>localStorage</strong> (een functie van je browser) voor drie dingen:</p>
+    <ul>
+      <li>Je <strong>klantvoorkeur</strong> (particulier of zakelijk) zodat je niet steeds opnieuw hoeft te kiezen</li>
+      <li>Je <strong>winkelmandje</strong> tijdens het bezoek</li>
+      <li>Een bevestiging dat je deze melding hebt gezien</li>
+    </ul>
+    <p>Deze opslag is strikt functioneel. We gebruiken géén tracking-cookies, géén advertentie-pixels en géén profilering voor marketing-doeleinden. Je gegevens verlaten je eigen apparaat niet — behalve wanneer je een reservering plaatst.</p>
+
+    <h3>Gebruiksinzichten (Microsoft Clarity)</h3>
+    <p>Om onze website te verbeteren gebruiken wij soms <strong>Microsoft Clarity</strong>. Dit maakt anonieme heatmaps en sessie-opnames waarmee wij zien hoe bezoekers de site gebruiken — zonder cookies, zonder je persoonlijk te identificeren. Invoervelden met persoonlijke gegevens (naam, e-mail, telefoon, adres) worden automatisch gemaskeerd en zijn voor ons dus onzichtbaar. Wil je hier toch niet aan meedoen? Stuur een bericht via WhatsApp en we regelen het.</p>
+
+    <h3>Wat gebeurt er bij een reservering?</h3>
+    <p>Bij het plaatsen van een reservering verwerken wij je naam, contactgegevens en (bij zakelijk) KvK/BTW-gegevens om je bestelling af te handelen. Deze gegevens worden verstuurd naar ons beveiligde administratiesysteem (Google Workspace) en alleen gebruikt om je bestelling te verwerken en de factuur op te maken.</p>
+
+    <h3>Je rechten (AVG)</h3>
+    <p>Je hebt recht op inzage, correctie of verwijdering van je gegevens. Neem contact op via WhatsApp of e-mail en we regelen het.</p>
+
+    <h3>Verantwoordelijke</h3>
+    <p>TK Handelsonderneming, Tilburg (Nederland). Voor vragen: gebruik de WhatsApp-knop rechtsonder.</p>
+
+    <div class="privacy-modal-close-row">
+      <button class="btn-primary" onclick="closePrivacyModal()">Sluiten</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== v18.3 WHATSAPP FLOATING ACTION BUTTON ===== -->
+<a id="waFab" class="wa-fab" href="#" target="_blank" rel="noopener" aria-label="Stuur WhatsApp bericht">
+  <span class="wa-fab-pulse" aria-hidden="true"></span>
+  <span class="wa-fab-tooltip">Vragen? App ons</span>
+  <svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+    <path d="M16.003 2.667C8.637 2.667 2.67 8.634 2.67 16c0 2.355.62 4.66 1.8 6.688L2.667 29.333l6.83-1.79A13.277 13.277 0 0 0 16.003 29.333c7.366 0 13.333-5.967 13.333-13.333S23.37 2.667 16.003 2.667zm0 24.379a10.994 10.994 0 0 1-5.608-1.535l-.402-.24-4.162 1.091 1.111-4.056-.262-.416a10.993 10.993 0 0 1-1.684-5.888c0-6.094 4.959-11.046 11.053-11.046 2.95 0 5.722 1.149 7.807 3.237a10.975 10.975 0 0 1 3.233 7.817c-.001 6.094-4.96 11.036-11.086 11.036zm6.064-8.272c-.333-.167-1.965-.969-2.27-1.08-.304-.112-.525-.167-.747.166-.221.333-.855 1.08-1.048 1.302-.193.222-.387.25-.72.083-.332-.167-1.403-.518-2.672-1.65-.988-.882-1.654-1.969-1.848-2.301-.193-.333-.02-.513.146-.679.15-.149.333-.388.5-.583.166-.194.221-.333.332-.554.11-.222.056-.416-.028-.583-.083-.167-.747-1.801-1.025-2.467-.27-.648-.546-.56-.747-.57-.193-.01-.414-.012-.635-.012-.222 0-.582.084-.887.417-.304.333-1.162 1.135-1.162 2.77 0 1.634 1.19 3.212 1.356 3.434.166.222 2.342 3.576 5.672 5.015.792.342 1.41.546 1.891.699.794.252 1.518.217 2.09.131.638-.095 1.965-.803 2.243-1.578.277-.775.277-1.44.194-1.578-.083-.139-.304-.222-.637-.389z"/>
+  </svg>
+</a>
+
+<!-- ===== v18.5 STICKY MOBILE CART-BAR ===== -->
+<div id="stickyCartBar" class="sticky-cart-bar" role="region" aria-label="Winkelmand samenvatting">
+  <div class="sticky-cart-bar-inner">
+    <button type="button" class="sticky-cart-info" onclick="openCart()" aria-label="Open winkelmand" style="background:none;border:none;padding:0;cursor:pointer;text-align:left;">
+      <span class="sticky-cart-badge" id="stickyCartBadge">0</span>
+      <span class="sticky-cart-text">
+        <span class="sticky-cart-count" id="stickyCartCount">0 banden in winkelmand</span>
+        <span class="sticky-cart-total" id="stickyCartTotal">€ 0,00</span>
+      </span>
+    </button>
+    <button type="button" class="sticky-cart-btn" onclick="openCart()">
+      Bekijk →
+    </button>
+  </div>
+</div>
+
+<script>
+// ===== v18.3 PRIVACY BANNER LOGIC =====
+const PRIVACY_KEY = 'tk_privacy_ack_v1';
+function shouldShowPrivacy() {
+  try { return localStorage.getItem(PRIVACY_KEY) !== '1'; } catch(e) { return false; }
+}
+function acknowledgePrivacy() {
+  try { localStorage.setItem(PRIVACY_KEY, '1'); } catch(e) {}
+  document.getElementById('privacyBanner').classList.remove('visible');
+  document.body.classList.remove('privacy-banner-visible');  // v18.4: FAB zakt terug
+}
+function openPrivacyModal() {
+  document.getElementById('privacyModal').classList.add('visible');
+}
+function closePrivacyModal() {
+  document.getElementById('privacyModal').classList.remove('visible');
+}
+// Show banner na 800ms (niet te opdringerig)
+if (shouldShowPrivacy()) {
+  setTimeout(() => {
+    document.getElementById('privacyBanner').classList.add('visible');
+    document.body.classList.add('privacy-banner-visible');  // v18.4: FAB wijkt uit
+  }, 800);
+}
+
+// ===== v18.3 WHATSAPP FAB LOGIC =====
+const WA_NUMBER = '31643481608'; // TK Handelsonderneming — zonder + of 00
+const WA_PREFILL = 'Hallo! Ik heb een vraag over bandenreservering bij TK Handelsonderneming.';
+(function initWaFab() {
+  const fab = document.getElementById('waFab');
+  if (!fab) return;
+  fab.href = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(WA_PREFILL)}`;
+})();
+// ========== CONFIG ==========
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx19cqP_8xpcz7b7i3ZbV-dwL5lN6M-KubeQRlAmIjIAM9W26bcaqpysacPV6LVWgVx/exec";
+
+// ========== v18.6 FOTO-CONFIGURATIE ==========
+// Bestanden in /img/brands/ op banden.tkhandelsonderneming.nl | Formaat: WebP ~150×150px
+// A-merken: per seizoen + generiek fallback | Overige merken: 1 generieke foto
+const A_MERKEN = ["Michelin","Continental","Bridgestone","Pirelli","Goodyear","Dunlop","Hankook"];
+
+const BRAND_SEASON_IMAGES = {
+  // A-merken: apart per seizoen (aanleveren via fabrikant presskit)
+  "Michelin":    { "Zomer":"img/brands/michelin_zomer.webp",    "Winter":"img/brands/michelin_winter.webp",    "All-Season":"img/brands/michelin_allseason.webp"    },
+  "Continental": { "Zomer":"img/brands/continental_zomer.webp", "Winter":"img/brands/continental_winter.webp", "All-Season":"img/brands/continental_allseason.webp" },
+  "Bridgestone": { "Zomer":"img/brands/bridgestone_zomer.webp", "Winter":"img/brands/bridgestone_winter.webp", "All-Season":"img/brands/bridgestone_allseason.webp" },
+  "Pirelli":     { "Zomer":"img/brands/pirelli_zomer.webp",     "Winter":"img/brands/pirelli_winter.webp",     "All-Season":"img/brands/pirelli_allseason.webp"     },
+  "Goodyear":    { "Zomer":"img/brands/goodyear_zomer.webp",    "Winter":"img/brands/goodyear_winter.webp",    "All-Season":"img/brands/goodyear_allseason.webp"    },
+  "Dunlop":      { "Zomer":"img/brands/dunlop_zomer.webp",      "Winter":"img/brands/dunlop_winter.webp",      "All-Season":"img/brands/dunlop_allseason.webp"      },
+  "Hankook":     { "Zomer":"img/brands/hankook_zomer.webp",     "Winter":"img/brands/hankook_winter.webp",     "All-Season":"img/brands/hankook_allseason.webp"     },
+};
+
+const BRAND_IMAGES = {
+  // ===== A-MERKEN (ook fallback als seizoenspecifiek ontbreekt) =====
+  "Michelin":        "img/brands/michelin.webp",
+  "Continental":     "img/brands/continental.webp",
+  "Bridgestone":     "img/brands/bridgestone.webp",
+  "Pirelli":         "img/brands/pirelli.webp",
+  "Goodyear":        "img/brands/goodyear.webp",
+  "Dunlop":          "img/brands/dunlop.webp",
+  "Hankook":         "img/brands/hankook.webp",
+
+  // ===== PREMIUM / BEKENDE MERKEN =====
+  "Yokohama":        "img/brands/yokohama.webp",
+  "Nokian":          "img/brands/nokian.webp",
+  "Vredestein":      "img/brands/vredestein.webp",
+  "Toyo":            "img/brands/toyo.webp",
+  "Kumho":           "img/brands/kumho.webp",
+  "Kleber":          "img/brands/kleber.webp",
+  "Nexen":           "img/brands/nexen.webp",
+  "Maxxis":          "img/brands/maxxis.webp",
+  "Nankang":         "img/brands/nankang.webp",
+  "Fulda":           "img/brands/fulda.webp",
+  "Barum":           "img/brands/barum.webp",
+  "Cooper":          "img/brands/cooper.webp",
+  "Kenda":           "img/brands/kenda.webp",
+  "Sailun":          "img/brands/sailun.webp",
+
+  // ===== MID-RANGE =====
+  "Minerva":         "img/brands/minerva.webp",
+  "Riken":           "img/brands/riken.webp",
+  "Profil":          "img/brands/profil.webp",
+  "Petlas":          "img/brands/petlas.webp",
+  "GT Radial":       "img/brands/gt_radial.webp",
+  "Gripmax":         "img/brands/gripmax.webp",
+  "Hifly":           "img/brands/hifly.webp",
+  "Linglong":        "img/brands/linglong.webp",
+  "Goodride":        "img/brands/goodride.webp",
+  "Rotalla":         "img/brands/rotalla.webp",
+  "Ovation":         "img/brands/ovation.webp",
+  "Tristar":         "img/brands/tristar.webp",
+  "Star Performer":  "img/brands/star_performer.webp",
+  "Fortuna":         "img/brands/fortuna.webp",
+  "Infinity":        "img/brands/infinity.webp",
+  "CST":             "img/brands/cst.webp",
+
+  // ===== BUDGET =====
+  "Aplus":           "img/brands/aplus.webp",
+  "Antares":         "img/brands/antares.webp",
+  "Compasal":        "img/brands/compasal.webp",
+  "Delinte":         "img/brands/delinte.webp",
+  "Doublecoin":      "img/brands/doublecoin.webp",
+  "Event":           "img/brands/event.webp",
+  "Imperial":        "img/brands/imperial.webp",
+  "Journey":         "img/brands/journey.webp",
+  "Lanvigator":      "img/brands/lanvigator.webp",
+  "Landvigator":     "img/brands/lanvigator.webp",   // ⚠️ schrijffout in Sheet — correct is Lanvigator
+  "Leao":            "img/brands/leao.webp",
+  "Roadhog":         "img/brands/roadhog.webp",
+  "Sunny":           "img/brands/sunny.webp",
+  "Tercelo":         "img/brands/tercelo.webp",
+  "Victory":         "img/brands/victory.webp",
+  "Wanli":           "img/brands/wanli.webp",
+  "Westlake":        "img/brands/westlake.webp",
+  "Security":        "img/brands/security.webp",
+  "AD Movin":        "img/brands/ad_movin.webp",
+};
+
+const BRAND_IMAGE_DEFAULT = "img/brands/default_band.webp";
+
+// Merkkleur voor placeholder (zolang WebP-foto ontbreekt)
+const BRAND_COLORS = {
+  "Michelin":"#E4002B",    "Continental":"#FF6600", "Bridgestone":"#E31837",
+  "Pirelli":"#C8A32A",     "Goodyear":"#003087",    "Dunlop":"#FF6B35",
+  "Hankook":"#C8102E",     "Yokohama":"#0052CC",    "Nokian":"#00509E",
+  "Vredestein":"#1A1A2E",  "Toyo":"#D4001A",        "Kumho":"#00338D",
+  "Kleber":"#FF6B00",      "Nexen":"#003366",        "Maxxis":"#E30613",
+  "Nankang":"#003399",     "Fulda":"#E20015",        "Barum":"#FF9900",
+  "Cooper":"#005DAA",      "Kenda":"#E31837",        "Sailun":"#005BAC",
+  "Linglong":"#CC0000",    "Minerva":"#6600CC",      "GT Radial":"#CC0000",
+  "Goodride":"#003399",    "Rotalla":"#FF6600",      "Hifly":"#003399",
+  "Gripmax":"#CC3300",     "Tristar":"#003366",      "Petlas":"#E31837",
+};
+
+// ========== v18.6 LOGO API CONFIG ==========
+// Logo.dev — gratis logo API (vervangt Clearbit dat in dec 2025 is afgesloten)
+// Stap 1: maak gratis account op https://www.logo.dev
+// Stap 2: kopieer je Publishable Token (begint met pk_...)
+// Stap 3: plak hieronder tussen de aanhalingstekens
+const LOGO_DEV_TOKEN = "pk_eMEY7DnsTMuvxtHx55XUig";
+
+// Merkdomeinen voor logo.dev (gebruikt als lokale WebP ontbreekt)
+const BRAND_DOMAINS = {
+  "Michelin":       "michelin.com",
+  "Continental":    "continental.com",
+  "Bridgestone":    "bridgestone.com",
+  "Pirelli":        "pirelli.com",
+  "Goodyear":       "goodyear.com",
+  "Dunlop":         "dunlop.eu",
+  "Hankook":        "hankooktire.com",
+  "Yokohama":       "yokohama.com",
+  "Nokian":         "nokiantires.com",
+  "Vredestein":     "vredestein.com",
+  "Toyo":           "toyotires.eu",
+  "Kumho":          "kumhotire.com",
+  "Kleber":         "kleber.com",
+  "Nexen":          "nexentire.com",
+  "Maxxis":         "maxxis.com",
+  "Nankang":        "nankang.com",
+  "Fulda":          "fulda.com",
+  "Barum":          "barum.eu",
+  "Cooper":         "coopertire.com",
+  "Kenda":          "kendatire.com",
+  "Sailun":         "sailun.com",
+  "Minerva":        "minerva-tire.com",
+  "GT Radial":      "gtradial.com",
+  "Goodride":       "goodride.com",
+  "Rotalla":        "rotalla.com",
+  "Hifly":          "hiflytire.com",
+  "Gripmax":        "gripmax.com",
+  "Tristar":        "tristartires.com",
+  "Petlas":         "petlas.com",
+  "Linglong":       "linglong-tire.com",
+  "Ovation":        "ovationtire.com",
+  "Star Performer": "star-performer.com",
+  "Fortuna":        "fortunatyre.com",
+  "Infinity":       "infinity-tires.com",
+  "CST":            "cst-tires.com",
+  "Aplus":          "aplustyre.com",
+  "Antares":        "antarestire.com",
+  "Compasal":       "compasal.com",
+  "Delinte":        "delintetires.com",
+  "Doublecoin":     "doublecointire.com",
+  "Event":          "eventtyre.com",
+  "Imperial":       "imperialtires.com",
+  "Journey":        "journeytire.com",
+  "Lanvigator":     "lanvigator.com",
+  "Landvigator":    "lanvigator.com",
+  "Leao":           "leaotire.com",
+  "Roadhog":        "roadhogtires.com",
+  "Riken":          "rikentire.com",
+  "Sunny":          "sunnytires.com",
+  "Tercelo":        "tercelotires.com",
+  "Victory":        "victorytires.com",
+  "Wanli":          "wanlitire.com",
+  "Westlake":       "westlaketire.com",
+  "Profil":         "profiltyre.com",
+  "Nankang":        "nankang.com",
+  "Momo":           "momo.it",
+};
+
+// Maak merkplaceholder-element (DOM) bij ontbrekende afbeelding
+function mkBrandPh(initial, color, size) {
+  const d = document.createElement('div');
+  const sz = size || 80;
+  d.style.cssText = [
+    `width:${sz}px`, `height:${sz}px`, `border-radius:${sz*0.12}px`,
+    `background:linear-gradient(135deg,${color}25,${color}45)`,
+    `border:1px solid ${color}60`,
+    'display:flex','flex-direction:column','align-items:center','justify-content:center','gap:3px',
+    'flex-shrink:0'
+  ].join(';');
+  const letter = document.createElement('div');
+  letter.style.cssText = `font-size:${sz*0.38}px;font-weight:900;color:${color};line-height:1;font-family:inherit`;
+  letter.textContent = initial;
+  const icon = document.createElement('div');
+  icon.style.cssText = `font-size:${sz*0.22}px;line-height:1`;
+  icon.textContent = '🔵';
+  d.appendChild(letter); d.appendChild(icon);
+  return d;
+}
+
+// 3-staps fallback: 1) lokale WebP  →  2) logo.dev online logo  →  3) placeholder
+function brandImg(tire, cssClass, size) {
+  const src    = getBrandImage(tire);
+  const domain = BRAND_DOMAINS[tire.brand];
+  // logo.dev URL alleen bouwen als token én domein beschikbaar zijn
+  const clUrl  = (LOGO_DEV_TOKEN && domain)
+    ? `https://img.logo.dev/${domain}?token=${LOGO_DEV_TOKEN}&size=128`
+    : null;
+  const color  = BRAND_COLORS[tire.brand] || '#F59E0B';
+  const init   = (tire.brand || '?').charAt(0).toUpperCase();
+  const sz     = size || 80;
+
+  // onerror: 1) logo.dev → 2) seizoens-SVG → 3) tekst-placeholder
+  const seasonSvg = `img/brands/${
+    tire.season === 'Winter'     ? 'winter_band' :
+    tire.season === 'All-Season' ? 'allseason_band' :
+    'zomer_band'}.svg`;
+
+  const onerror = clUrl
+    ? `this.onerror=function(){this.onerror=function(){this.replaceWith(mkBrandPh('${init}','${color}',${sz}))};this.src='${seasonSvg}'};this.src='${clUrl}'`
+    : `this.onerror=function(){this.replaceWith(mkBrandPh('${init}','${color}',${sz}))};this.src='${seasonSvg}'`;
+
+  return `<img class="${cssClass}" src="${src}" alt="${esc(tire.brand)}"
+    loading="lazy" width="${sz}" height="${sz}" onerror="${onerror}">`;
+}
+
+// Seizoen-SVG fallback (zolang merkfoto ontbreekt)
+const SEASON_FALLBACK = {
+  "Zomer":      "img/brands/zomer_band.svg",
+  "Winter":     "img/brands/winter_band.svg",
+  "All-Season": "img/brands/allseason_band.svg",
+};
+
+// Fallback-volgorde: 1) seizoenspecifiek merk → 2) merk-generiek → 3) seizoen-SVG → 4) default
+function getBrandImage(tire) {
+  if (BRAND_SEASON_IMAGES[tire.brand]?.[tire.season]) return BRAND_SEASON_IMAGES[tire.brand][tire.season];
+  if (BRAND_IMAGES[tire.brand]) return BRAND_IMAGES[tire.brand];
+  if (SEASON_FALLBACK[tire.season]) return SEASON_FALLBACK[tire.season];
+  return BRAND_IMAGE_DEFAULT;
+}
+
+// Extraheer EPREL-ID uit QR-URL van de Sheet (kolom "QR-code")
+// bv. "https://eprel.ec.europa.eu/qr/893605" → "893605"
+function getEprelId(qrUrl) {
+  if (!qrUrl) return null;
+  const parts = String(qrUrl).trim().split('/');
+  const id = parts[parts.length - 1];
+  return (id && /^\d+$/.test(id)) ? id : null;
+}
+
+// EPREL label SVG-URL (rechtstreeks in <img src>, geen API-call nodig)
+function getEprelLabelUrl(qrUrl) {
+  const id = getEprelId(qrUrl);
+  return id ? `https://eprel.ec.europa.eu/labels/tyres/Label_${id}.svg` : null;
+}
+
+// ========== STATE ==========
+// ========== STAFFEL CONFIG ==========
+const STAFFEL = [
+  { min: 1,   max: 9,   pct: 25, label: "25% korting" },
+  { min: 10,  max: 49,  pct: 40, label: "40% korting" },
+  { min: 50,  max: 99,  pct: 45, label: "45% korting" },
+  { min: 100, max: Infinity, pct: 50, label: "50% korting" }
+];
+
+// Hulpfunctie: incl. BTW → excl. BTW
+function exclBTW(prijs) { return prijs / 1.21; }
+
+function getStaffelTier(qty) {
+  return STAFFEL.find(s => qty >= s.min && qty <= s.max) || STAFFEL[0];
+}
+
+function getStaffelPrice(tire, qty) {
+  const tier = getStaffelTier(qty);
+  // Basisprijs = kolom M (price2C = incl. BTW) omrekenen naar excl. BTW
+  const basisExcl = exclBTW(tire.price2C);
+  return Math.round(basisExcl * (1 - tier.pct / 100) * 100) / 100;
+}
+
+// Adviesprijs = kolom M excl. BTW (zonder staffelkorting)
+function getAdviesPrijs(tire) {
+  return exclBTW(tire.price2C);
+}
+
+// ========== B2C (PARTICULIER) PRIJSLOGICA ==========
+// Vaste 25% korting, incl. BTW tonen, GEEN staffel
+const B2C_DISCOUNT_PCT = 25;
+
+// B2C prijs incl BTW = basisprijs excl × 0.75 × 1.21
+function getB2CPrice(tire) {
+  const basisExcl = exclBTW(tire.price2C);
+  const netto = basisExcl * (1 - B2C_DISCOUNT_PCT / 100);
+  const inclBTW = netto * 1.21;
+  return Math.round(inclBTW * 100) / 100;
+}
+// Origineel (zonder korting) incl BTW = price2C
+function getB2COriginalPrice(tire) {
+  return Math.round(tire.price2C * 100) / 100;
+}
+
+// Universele prijshulpen: gebruikt door cart/factuur
+function getUnitPrice(tire, qty) {
+  return state.customerType === 'b2c' ? getB2CPrice(tire) : getStaffelPrice(tire, qty);
+}
+function getCartSubtotal() {
+  const cartItems = Object.values(state.cart);
+  const cartCount = getCartCount();
+  return cartItems.reduce((sum, item) => sum + item.qty * getUnitPrice(item.tire, cartCount), 0);
+}
+
+// ========== LOCALSTORAGE: CUSTOMER TYPE ==========
+const STORAGE_KEY_CT = 'tk_customerType';
+function loadCustomerType() {
+  try { return localStorage.getItem(STORAGE_KEY_CT); } catch(e) { return null; }
+}
+function saveCustomerType(ct) {
+  try { localStorage.setItem(STORAGE_KEY_CT, ct); } catch(e) {}
+}
+
+let state = {
+  view: "landing",  // 'landing' | 'shop' | 'admin'
+  customerType: null,  // null (nog niet gekozen) | 'b2c' | 'b2b'
+  tires: [],
+  reservations: [],
+  isAdmin: false,
+  adminPin: "",
+  search: "",
+  filterSeason: "Alle",
+  filterBrand: "Alle",
+  sortBy: "brand",
+  loading: true,
+  submitting: false,
+  notification: null,
+  showCartModal: false,
+  showPinModal: false,
+  showAdminBtn: new URLSearchParams(window.location.search).has('admin'),
+  showStaffel: false,
+  showAllSoldOut: false,
+  // Winkelmandje: { [tireId]: { tire, qty } }
+  cart: {},
+  // Qty selector per kaart (voordat je toevoegt)
+  cardQty: {},
+  // Bevestiging na reservering
+  confirmationData: null,  // null | { id, customerType, name, items, totaalIncl, totaalExcl, levering, afleveradres, ... }
+  reserveForm: { name: "", company: "", kvk: "", btw: "", email: "", phone: "", notes: "",
+    straat: "", huisnummer: "", postcode: "", stad: "",
+    levering: false, levStraat: "", levHuisnummer: "", levPostcode: "", levStad: "" },
+  infoTireId: null  // v18.6: EPREL info-modal — tireId of null
+};
+
+function setState(updates) {
+  Object.assign(state, updates);
+  render();
+}
+
+// ========== API ==========
+
+async function apiFetch(params) {
+  const url = new URL(SCRIPT_URL);
+  for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
+  const res = await fetch(url.toString());
+  return res.json();
+}
+
+async function apiPost(body) {
+  const res = await fetch(SCRIPT_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain" },
+    body: JSON.stringify(body)
+  });
+  return res.json();
+}
+
+async function fetchInventory() {
+  try {
+    const data = await apiFetch({ action: "inventory" });
+    if (data?.tires) {
+      // Initialiseer cardQty voor nieuwe banden
+      const newCardQty = { ...state.cardQty };
+      for (const t of data.tires) {
+        if (!newCardQty[t.id]) newCardQty[t.id] = 1;
+      }
+      setState({ tires: data.tires, loading: false, cardQty: newCardQty });
+    } else {
+      notify(data?.error || "Kan voorraad niet laden", "error");
+      setState({ loading: false });
+    }
+  } catch (err) {
+    notify("Kan voorraad niet laden: " + err.message, "error");
+    setState({ loading: false });
+  }
+}
+
+async function fetchReservations() {
+  try {
+    const data = await apiFetch({ action: "reservations", pin: state.adminPin });
+    if (data?.reservations) setState({ reservations: data.reservations });
+    else notify(data?.error || "Kan reserveringen niet laden", "error");
+  } catch (err) { notify("Fout: " + err.message, "error"); }
+}
+
+async function submitReservation() {
+  const f = state.reserveForm;
+  const cartItems = Object.values(state.cart);
+  const isB2C = state.customerType === 'b2c';
+
+  // Validatie per klanttype
+  if (!f.name || !f.email || !f.phone) { notify("Vul alle verplichte velden in", "error"); return; }
+  if (isB2C && (!f.straat || !f.huisnummer || !f.postcode || !f.stad)) {
+    notify("Vul uw volledige adresgegevens in", "error"); return;
+  }
+  if (!isB2C && (!f.company || !f.kvk)) {
+    notify("Vul bedrijfsnaam en KvK-nummer in", "error"); return;
+  }
+  if (cartItems.length === 0) { notify("Mandje is leeg", "error"); return; }
+
+  setState({ submitting: true });
+  try {
+    const cartCount = getCartCount();
+    const items = cartItems.map(item => ({
+      tireId: item.tire.id,
+      brand: item.tire.brand,
+      model: item.tire.model,
+      size: item.tire.size,
+      season: item.tire.season,
+      qty: item.qty,
+      priceB2B: item.tire.price2C,  // basis incl. BTW
+      staffelPrijs: isB2C ? getB2CPrice(item.tire) : getStaffelPrice(item.tire, cartCount),
+      prijsType: isB2C ? 'b2c_incl_btw' : 'b2b_excl_btw'
+    }));
+
+    // Klantadres voor particulier = primair adres; voor zakelijk leeg
+    const klantAdres = isB2C ? `${f.straat} ${f.huisnummer}, ${f.postcode} ${f.stad}` : '';
+    // Levering afleveradres
+    const leveringAdres = f.levering ? `${f.levStraat} ${f.levHuisnummer}, ${f.levPostcode} ${f.levStad}` : '';
+
+    const result = await apiPost({
+      action: "reserveMulti",
+      items,
+      customerType: state.customerType,
+      name: f.name,
+      company: f.company,
+      kvk: f.kvk,
+      btw: f.btw,
+      email: f.email,
+      phone: f.phone,
+      notes: f.notes,
+      klantAdres,
+      levering: f.levering ? "Ja" : "Nee",
+      afleveradres: leveringAdres
+    });
+
+    if (result?.success) {
+      // Bouw confirmation data voor de bevestigingsmodal
+      const isB2C = state.customerType === 'b2c';
+      // v18.4: B2C = €15,99/band incl BTW · B2B = €150 flat incl BTW
+      const bandenQty = items.reduce((s, i) => s + i.qty, 0);
+      const leveringIncl = f.levering ? (isB2C ? 15.99 * bandenQty : 150) : 0;
+      const leveringExcl = leveringIncl / 1.21;
+      const totaalIncl = items.reduce((s, i) => s + i.qty * (isB2C ? i.staffelPrijs : i.staffelPrijs * 1.21), 0) + leveringIncl;
+      const totaalExcl = items.reduce((s, i) => s + i.qty * (isB2C ? i.staffelPrijs / 1.21 : i.staffelPrijs), 0) + leveringExcl;
+
+      const confirmationData = {
+        id: result.reservationId || 'TK-' + new Date().getFullYear() + '-??',
+        customerType: state.customerType,
+        name: f.name,
+        company: f.company,
+        kvk: f.kvk,
+        btw: f.btw,
+        email: f.email,
+        phone: f.phone,
+        klantAdres: isB2C ? `${f.straat} ${f.huisnummer}, ${f.postcode} ${f.stad}` : '',
+        items,
+        notes: f.notes,
+        levering: f.levering ? 'Ja' : 'Nee',
+        afleveradres: f.levering ? `${f.levStraat} ${f.levHuisnummer}, ${f.levPostcode} ${f.levStad}` : '',
+        totaalIncl,
+        totaalExcl
+      };
+
+      setState({
+        showCartModal: false,
+        cart: {},
+        cardQty: {},
+        submitting: false,
+        confirmationData,
+        reserveForm: { name: "", company: "", kvk: "", btw: "", email: "", phone: "", notes: "",
+          straat: "", huisnummer: "", postcode: "", stad: "",
+          levering: false, levStraat: "", levHuisnummer: "", levPostcode: "", levStad: "" }
+      });
+      // v18.5 fix: fetchInventory VERWIJDERD hier om flits-effect in confirmation-modal te voorkomen.
+      // Voorraad wordt ververst bij closeConfirmation() i.p.v. tijdens het openen van de modal.
+    } else {
+      notify(result?.error || "Er ging iets mis", "error");
+      setState({ submitting: false });
+    }
+  } catch (err) {
+    notify("Fout: " + err.message, "error");
+    setState({ submitting: false });
+  }
+}
+
+async function updateStatus(resId, status) {
+  try {
+    const result = await apiPost({ action: "updateStatus", reservationId: resId, status, pin: state.adminPin });
+    if (result?.success) { notify(resId + " → " + statusLabel(status)); fetchReservations(); fetchInventory(); }
+    else notify(result?.error || "Fout", "error");
+  } catch (err) { notify("Fout: " + err.message, "error"); }
+}
+
+// ========== CART LOGIC ==========
+
+function getCartQty(tireId) {
+  return state.cart[tireId]?.qty || 0;
+}
+
+function getCardQty(tireId) {
+  return state.cardQty[tireId] || 1;
+}
+
+function setCardQty(tireId, delta) {
+  const tire = state.tires.find(t => t.id === tireId);
+  if (!tire) return;
+  const avail = tire.available ?? tire.stock;
+  const inCart = getCartQty(tireId);
+  const maxAdd = avail - inCart;
+  const current = getCardQty(tireId);
+  const next = Math.max(1, Math.min(maxAdd, current + delta));
+  setState({ cardQty: { ...state.cardQty, [tireId]: next } });
+}
+
+function addToCart(tireId) {
+  const tire = state.tires.find(t => t.id === tireId);
+  if (!tire) return;
+  const qty = getCardQty(tireId);
+  const avail = tire.available ?? tire.stock;
+  const alreadyInCart = getCartQty(tireId);
+  if (alreadyInCart + qty > avail) { notify("Niet genoeg op voorraad", "error"); return; }
+
+  const newCart = { ...state.cart };
+  if (newCart[tireId]) {
+    newCart[tireId] = { ...newCart[tireId], qty: newCart[tireId].qty + qty };
+  } else {
+    newCart[tireId] = { tire, qty };
+  }
+  // Reset card qty
+  const newCardQty = { ...state.cardQty, [tireId]: 1 };
+  setState({ cart: newCart, cardQty: newCardQty });
+  notify(`${qty}× ${tire.brand} ${tire.size} toegevoegd aan mandje`);
+}
+
+function removeFromCart(tireId) {
+  const newCart = { ...state.cart };
+  delete newCart[tireId];
+  setState({ cart: newCart });
+}
+
+function updateCartQty(tireId, delta) {
+  const tire = state.tires.find(t => t.id === tireId);
+  if (!tire) return;
+  const avail = tire.available ?? tire.stock;
+  const current = state.cart[tireId]?.qty || 0;
+  const next = current + delta;
+  if (next <= 0) { removeFromCart(tireId); return; }
+  if (next > avail) { notify("Niet genoeg op voorraad", "error"); return; }
+  setState({ cart: { ...state.cart, [tireId]: { ...state.cart[tireId], qty: next } } });
+}
+
+function getCartCount() {
+  return Object.values(state.cart).reduce((s, i) => s + i.qty, 0);
+}
+
+function getCartTotal() {
+  // Retailprijs (price2C) als referentie voor besparingberekening
+  return Object.values(state.cart).reduce((s, i) => s + i.qty * i.tire.price2C, 0);
+}
+
+function getCartStaffelTotal() {
+  const cartCount = getCartCount();
+  return Object.values(state.cart).reduce((s, i) => s + i.qty * getStaffelPrice(i.tire, cartCount), 0);
+}
+
+// ========== HELPERS ==========
+
+// v18.5.2: notify() gebruikt nu direct een DOM-toast i.p.v. setState
+// Voorkomt re-renders die CSS-animaties in open modals opnieuw triggeren (flitseffect).
+let _notifyTimer = null;
+function notify(msg, type = "success") {
+  const el = document.getElementById('notificationToast');
+  if (!el) return;
+  if (_notifyTimer) { clearTimeout(_notifyTimer); _notifyTimer = null; }
+  el.className = 'notify ' + type;
+  el.textContent = msg;
+  el.style.display = 'block';
+  // Restart slideDown animatie
+  el.style.animation = 'none';
+  void el.offsetWidth; // force reflow
+  el.style.animation = '';
+  _notifyTimer = setTimeout(() => {
+    el.style.display = 'none';
+    _notifyTimer = null;
+  }, 4000);
+}
+
+function seasonClass(s) {
+  if (s === "Zomer") return "zomer";
+  if (s === "Winter") return "winter";
+  return "all-season";
+}
+function seasonIcon(s) {
+  if (s === "Zomer") return "☀️";
+  if (s === "Winter") return "❄️";
+  return "🌤️";
+}
+function statusLabel(s) {
+  return { pending: "Nieuw", confirmed: "Bevestigd", invoiced: "Gefactureerd", completed: "Opgehaald", cancelled: "Geannuleerd" }[s] || s;
+}
+function statusColor(s) {
+  return { pending: "#F59E0B", confirmed: "#3B82F6", invoiced: "#8B5CF6", completed: "#10B981", cancelled: "#6B7280" }[s] || "#6B7280";
+}
+function statusNext(s) {
+  return { pending: "confirmed", confirmed: "invoiced", invoiced: "completed" }[s] || null;
+}
+function statusNextLabel(s) {
+  return { pending: "Bevestigen", confirmed: "Factureren", invoiced: "Opgehaald" }[s] || "";
+}
+function statusNextColor(s) {
+  const n = statusNext(s);
+  return n ? statusColor(n) : "";
+}
+
+function getFiltered() {
+  let list = state.tires.filter(t => {
+    if (state.filterSeason !== "Alle" && t.season !== state.filterSeason) return false;
+    if (state.filterBrand !== "Alle" && t.brand !== state.filterBrand) return false;
+    if (state.search) {
+      const q = state.search.toLowerCase();
+      return (t.brand + t.model + t.size + t.ref).toLowerCase().includes(q);
+    }
+    return true;
+  });
+  list.sort((a, b) => {
+    // Uitverkocht altijd achteraan
+    const aOut = (a.available ?? a.stock) <= 0;
+    const bOut = (b.available ?? b.stock) <= 0;
+    if (aOut !== bOut) return aOut ? 1 : -1;
+
+    if (state.sortBy === "brand") {
+      // Tier eerst, dan rank binnen tier, dan alfabetisch op merk, dan model
+      const aTier = getMerkTierNr(a.brand);
+      const bTier = getMerkTierNr(b.brand);
+      if (aTier !== bTier) return aTier - bTier;
+      const aRank = MERK_TIER[a.brand] ?? 999;
+      const bRank = MERK_TIER[b.brand] ?? 999;
+      if (aRank !== bRank) return aRank - bRank;
+      return a.brand.localeCompare(b.brand) || a.model.localeCompare(b.model);
+    }
+    if (state.sortBy === "price") return a.priceB2B - b.priceB2B;
+    if (state.sortBy === "size") return a.size.localeCompare(b.size);
+    return 0;
+  });
+  return list;
+}
+
+function getBrands() {
+  return ["Alle", ...[...new Set(state.tires.map(t => t.brand))].sort()];
+}
+
+// ========== v18.6 MERKRANGSCHIKKING ==========
+const MERK_TIER = {
+  // 0 = Topmerk
+  "Michelin":1, "Continental":2, "Bridgestone":3, "Pirelli":4, "Goodyear":5,
+  // 1 = Premium
+  "Dunlop":10, "Hankook":11, "Yokohama":12, "Nokian":13, "Vredestein":14,
+  "Toyo":15, "Kumho":16,
+  // 2 = Kwaliteit
+  "Kleber":20, "Nexen":21, "Maxxis":22, "Barum":23, "Fulda":24,
+  "Cooper":25, "Sailun":26, "Kenda":27, "Nankang":28, "GT Radial":29,
+  "Minerva":30, "Gripmax":31, "Goodride":32, "Rotalla":33, "Hifly":34,
+  "Linglong":35, "Ovation":36, "Star Performer":37, "Petlas":38,
+  "Tristar":39, "Fortuna":40, "Infinity":41, "Riken":42, "CST":43,
+};
+
+function getMerkTierNr(brand) {
+  const rank = MERK_TIER[brand];
+  if (rank === undefined) return 3;          // onbekend → Budget
+  if (rank <= 5)  return 0;                  // Topmerk
+  if (rank <= 16) return 1;                  // Premium
+  return 2;                                  // Kwaliteit
+}
+
+const TIER_LABELS = [
+  { emoji: "🏆", label: "Topmerken" },
+  { emoji: "⭐", label: "Premium" },
+  { emoji: "✅", label: "A-Kwaliteit" },
+  { emoji: "💰", label: "Budget & Kwaliteit" },
+];
+
+
+function esc(s) { const d = document.createElement("div"); d.textContent = String(s); return d.innerHTML; }
+
+function dots(avail, total) {
+  const max = Math.min(total, 8);
+  let html = '<div class="dots">';
+  for (let i = 0; i < max; i++) html += `<div class="dot ${i < avail ? 'on' : 'off'}"></div>`;
+  if (total > 8) html += `<span style="font-size:10px;color:var(--text3);margin-left:2px">+${total-8}</span>`;
+  html += '</div>';
+  return html;
+}
+
+// ========== v18.6 EPREL INFO-MODAL ==========
+
+function openInfoModal(tireId) { setState({ infoTireId: tireId }); }
+function closeInfoModal()       { setState({ infoTireId: null }); }
+
+function renderTireInfoModal() {
+  const t = state.tires.find(x => x.id === state.infoTireId);
+  if (!t) return '';
+
+  const eprelId  = getEprelId(t.eprelQR);
+  const labelUrl = getEprelLabelUrl(t.eprelQR);
+  const seasonLbl = { Zomer: '☀️', Winter: '❄️', 'All-season': '🌦️' }[t.season] || '';
+
+  const specsRows = [
+    ['Merk',      esc(t.brand)],
+    ['Model',     esc(t.model)],
+    ['Maat',      esc(t.size)],
+    ['Seizoen',   seasonLbl + ' ' + esc(t.season)],
+    t.loadIndex ? ['Draagvermogen', esc(t.loadIndex)] : null,
+    t.dot        ? ['DOT / productie', esc(t.dot)]  : null,
+    t.ean        ? ['EAN',            esc(t.ean)]   : null,
+  ].filter(Boolean);
+
+  return `
+  <div class="eprel-overlay" onclick="closeInfoModal()">
+    <div class="eprel-box" onclick="event.stopPropagation()">
+      <div class="eprel-header">
+        <div>
+          <div class="eprel-title">${esc(t.brand)} ${esc(t.model)}</div>
+          <div class="eprel-subtitle">${esc(t.size)} ${seasonLbl} ${esc(t.season)}</div>
+        </div>
+        <button class="eprel-close" onclick="closeInfoModal()" title="Sluiten">✕</button>
+      </div>
+
+      <div class="eprel-body">
+        <!-- Bandenfoto (of merkplaceholder als foto ontbreekt) -->
+        ${brandImg(t,'eprel-brand-img',100)}
+
+        <!-- EU Energielabel (alleen tonen als eprelQR beschikbaar is) -->
+        ${labelUrl ? `
+        <div class="eprel-label-wrap" style="width:100%">
+          <div class="eprel-label-title">🇪🇺 EU Energielabel</div>
+          <img class="eprel-label-img" src="${labelUrl}" alt="EU energielabel ${esc(t.brand)} ${esc(t.model)}"
+               loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'eprel-label-none\\'>Label tijdelijk niet beschikbaar — bekijk via EPREL ↓</div>'">
+        </div>` : ``}
+
+        <!-- Specificaties -->
+        <table class="eprel-specs" style="width:100%">
+          ${specsRows.map(([k,v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join('')}
+        </table>
+
+        <!-- Link naar EPREL website -->
+        ${eprelId ? `
+        <div class="eprel-link-row">
+          <a class="eprel-ext-link" href="https://eprel.ec.europa.eu/qr/${eprelId}" target="_blank" rel="noopener">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Bekijk op eprel.ec.europa.eu
+          </a>
+        </div>` : ''}
+      </div>
+    </div>
+  </div>`;
+}
+
+// ========== RENDER SHOP ==========
+
+function render() {
+  const app = document.getElementById("app");
+  const pendingCount = state.reservations.filter(r => r.status === "pending").length;
+  const cartCount = getCartCount();
+
+  let html = "";
+
+  // v18.5.2: notification rendert nu via stand-alone toast element (zie notify() functie)
+
+  // ========== LANDING VIEW ==========
+  if (state.view === "landing") {
+    html += renderLanding();
+    app.innerHTML = html;
+    bindEvents();
+    return;
+  }
+
+  // ========== B2C INFO-BANNER ==========
+  if (state.view === "shop" && state.customerType === 'b2c') {
+    html += `
+    <div class="b2c-banner">
+      ✓ Particulier-weergave · Alle prijzen <span class="highlight">inclusief 21% BTW</span> met <span class="highlight">25% korting</span> al verrekend
+    </div>`;
+  }
+
+  // Staffelbanner (alleen voor zakelijke klanten)
+  const currentTier = getStaffelTier(cartCount);
+  const nextTier = STAFFEL.find(s => s.min > cartCount);
+
+  if (state.view === "shop" && state.customerType === 'b2b') {
+    html += `
+    <div class="staffel-banner" onclick="toggleStaffel()">
+      <div class="staffel-banner-inner">
+        <div class="staffel-banner-left">
+          <span class="staffel-banner-icon">🏷️</span>
+          <div>
+            <div class="staffel-banner-text">Staffelkorting — hoe meer banden, hoe meer korting</div>
+            <div class="staffel-banner-sub">&lt;10 stuks: websiteprijs · 10–49: 40% · 50–99: 45% · 100+: 50% korting op retailprijs</div>
+          </div>
+        </div>
+        <span class="staffel-chevron ${state.showStaffel ? 'open' : ''}">▼</span>
+      </div>
+    </div>`;
+
+    if (state.showStaffel) {
+      html += `
+      <div class="staffel-dropdown">
+        <div class="staffel-dropdown-inner">
+          <div class="staffel-grid">
+            ${STAFFEL.map(tier => `
+            <div class="staffel-tier ${currentTier === tier ? 'active' : ''}">
+              <div class="staffel-tier-range">${tier.max === Infinity ? tier.min + '+' : tier.min + '–' + tier.max} stuks ${currentTier === tier ? '← jij nu' : ''}</div>
+              <div class="staffel-tier-pct">${tier.pct === 0 ? 'Retail' : '-' + tier.pct + '%'}</div>
+              <div class="staffel-tier-label">${tier.label}</div>
+            </div>`).join('')}
+          </div>
+        </div>
+      </div>`;
+    }
+  }
+
+  // Header
+  html += `
+  <div class="header">
+    <div class="header-inner">
+      <div class="logo" onclick="goLanding()" style="cursor:pointer" title="Naar startpagina">
+        <div class="logo-icon">TK</div>
+      <div style="display:flex;flex-direction:column;justify-content:center">
+          <div style="font-weight:800;font-size:17px;color:#ffffff;letter-spacing:-0.3px;line-height:1.1">TK Handelsonderneming</div>
+          <div style="font-size:10px;color:#9ca3af;letter-spacing:1.5px;text-transform:uppercase;margin-top:1px">Tire Inventory</div>
+        </div>
+      </div>
+      <div class="header-right">
+        ${state.customerType ? `
+        <div class="ct-toggle" title="Wissel klantweergave">
+          <button class="${state.customerType === 'b2c' ? 'active' : ''}" onclick="switchCustomerType('b2c')">👤 Particulier</button>
+          <button class="${state.customerType === 'b2b' ? 'active' : ''}" onclick="switchCustomerType('b2b')">🏢 Zakelijk</button>
+        </div>` : ''}
+        <button class="cart-btn ${cartCount > 0 ? 'has-items' : ''}" onclick="openCart()">
+          🛒 Mandje${cartCount > 0 ? `<span class="cart-count">${cartCount}</span>` : ''}
+        </button>
+        <div class="pill-nav">
+          <button class="pill-btn ${state.view === 'shop' ? 'active' : ''}" onclick="goShop()">Catalogus</button>
+          ${state.showAdminBtn ? `<button class="pill-btn ${state.view === 'admin' ? 'active' : ''}" onclick="goAdmin()">
+            Admin${pendingCount > 0 ? `<span class="pill-badge">${pendingCount}</span>` : ''}
+          </button>` : ''}
+        </div>
+      </div>
+    </div>
+  </div>`;
+
+  html += '<div class="main">';
+
+  if (state.view === "shop") {
+    html += renderShop();
+  } else if (state.view === "admin" && state.isAdmin) {
+    html += renderAdmin();
+  }
+
+  html += '</div>';
+
+  // Modals
+  if (state.showCartModal) html += renderCartModal();
+  if (state.showPinModal) html += renderPinModal();
+  if (state.factuurPreviewId) html += renderFactuurPreviewModal();
+  if (state.confirmationData) html += renderConfirmationModal();
+  if (state.infoTireId) html += renderTireInfoModal(); // v18.6: EPREL info-modal
+
+  // Footer
+  html += `
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-name">TK HANDELSONDERNEMING</div>
+      <div class="footer-meta">
+        <span>📍 Tilburg</span>
+        <span>KvK: 92612253</span>
+        <span>BTW: NL004964775B51</span>
+        <span>✉️ thomas@tkhandelsonderneming.nl</span>
+        <span>📞 +31 6 43481608</span>
+      </div>
+      <div class="footer-legal">Reserveringen zijn bindend. Door een reservering te plaatsen gaat u akkoord met onze
+        <a href="voorwaarden.html" style="color:var(--amber);text-decoration:underline;">algemene voorwaarden</a>.
+      </div>
+    </div>
+  </footer>`;
+
+  app.innerHTML = html;
+  bindEvents();
+  updateStickyCartBar(); // v18.5: sticky mobile cart-bar sync
+}
+
+// v18.5: Sticky mobile cart-bar — toont aantal + totaal, opent cart-modal bij tap
+function updateStickyCartBar() {
+  const count = getCartCount();
+  const shouldShow = state.view === 'shop' && count > 0 && !state.showCartModal;
+
+  document.body.classList.toggle('sticky-cart-visible', shouldShow);
+  if (!shouldShow) return;
+
+  const badge  = document.getElementById('stickyCartBadge');
+  const countEl = document.getElementById('stickyCartCount');
+  const totalEl = document.getElementById('stickyCartTotal');
+
+  if (badge) badge.textContent = count;
+  if (countEl) countEl.textContent = count === 1 ? '1 band in winkelmand' : count + ' banden in winkelmand';
+  if (totalEl) {
+    const total = getCartStaffelTotal();
+    const label = state.customerType === 'b2b' ? 'excl. BTW' : 'incl. BTW';
+    totalEl.textContent = '€ ' + total.toFixed(2).replace('.', ',') + ' ' + label;
+  }
+}
+
+function renderLanding() {
+  return `
+  <div class="landing">
+    <div class="landing-bg">
+      <svg class="landing-tire-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <radialGradient id="tireGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#1a1a1a"/>
+            <stop offset="60%" stop-color="#0a0a0a"/>
+            <stop offset="100%" stop-color="#000"/>
+          </radialGradient>
+          <linearGradient id="rimGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#888"/>
+            <stop offset="50%" stop-color="#444"/>
+            <stop offset="100%" stop-color="#222"/>
+          </linearGradient>
+        </defs>
+        <circle cx="200" cy="200" r="195" fill="url(#tireGrad)" stroke="#333" stroke-width="2"/>
+        <circle cx="200" cy="200" r="150" fill="none" stroke="#222" stroke-width="1" stroke-dasharray="4 6"/>
+        ${Array.from({length: 24}, (_, i) => {
+          const a = (i * 15) * Math.PI / 180;
+          const x1 = 200 + Math.cos(a) * 160;
+          const y1 = 200 + Math.sin(a) * 160;
+          const x2 = 200 + Math.cos(a) * 195;
+          const y2 = 200 + Math.sin(a) * 195;
+          return `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#0a0a0a" stroke-width="4"/>`;
+        }).join('')}
+        <circle cx="200" cy="200" r="90" fill="url(#rimGrad)" stroke="#555" stroke-width="1"/>
+        ${Array.from({length: 5}, (_, i) => {
+          const a = (i * 72 - 90) * Math.PI / 180;
+          const x = 200 + Math.cos(a) * 55;
+          const y = 200 + Math.sin(a) * 55;
+          return `<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="12" ry="28" fill="#333" transform="rotate(${i*72} ${x.toFixed(1)} ${y.toFixed(1)})"/>`;
+        }).join('')}
+        <circle cx="200" cy="200" r="22" fill="#222" stroke="#F59E0B" stroke-width="2"/>
+        <text x="200" y="207" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="16" font-weight="900" fill="#F59E0B">TK</text>
+      </svg>
+    </div>
+    <div class="landing-content">
+      <div class="landing-logo">
+        <div class="landing-logo-icon">TK</div>
+        <div style="text-align:left">
+          <div class="landing-logo-text">TK Handelsonderneming</div>
+          <div class="landing-logo-sub">Tilburg</div>
+        </div>
+      </div>
+      <h1 class="landing-headline">
+        A-kwaliteit banden.<br>
+        <span class="accent">Scherp geprijsd.</span>
+      </h1>
+      <p class="landing-subhead">
+        Direct uit voorraad in Kaatsheuvel — voor elk wiel, particulier én zakelijk.
+      </p>
+      <div class="landing-usps">
+        <span><span class="check">✓</span> Direct beschikbaar</span>
+        <span><span class="check">✓</span> Premium merken</span>
+        <span><span class="check">✓</span> Afhalen of laten bezorgen</span>
+      </div>
+      <div class="landing-choice">
+        <button class="choice-card" onclick="chooseCustomerType('b2c')">
+          <div class="choice-icon">👤</div>
+          <div class="choice-title">Particulier</div>
+          <div class="choice-desc">Eén set nieuwe banden nodig? Bekijk onze catalogus met scherpe prijzen inclusief BTW.</div>
+          <div class="choice-perks">
+            <span><span class="perk-icon">✓</span> 25% korting op alle banden</span>
+            <span><span class="perk-icon">✓</span> Alle prijzen incl. 21% BTW</span>
+            <span><span class="perk-icon">✓</span> Afhalen in Kaatsheuvel of bezorgen (€15,99/band)</span>
+          </div>
+          <div class="choice-cta">Ga naar catalogus →</div>
+        </button>
+        <button class="choice-card" onclick="chooseCustomerType('b2b')">
+          <div class="choice-icon">🏢</div>
+          <div class="choice-title">Zakelijk</div>
+          <div class="choice-desc">Garagebedrijf of handelaar? Profiteer van staffelkorting tot 50% bij volumeafname.</div>
+          <div class="choice-perks">
+            <span><span class="perk-icon">✓</span> Staffel tot 50% korting</span>
+            <span><span class="perk-icon">✓</span> Alle prijzen excl. BTW</span>
+            <span><span class="perk-icon">✓</span> KvK + BTW factuur</span>
+          </div>
+          <div class="choice-cta">Ga naar catalogus →</div>
+        </button>
+      </div>
+      <!-- v18.5: TRUST-STROOK -->
+      <div class="landing-trust" role="list" aria-label="Bedrijfsgegevens en vertrouwen">
+        <div class="landing-trust-item" role="listitem">
+          <svg class="landing-trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h1M9 13h1M9 17h1M14 9h1M14 13h1M14 17h1"/></svg>
+          <span><strong>KvK</strong> 92612253</span>
+        </div>
+        <div class="landing-trust-item" role="listitem">
+          <svg class="landing-trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          <span><strong>Sinds</strong> 2025</span>
+        </div>
+        <div class="landing-trust-item" role="listitem">
+          <svg class="landing-trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>Afhalen in <strong>Kaatsheuvel</strong></span>
+        </div>
+        <div class="landing-trust-item" role="listitem">
+          <svg class="landing-trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span><strong>Beveiligde</strong> bestelling</span>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderShop() {
+  const allTires = state.tires;
+  const cartCount = getCartCount();
+  const currentTier = getStaffelTier(cartCount);
+  const nextTier = STAFFEL.find(s => s.min > cartCount);
+
+  // Splits beschikbaar en uitverkocht
+  const available = getFiltered().filter(t => (t.available ?? t.stock) > 0);
+  const soldOut = state.tires.filter(t => (t.available ?? t.stock) <= 0);
+  const brands = getBrands();
+
+  let html = `
+  <div class="filters">
+    <input id="searchInput" value="${esc(state.search)}" placeholder="Zoek merk, model, maat..." />
+    <select id="seasonFilter">
+      <option value="Alle" ${state.filterSeason==='Alle'?'selected':''}>Alle seizoenen</option>
+      <option value="Zomer" ${state.filterSeason==='Zomer'?'selected':''}>☀️ Zomer</option>
+      <option value="Winter" ${state.filterSeason==='Winter'?'selected':''}>❄️ Winter</option>
+      <option value="All-Season" ${state.filterSeason==='All-Season'?'selected':''}>🌤️ All-Season</option>
+    </select>
+    <select id="brandFilter">
+      ${brands.map(b => `<option value="${esc(b)}" ${state.filterBrand===b?'selected':''}>${esc(b)}</option>`).join('')}
+    </select>
+    <select id="sortSelect">
+      <option value="brand" ${state.sortBy==='brand'?'selected':''}>Merk A-Z</option>
+      <option value="price" ${state.sortBy==='price'?'selected':''}>Prijs laag-hoog</option>
+      <option value="size" ${state.sortBy==='size'?'selected':''}>Maat</option>
+    </select>
+  </div>`;
+
+  // Staffeltip (alleen voor zakelijk)
+  if (state.customerType === 'b2b') {
+    if (nextTier && cartCount > 0) {
+      const needed = nextTier.min - cartCount;
+      html += `<div class="staffel-tip">💡 <span>Voeg nog <strong>${needed} band${needed !== 1 ? 'en' : ''}</strong> toe en bespaar <strong>${nextTier.pct}%</strong> op je hele bestelling</span></div>`;
+    } else if (cartCount === 0 && STAFFEL[1]) {
+      html += `<div class="staffel-tip">💡 <span>Bestel <strong>${STAFFEL[0].min}+ banden</strong> voor <strong>${STAFFEL[0].pct}%</strong> korting, of <strong>${STAFFEL[1].min}+</strong> voor <strong>${STAFFEL[1].pct}%</strong> staffelkorting — klik op de banner voor meer info</span></div>`;
+    }
+  }
+
+  // === ONLANGS VERKOCHT SECTIE (v18.4: max 1 tegel) ===
+  if (soldOut.length > 0) {
+    const visible = soldOut.slice(0, 1);
+
+    html += `
+    <div class="sold-section">
+      <div class="sold-section-header">
+        <div class="sold-section-title">
+          🔴 Onlangs verkocht
+          <span class="sold-section-badge">${soldOut.length}</span>
+        </div>
+      </div>
+      <div class="sold-grid">`;
+
+    for (const t of visible) {
+      html += `
+      <div class="tire-card sold-card">
+        <div class="sold-banner">
+          <span class="sold-banner-text">🔴 Onlangs verkocht</span>
+          <span class="sold-banner-sub">Niet meer beschikbaar</span>
+        </div>
+        <div class="tire-img-wrap" style="opacity:.45;filter:grayscale(55%)">
+          ${brandImg(t,'tire-img',80)}
+        </div>
+        <div class="tire-top">
+          <div>
+            <div class="tire-brand">${esc(t.brand)}</div>
+            <div class="tire-model">${esc(t.model)}</div>
+          </div>
+          <span class="season ${seasonClass(t.season)}">${seasonIcon(t.season)} ${esc(t.season)}</span>
+        </div>
+        <div class="tire-mid">
+          <span class="tire-size">${esc(t.size)}</span>
+          ${t.loadIndex ? `<span class="tire-load">${esc(t.loadIndex)}</span>` : ''}
+        </div>
+        <div class="tire-bottom">
+          <div>
+            <span style="font-size:18px;font-weight:800;color:var(--text3)">€${t.priceB2B.toFixed(2)}</span>
+            <span class="tire-price-label">B2B</span>
+            <div class="tire-advies">€${t.price2C.toFixed(2)} advies</div>
+          </div>
+          <div class="tire-stock">
+            <div class="tire-avail no">Uitverkocht</div>
+          </div>
+        </div>
+        ${t.dot ? `<div class="tire-meta">DOT ${esc(t.dot)} · Ref: ${esc(t.ref)}</div>` : ''}
+      </div>`;
+    }
+
+    html += `</div></div>`;
+  }
+
+  // === BESCHIKBARE BANDEN ===
+  html += `<div class="count">${state.loading ? 'Voorraad laden...' : available.length + ' banden beschikbaar'}</div>`;
+
+  // Categorieheaders alleen bij standaard merk-sortering zonder actieve filter
+  const toonCats = state.sortBy === 'brand' && state.filterBrand === 'Alle' && !state.search;
+  let huidigeTier = -1;
+
+  if (toonCats) {
+    html += `<div class="tier-grid-wrap">`;
+  } else {
+    html += `<div class="grid">`;
+  }
+
+  for (const t of available) {
+    const avail = t.available ?? t.stock;
+    const inCart = getCartQty(t.id);
+    const cardQty = getCardQty(t.id);
+    const maxAdd = avail - inCart;
+    const isInCart = inCart > 0;
+    const staffelPrice = getStaffelPrice(t, cartCount);
+    const showDiscount = currentTier.pct > 0;
+    const isB2C = state.customerType === 'b2c';
+
+    // Categorie-header injecteren bij wisseling van tier (alleen bij merk-sortering)
+    if (toonCats) {
+      const tierNr = getMerkTierNr(t.brand);
+      if (tierNr !== huidigeTier) {
+        // Sluit vorige grid af (behalve de eerste)
+        if (huidigeTier !== -1) html += `</div>`;
+        const tier = TIER_LABELS[tierNr];
+        html += `
+        <div class="tier-header">
+          <span class="tier-header-icon">${tier.emoji}</span>
+          <span class="tier-header-label">${tier.label}</span>
+        </div>
+        <div class="grid">`;
+        huidigeTier = tierNr;
+      }
+    }
+
+    html += `
+    <div class="tire-card ${isInCart ? 'in-cart' : ''}">
+      <div class="tire-img-wrap">
+        ${brandImg(t,'tire-img',80)}
+      </div>
+      <div class="tire-top">
+        <div>
+          <div class="tire-brand">${esc(t.brand)}</div>
+          <div class="tire-model">${esc(t.model)}</div>
+        </div>
+        <span class="season ${seasonClass(t.season)}">${seasonIcon(t.season)} ${esc(t.season)}</span>
+      </div>
+      <div class="tire-mid">
+        <span class="tire-size">${esc(t.size)}</span>
+        ${t.loadIndex ? `<span class="tire-load">${esc(t.loadIndex)}</span>` : ''}
+      </div>
+      <div class="tire-bottom">
+        <div>
+          ${isB2C ? `
+            <span class="price-b2c">€${getB2CPrice(t).toFixed(2)}</span><span class="price-b2c-from">incl. BTW</span>
+            <span class="price-b2c-original">€${getB2COriginalPrice(t).toFixed(2)} van</span>
+            <div class="price-b2c-label">-25% particulierkorting</div>
+          ` : (showDiscount ? `
+            <span class="tire-price-staffel">€${staffelPrice.toFixed(2)}</span><span class="tire-price-label" style="font-size:10px;color:var(--text3);margin-left:3px">excl. BTW</span>
+            <span class="tire-price-original">€${getAdviesPrijs(t).toFixed(2)}</span>
+            <div class="staffel-saving">-${currentTier.pct}% staffelkorting</div>
+          ` : `
+            <span class="tire-price">€${getStaffelPrice(t, 1).toFixed(2)}</span><span class="tire-price-label">excl. BTW</span>
+            <div class="tire-advies">€${getAdviesPrijs(t).toFixed(2)} advies excl. BTW</div>
+          `)}
+        </div>
+        <div class="tire-stock">
+          ${dots(avail, t.stock)}
+          <div class="tire-avail yes">${avail} beschikbaar</div>
+        </div>
+      </div>
+      ${t.dot ? `<div class="tire-meta">DOT ${esc(t.dot)} · Ref: ${esc(t.ref)}</div>` : ''}
+      <div class="card-footer">
+        ${isInCart ? `<div class="in-cart-indicator">✓ ${inCart}× in mandje <button class="remove-from-cart" onclick="removeFromCart('${t.id}')" title="Verwijder uit mandje">✕</button></div>` : ''}
+        ${maxAdd > 0 ? `
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="setCardQty('${t.id}', -1)" ${cardQty <= 1 ? 'disabled' : ''}>−</button>
+          <span class="qty-val">${cardQty}</span>
+          <button class="qty-btn" onclick="setCardQty('${t.id}', 1)" ${cardQty >= maxAdd ? 'disabled' : ''}>+</button>
+        </div>
+        <button class="add-btn" onclick="addToCart('${t.id}')">
+          🛒 ${isInCart ? 'Meer' : 'In mandje'}
+        </button>
+        ` : (isInCart ? '' : '')}
+        <button class="tire-info-btn" onclick="openInfoModal('${t.id}')" title="Bandinfo &amp; EU-label">
+          ℹ️ Info
+        </button>
+      </div>
+    </div>`;
+  }
+
+  html += '</div>'; // sluit laatste .grid (of .tier-grid-wrap bij geen cats)
+  if (toonCats && huidigeTier !== -1) html += '</div>'; // sluit .tier-grid-wrap
+  if (!state.loading && available.length === 0 && state.tires.length > 0) {
+    html += '<div class="empty">Geen banden gevonden met deze filters</div>';
+  }
+  return html;
+}
+
+function renderCartModal() {
+  const cartItems = Object.values(state.cart);
+  const f = state.reserveForm;
+  const cartCount = getCartCount();
+  const currentTier = getStaffelTier(cartCount);
+  const nextTier = STAFFEL.find(s => s.min > cartCount);
+
+  let html = `
+  <div class="modal-overlay" onclick="closeCart()">
+    <div class="modal-box" onclick="event.stopPropagation()" style="max-width:520px">
+      <div class="modal-header">
+        <div class="modal-title">🛒 Reserveringsmandje</div>
+        <button class="modal-close" onclick="closeCart()">✕</button>
+      </div>`;
+
+  if (cartItems.length === 0) {
+    html += `
+      <div class="cart-empty">
+        <div class="cart-empty-icon">🛒</div>
+        <div>Mandje is leeg</div>
+        <div style="font-size:12px;color:var(--text4);margin-top:6px">Selecteer banden uit de catalogus</div>
+      </div>
+      <button class="btn-ghost" onclick="closeCart()" style="width:100%;margin-top:12px">Terug naar catalogus</button>`;
+  } else {
+    const isB2C = state.customerType === 'b2c';
+    const cartTotal = getCartSubtotal();
+    // Voor b2b: besparing tov adviesprijs. Voor b2c: besparing = 25% van prijs2C (incl BTW)
+    const regularTotal = isB2C
+      ? cartItems.reduce((s, it) => s + it.qty * getB2COriginalPrice(it.tire), 0)
+      : cartItems.reduce((s, it) => s + it.qty * getAdviesPrijs(it.tire), 0);
+    const savings = regularTotal - cartTotal;
+    const summaryTitle = isB2C
+      ? `Geselecteerde banden · <span style="color:var(--green)">-25% particulierkorting (incl. BTW)</span>`
+      : `Geselecteerde banden${currentTier.pct > 0 ? ` · <span style="color:var(--green)">-${currentTier.pct}% staffelkorting actief</span>` : ''}`;
+
+    html += `
+      <div class="cart-summary">
+        <div class="cart-summary-title">${summaryTitle}</div>`;
+
+    for (const item of cartItems) {
+      const t = item.tire;
+      const avail = t.available ?? t.stock;
+      const unitPrice = getUnitPrice(t, cartCount);
+      html += `
+        <div class="cart-summary-item">
+          <div class="cart-item-info">
+            <div class="cart-item-name">${esc(t.brand)} ${esc(t.model)}</div>
+            <div class="cart-item-size">${esc(t.size)} · ${seasonIcon(t.season)} ${esc(t.season)}</div>
+          </div>
+          <div class="cart-item-qty">
+            <button class="cart-qty-btn" onclick="updateCartQty('${t.id}', -1)">−</button>
+            <span style="font-size:14px;font-weight:700;min-width:20px;text-align:center">${item.qty}</span>
+            <button class="cart-qty-btn" onclick="updateCartQty('${t.id}', 1)" ${item.qty >= avail ? 'disabled style="opacity:.3"' : ''}>+</button>
+          </div>
+          <div class="cart-item-price">€${(item.qty * unitPrice).toFixed(2)}</div>
+          <button class="cart-remove" onclick="removeFromCart('${t.id}')" title="Verwijderen">✕</button>
+        </div>`;
+    }
+
+    // Promo-blok: b2c = vaste korting-melding, b2b = staffel-progress
+    let promoBlock = '';
+    if (isB2C) {
+      promoBlock = `
+        <div style="
+          margin: 8px 0;
+          background: var(--green);
+          border-radius: 10px;
+          padding: 14px 16px;
+          display:flex; align-items:center; gap:12px;
+        ">
+          <div style="font-size:28px">🎉</div>
+          <div>
+            <div style="font-size:15px;font-weight:900;color:#000">25% korting al verrekend</div>
+            <div style="font-size:12px;color:rgba(0,0,0,.7);margin-top:2px">Alle prijzen tonen inclusief 21% BTW</div>
+          </div>
+        </div>`;
+    } else if (nextTier) {
+      promoBlock = `
+        <div style="
+          margin: 8px 0;
+          background: #10B981;
+          border-radius: 10px;
+          padding: 14px 16px;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        ">
+          <div style="font-size:32px;line-height:1">🎯</div>
+          <div style="flex:1">
+            <div style="font-size:16px;font-weight:900;color:#000;line-height:1.2">
+              Nog <span style="font-size:22px">${nextTier.min - cartCount}</span> band${nextTier.min - cartCount !== 1 ? 'en' : ''} → <span style="font-size:22px">-${nextTier.pct}%</span> korting!
+            </div>
+            <div style="font-size:12px;color:rgba(0,0,0,.7);margin-top:3px">
+              op je <strong>hele</strong> bestelling — voeg toe uit de catalogus
+            </div>
+          </div>
+        </div>`;
+    } else if (currentTier.pct > 0) {
+      promoBlock = `
+        <div style="
+          margin: 8px 0;
+          background: var(--amber);
+          border-radius: 10px;
+          padding: 14px 16px;
+          display:flex; align-items:center; gap:12px;
+        ">
+          <div style="font-size:28px">🏆</div>
+          <div>
+            <div style="font-size:16px;font-weight:900;color:#000">Maximale korting: -${currentTier.pct}% actief!</div>
+            <div style="font-size:12px;color:rgba(0,0,0,.7);margin-top:2px">Je hebt de hoogste staffelkorting bereikt</div>
+          </div>
+        </div>`;
+    }
+
+    const totalLabel = isB2C ? 'Totaal incl. BTW' : `Totaal${currentTier.pct > 0 ? ` (-${currentTier.pct}%)` : ''}`;
+
+    html += `
+        ${promoBlock}
+        <div class="cart-total">
+          <div>
+            <div class="cart-total-label">${totalLabel}</div>
+            ${savings > 0 ? `<div style="font-size:11px;color:var(--green)">Besparing: €${savings.toFixed(2)}</div>` : ''}
+          </div>
+          <div style="text-align:right">
+            ${savings > 0 ? `<div style="font-size:12px;color:var(--text4);text-decoration:line-through">€${regularTotal.toFixed(2)}</div>` : ''}
+            <div class="cart-total-val">€${cartTotal.toFixed(2)}</div>
+          </div>
+        </div>
+      </div>
+
+      ${renderReserveForm(isB2C, f, cartCount)}`;
+  }
+
+  html += `</div></div>`;
+  return html;
+}
+
+function renderReserveForm(isB2C, f, cartCount) {
+  const b2cFields = `
+    <div class="form-section-title">Uw gegevens</div>
+    <input id="resName" placeholder="Voor- en achternaam *" value="${esc(f.name)}" />
+    <input id="resEmail" placeholder="E-mail *" type="email" value="${esc(f.email)}" />
+    <input id="resPhone" type="tel" placeholder="Telefoon *" value="${esc(f.phone)}" />
+    <div style="display:grid;grid-template-columns:1fr 80px;gap:8px;margin-bottom:8px">
+      <input id="resStraat" placeholder="Straatnaam *" value="${esc(f.straat)}" />
+      <input id="resHuisnummer" placeholder="Nr. *" value="${esc(f.huisnummer)}" />
+    </div>
+    <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;margin-bottom:8px">
+      <input id="resPostcode" placeholder="Postcode *" value="${esc(f.postcode)}" />
+      <input id="resStad" placeholder="Plaats *" value="${esc(f.stad)}" />
+    </div>
+    <textarea id="resNotes" placeholder="Opmerkingen (optioneel)">${esc(f.notes)}</textarea>
+  `;
+
+  const b2bFields = `
+    <div class="form-section-title">Bedrijfsgegevens</div>
+    <input id="resCompany" placeholder="Bedrijfsnaam *" value="${esc(f.company)}" />
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <input id="resKvK" placeholder="KvK-nummer *" value="${esc(f.kvk)}" />
+      <input id="resBTW" placeholder="BTW-nummer (optioneel)" value="${esc(f.btw)}" />
+    </div>
+    <div class="form-section-title" style="margin-top:10px">Contactpersoon</div>
+    <input id="resName" placeholder="Naam contactpersoon *" value="${esc(f.name)}" />
+    <input id="resEmail" placeholder="E-mail *" type="email" value="${esc(f.email)}" />
+    <input id="resPhone" type="tel" placeholder="Telefoon *" value="${esc(f.phone)}" />
+    <textarea id="resNotes" placeholder="Opmerkingen (optioneel)">${esc(f.notes)}</textarea>
+  `;
+
+  // Levering-sectie (hetzelfde voor beide, maar b2c heeft al een afleveradres)
+  // v18.4: prijs verschilt — B2C €15,99/band, B2B €150 flat
+  const leveringLabel = isB2C
+    ? `+ €15,99 per band${cartCount > 0 ? ` (totaal €${(15.99 * cartCount).toFixed(2)})` : ''} incl. BTW`
+    : `+ €150,– incl. BTW`;
+  const leveringBlok = `
+    <div style="background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:14px 16px;margin-bottom:8px">
+      <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;font-weight:600;color:var(--text)">
+        <input type="checkbox" id="resLevering" ${f.levering ? 'checked' : ''} onchange="toggleLeveringFields()" style="width:18px;height:18px;accent-color:var(--amber);background:var(--border);border-radius:4px;cursor:pointer" />
+        <span>🚚 Levering/verzending gewenst${isB2C ? ' (ander adres dan hierboven)' : ''}</span>
+        <span style="margin-left:auto;font-size:13px;color:var(--amber);font-weight:700">${leveringLabel}</span>
+      </label>
+      <div id="leveringFields" style="display:${f.levering ? 'block' : 'none'};margin-top:12px">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Afleveradres</div>
+        <div style="display:grid;grid-template-columns:1fr 80px;gap:8px;margin-bottom:8px">
+          <input id="resLevStraat" placeholder="Straatnaam" value="${esc(f.levStraat)}" style="width:100%" />
+          <input id="resLevHuisnummer" placeholder="Nr." value="${esc(f.levHuisnummer)}" style="width:100%" />
+        </div>
+        <div style="display:grid;grid-template-columns:120px 1fr;gap:8px">
+          <input id="resLevPostcode" placeholder="Postcode" value="${esc(f.levPostcode)}" style="width:100%" />
+          <input id="resLevStad" placeholder="Plaats" value="${esc(f.levStad)}" style="width:100%" />
+        </div>
+      </div>
+    </div>
+  `;
+
+  return `
+    <div class="modal-form">
+      ${isB2C ? b2cFields : b2bFields}
+      ${leveringBlok}
+      <button class="btn-primary" onclick="doReserve()" ${state.submitting ? 'disabled' : ''} style="width:100%;padding:14px;font-size:15px;margin-top:4px">
+        ${state.submitting ? '<span class="spinner"></span> Bezig...' : `Reservering plaatsen (${cartCount} band${cartCount !== 1 ? 'en' : ''})`}
+      </button>
+      <div class="modal-hint">Na reservering ontvangt u een bevestiging en factuur van ons.</div>
+    </div>`;
+}
+
+// ========== CONFIRMATION MODAL ==========
+function getFirstName(fullName) {
+  if (!fullName) return '';
+  const trimmed = fullName.trim();
+  const space = trimmed.indexOf(' ');
+  return space > 0 ? trimmed.substring(0, space) : trimmed;
+}
+
+function renderConfirmationModal() {
+  const c = state.confirmationData;
+  if (!c) return '';
+  const isB2C = c.customerType === 'b2c';
+  const firstName = getFirstName(c.name);
+
+  // Timeline per klanttype
+  const b2cSteps = [
+    { done: true,  head: 'Reservering geplaatst',   desc: `Uw aanvraag met nummer ${c.id} is bij ons binnen.` },
+    { active: true, head: 'Bevestigingsmail',        desc: 'U ontvangt nog een bevestigingsmail van ons.' },
+    { head: 'Factuur met betaallink',                 desc: 'Aansluitend sturen wij de factuur — betalen kan eenvoudig via bankoverschrijving.' },
+    { head: c.levering === 'Ja' ? 'Verzending' : 'Ophalen op afspraak',
+      desc: c.levering === 'Ja'
+        ? `Na betaling sturen wij uw banden naar ${c.afleveradres || 'het doorgegeven adres'}.`
+        : 'Zodra de betaling binnen is, nemen wij contact op om een afhaalmoment te Kaatsheuvel af te spreken.' }
+  ];
+  const b2bSteps = [
+    { done: true,  head: 'Reservering bevestigd',    desc: `${c.id}` },
+    { active: true, head: 'Factuur per e-mail',      desc: 'Binnen 1 werkdag ontvangt u de factuur.' },
+    { head: 'Betaling',                              desc: 'Betalingstermijn 14 dagen netto.' },
+    { head: c.levering === 'Ja' ? 'Levering' : 'Afhalen', desc: c.levering === 'Ja' ? 'Conform afspraak op opgegeven adres.' : 'Afhalen volgens afspraak te Kaatsheuvel.' }
+  ];
+  const steps = isB2C ? b2cSteps : b2bSteps;
+
+  // Titel en subtitel per type
+  const title = isB2C
+    ? `Bedankt${firstName ? ', ' + esc(firstName) : ''}!`
+    : 'Reservering bevestigd';
+  const subtitle = isB2C
+    ? 'Uw reservering staat vast. Hieronder ziet u wat er nu gaat gebeuren.'
+    : `${esc(c.company || c.name)} — uw aanvraag is geregistreerd.`;
+
+  // Totaal-label per type
+  const totalLabel = isB2C ? 'Totaal te betalen (incl. BTW)' : 'Totaal incl. BTW';
+  const totalSub = isB2C ? 'BTW en 25% korting al verrekend' : 'Subtotaal excl. BTW: €' + c.totaalExcl.toFixed(2);
+
+  // Items lijst
+  const itemsHtml = (c.items || []).map(i => `
+    <div class="conf-item-row">
+      <div>
+        <div class="conf-item-name">${i.qty}× ${esc(i.brand)} ${esc(i.model)}</div>
+        <div class="conf-item-size">${esc(i.size)} · ${esc(i.season || '')}</div>
+      </div>
+      <div style="text-align:right;font-weight:600;color:var(--text)">
+        €${(i.qty * (isB2C ? i.staffelPrijs : i.staffelPrijs * 1.21)).toFixed(2)}
+      </div>
+    </div>
+  `).join('');
+
+  return `
+  <div class="conf-modal-overlay" onclick="closeConfirmation()">
+    <div class="conf-box" onclick="event.stopPropagation()">
+      <button class="conf-close" onclick="closeConfirmation()" title="Sluiten">✕</button>
+
+      <div class="conf-check-wrap">
+        <div class="conf-check-glow ${isB2C ? 'b2c' : 'b2b'}"></div>
+        <svg class="conf-check-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle class="conf-check-circle ${isB2C ? 'b2c' : 'b2b'}" cx="50" cy="50" r="38"/>
+          <polyline class="conf-check-mark ${isB2C ? 'b2c' : 'b2b'}" points="30,52 45,66 72,38"/>
+        </svg>
+      </div>
+
+      <div class="conf-title">${title}</div>
+      <div class="conf-sub">${subtitle}</div>
+
+      <div class="conf-resnum">
+        <div>
+          <div class="conf-resnum-label">Reserveringsnummer</div>
+          <div class="conf-resnum-val">${esc(c.id)}</div>
+        </div>
+        <button id="confCopyBtn" class="conf-copy-btn" onclick="copyReservationId()">📋 Kopieer</button>
+      </div>
+
+      <div class="conf-items">${itemsHtml}</div>
+
+      <div class="conf-total ${isB2C ? 'b2c' : ''}">
+        <div>
+          <div class="conf-total-label">${totalLabel}</div>
+          <div class="conf-total-sub">${totalSub}</div>
+        </div>
+        <div class="conf-total-val">€${c.totaalIncl.toFixed(2)}</div>
+      </div>
+
+      <div class="conf-timeline">
+        <div class="conf-timeline-title">Wat gebeurt er nu?</div>
+        <div class="conf-timeline-steps">
+          ${steps.map((s, idx) => `
+            <div class="conf-step">
+              <div class="conf-step-num ${s.done ? 'done' : (s.active ? 'active ' + (isB2C ? 'b2c-active' : '') : '')}">
+                ${s.done ? '✓' : (idx + 1)}
+              </div>
+              <div class="conf-step-text">
+                <div class="conf-step-head">${s.head}</div>
+                <div class="conf-step-desc">${s.desc}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="conf-actions">
+        <button class="conf-btn-primary" onclick="downloadConfirmationPDF()">
+          📄 Bevestiging als PDF
+        </button>
+        <button class="conf-btn-secondary" onclick="closeConfirmation()">
+          ${isB2C ? 'Terug naar catalogus' : 'Nieuwe reservering'}
+        </button>
+      </div>
+
+      ${isB2C ? `
+      <div class="conf-contact">
+        Vragen? Bel Thomas op <a href="tel:+31643481608">+31 6 43481608</a> of mail <a href="mailto:thomas@tkhandelsonderneming.nl">thomas@tkhandelsonderneming.nl</a>
+      </div>` : `
+      <div class="conf-contact">
+        Contact: <a href="mailto:thomas@tkhandelsonderneming.nl">thomas@tkhandelsonderneming.nl</a> · <a href="tel:+31643481608">+31 6 43481608</a>
+      </div>`}
+    </div>
+  </div>`;
+}
+
+function closeConfirmation() {
+  setState({ confirmationData: null });
+  fetchInventory(); // v18.5 fix: voorraad syncen na sluiten i.p.v. tijdens open (voorkomt flits)
+}
+
+function copyReservationId() {
+  const c = state.confirmationData;
+  if (!c) return;
+  const btn = document.getElementById('confCopyBtn');
+  const doneFeedback = () => {
+    if (btn) {
+      btn.classList.add('copied');
+      btn.innerHTML = '✓ Gekopieerd';
+      setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = '📋 Kopieer'; }, 2000);
+    }
+  };
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(c.id).then(doneFeedback).catch(() => {
+      notify('Kopiëren mislukt — noteer het nummer handmatig', 'error');
+    });
+  } else {
+    // Fallback voor oudere browsers / http
+    const ta = document.createElement('textarea');
+    ta.value = c.id;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); doneFeedback(); }
+    catch(e) { notify('Kopiëren niet ondersteund', 'error'); }
+    document.body.removeChild(ta);
+  }
+}
+
+async function downloadConfirmationPDF() {
+  const c = state.confirmationData;
+  if (!c) return;
+  // Hergebruik PDF-generator via fake-reservation object
+  const fakeReservation = {
+    id: c.id,
+    status: 'pending',
+    customerType: c.customerType,
+    name: c.name,
+    company: c.company,
+    kvk: c.kvk,
+    btw: c.btw,
+    email: c.email,
+    phone: c.phone,
+    klantAdres: c.klantAdres,
+    itemsJson: JSON.stringify(c.items),
+    qty: (c.items || []).reduce((s, i) => s + i.qty, 0),
+    notes: c.notes,
+    levering: c.levering,
+    afleveradres: c.afleveradres,
+    createdAt: new Date().toISOString()
+  };
+  try {
+    await generatePDFfromReservation(fakeReservation);
+  } catch(err) {
+    notify("Fout bij PDF: " + err.message, "error");
+  }
+}
+
+function renderAdmin() {
+  const res = [...state.reservations].sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
+  const counts = { total: res.length, pending: 0, confirmed: 0, invoiced: 0, completed: 0 };
+  res.forEach(r => { if (counts[r.status] !== undefined) counts[r.status]++; });
+
+  let html = `
+  <div class="admin-top">
+    <div class="admin-title">Reserveringen beheren</div>
+    <div class="admin-btns">
+      <button class="btn-ghost" onclick="fetchReservations()">Vernieuwen</button>
+      <button class="btn-ghost" onclick="adminLogout()">Uitloggen</button>
+    </div>
+  </div>
+  <div class="stats">
+    ${[{l:'Totaal',v:counts.total,c:'var(--text3)'},{l:'Nieuw',v:counts.pending,c:'var(--amber)'},{l:'Bevestigd',v:counts.confirmed,c:'var(--blue)'},{l:'Gefactureerd',v:counts.invoiced,c:'var(--purple)'},{l:'Opgehaald',v:counts.completed,c:'var(--green)'}]
+      .map(s => `<div class="stat"><div class="stat-val" style="color:${s.c}">${s.v}</div><div class="stat-label">${s.l}</div></div>`).join('')}
+  </div>`;
+
+  if (res.length === 0) {
+    html += '<div class="empty">Nog geen reserveringen</div>';
+  } else {
+    html += '<div class="res-list">';
+    for (const r of res) {
+      const sc = statusColor(r.status);
+      const next = statusNext(r.status);
+      // Parse items als JSON indien aanwezig
+      let itemsHtml = '';
+      if (r.itemsJson) {
+        try {
+          const items = JSON.parse(r.itemsJson);
+          itemsHtml = '<div class="res-items">' +
+            items.map(i => `<div class="res-item-row">${esc(i.brand)} ${esc(i.model)} · ${esc(i.size)} · ${i.qty}× · €${exclBTW(i.priceB2B || 0).toFixed(2)} excl. BTW</div>`).join('') +
+            '</div>';
+        } catch(e) {
+          itemsHtml = `<div class="res-tire">${esc(r.tireBrand || '')} ${esc(r.tireModel || '')} · ${esc(r.tireSize || '')} · ${r.qty || 1}×</div>`;
+        }
+      } else {
+        itemsHtml = `<div class="res-tire">${esc(r.tireBrand || '')} ${esc(r.tireModel || '')} · ${esc(r.tireSize || '')} · ${r.qty || 1}×</div>`;
+      }
+
+      html += `
+      <div class="res-card">
+        <div class="res-top">
+          <div>
+            <span class="res-name">${esc(r.name)}</span>
+            ${r.company ? `<span class="res-company">${esc(r.company)}</span>` : ''}
+            ${r.customerType === 'b2c' ? `<span class="status-badge ct-badge-b2c" style="margin-left:6px">👤 Particulier</span>` : (r.customerType === 'b2b' ? `<span class="status-badge ct-badge-b2b" style="margin-left:6px">🏢 Zakelijk</span>` : '')}
+          </div>
+          <span class="status-badge" style="background:${sc}22;color:${sc}">${statusLabel(r.status)}</span>
+        </div>
+        ${itemsHtml}
+        <div class="res-contact">${esc(r.email)} · ${esc(r.phone)}${r.kvk ? ` · KvK ${esc(r.kvk)}` : ''}${r.notes ? ` · "${esc(r.notes)}"` : ''}${r.levering === 'Ja' ? `<span style="margin-left:8px;background:rgba(59,130,246,.15);color:var(--blue);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700">🚚 Levering${r.afleveradres ? ': ' + esc(r.afleveradres) : ''}</span>` : ''}</div>
+        <div class="res-meta">${esc(r.id)} · ${r.createdAt ? new Date(r.createdAt).toLocaleString('nl-NL') : ''}</div>
+        ${r.status !== 'cancelled' && r.status !== 'completed' ? `
+        <div class="res-actions">
+          ${next ? `<button class="btn-primary" style="font-size:12px;padding:6px 14px;background:${statusNextColor(r.status)}" onclick="updateStatus('${r.id}','${next}')">${statusNextLabel(r.status)}</button>` : ''}
+          <button class="btn-ghost" style="font-size:12px;padding:6px 14px" onclick="showFactuurPreview('${r.id}')">📄 Factuur</button>
+          <button class="btn-ghost" style="font-size:12px;padding:6px 14px" onclick="updateStatus('${r.id}','cancelled')">Annuleren</button>
+        </div>` : ''}
+      </div>`;
+    }
+    html += '</div>';
+  }
+  return html;
+}
+
+function renderPinModal() {
+  return `
+  <div class="modal-overlay" onclick="closePin()">
+    <div class="modal-box" onclick="event.stopPropagation()" style="max-width:320px;text-align:center">
+      <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--amber),var(--amber-dark));margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:24px">🔒</div>
+      <div class="modal-title" style="margin-bottom:16px">Admin toegang</div>
+      <input id="pinInput" type="password" placeholder="Pincode" maxlength="6" style="width:100%;text-align:center;font-size:24px;letter-spacing:8px;margin-bottom:12px" />
+      <button class="btn-primary" onclick="doAdminLogin()" style="width:100%;padding:12px">Inloggen</button>
+      <div style="font-size:11px;color:var(--text4);margin-top:10px">Pin staat in de Apps Script (CONFIG.ADMIN_PIN)</div>
+    </div>
+  </div>`;
+}
+
+// ========== EVENT BINDING ==========
+
+function bindEvents() {
+  const el = (id) => document.getElementById(id);
+
+  const searchInput = el("searchInput");
+  if (searchInput) searchInput.oninput = (e) => setState({ search: e.target.value });
+
+  const seasonFilter = el("seasonFilter");
+  if (seasonFilter) seasonFilter.onchange = (e) => setState({ filterSeason: e.target.value });
+
+  const brandFilter = el("brandFilter");
+  if (brandFilter) brandFilter.onchange = (e) => setState({ filterBrand: e.target.value });
+
+  const sortSelect = el("sortSelect");
+  if (sortSelect) sortSelect.onchange = (e) => setState({ sortBy: e.target.value });
+
+  const pinInput = el("pinInput");
+  if (pinInput) {
+    pinInput.focus();
+    pinInput.onkeydown = (e) => { if (e.key === "Enter") doAdminLogin(); };
+  }
+}
+
+// ========== ACTIONS ==========
+
+function buildFactuurHTML(r) {
+  let items = [];
+  try { items = JSON.parse(r.itemsJson || "[]"); } catch(e) {
+    items = [{ brand: r.tireBrand, model: r.tireModel, size: r.tireSize, qty: r.qty || 1, priceB2B: 0, staffelPrijs: 0 }];
+  }
+
+  const BTW_PCT = 0.21;
+  const isB2C = r.customerType === 'b2c';  // fallback: b2b voor oude reserveringen zonder type
+  const datum = new Date().toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  // Levering: v18.4 — B2C €15,99/band incl BTW · B2B €150 flat incl BTW
+  const bandenQtyLev = items.reduce((s, i) => s + (i.qty || 0), 0);
+  const leveringIncl = r.levering === 'Ja' ? (isB2C ? 15.99 * bandenQtyLev : 150.00) : 0;
+  const leveringExcl = leveringIncl / (1 + BTW_PCT);
+  const leveringBTW  = leveringIncl - leveringExcl;
+
+  // BTW berekening per regel — gebruik staffelPrijs (=werkelijk betaalde prijs)
+  // B2C: staffelPrijs is incl BTW → excl = /1.21
+  // B2B: staffelPrijs is excl BTW → incl = *1.21
+  const itemsRows = items.map(i => {
+    const werkprijs = i.staffelPrijs || (i.priceB2B || 0);  // fallback
+    const prijsExcl = isB2C ? (werkprijs / (1 + BTW_PCT)) : werkprijs;
+    const prijsIncl = isB2C ? werkprijs : (werkprijs * (1 + BTW_PCT));
+    const totaalExcl = i.qty * prijsExcl;
+    const totaalIncl = i.qty * prijsIncl;
+
+    if (isB2C) {
+      // Particulier: incl BTW prominent
+      return `
+      <tr>
+        <td style="padding:10px 14px;border-bottom:1px solid #e5e7eb;font-family:'Segoe UI',Arial,sans-serif">${i.brand} ${i.model}<br><span style="font-size:12px;color:#6b7280">${i.size} · ${seasonIcon(i.season || '')}</span></td>
+        <td style="padding:10px 14px;border-bottom:1px solid #e5e7eb;text-align:center;font-family:'Segoe UI',Arial,sans-serif">${i.qty}</td>
+        <td style="padding:10px 14px;border-bottom:1px solid #e5e7eb;text-align:right;font-family:'Segoe UI',Arial,sans-serif">€${prijsIncl.toFixed(2)}</td>
+        <td style="padding:10px 14px;border-bottom:1px solid #e5e7eb;text-align:right;font-family:'Segoe UI',Arial,sans-serif;font-weight:600">€${totaalIncl.toFixed(2)}</td>
+      </tr>`;
+    } else {
+      // Zakelijk: excl BTW prominent (huidige layout)
+      return `
+      <tr>
+        <td style="padding:10px 14px;border-bottom:1px solid #e5e7eb;font-family:'Segoe UI',Arial,sans-serif">${i.brand} ${i.model}<br><span style="font-size:12px;color:#6b7280">${i.size} · ${seasonIcon(i.season || '')}</span></td>
+        <td style="padding:10px 14px;border-bottom:1px solid #e5e7eb;text-align:center;font-family:'Segoe UI',Arial,sans-serif">${i.qty}</td>
+        <td style="padding:10px 14px;border-bottom:1px solid #e5e7eb;text-align:right;font-family:'Segoe UI',Arial,sans-serif">€${prijsExcl.toFixed(2)}</td>
+        <td style="padding:10px 14px;border-bottom:1px solid #e5e7eb;text-align:right;font-family:'Segoe UI',Arial,sans-serif">€${totaalExcl.toFixed(2)}</td>
+      </tr>`;
+    }
+  }).join('');
+
+  // Totalen
+  const subtotaalExcl = items.reduce((s, i) => {
+    const werkprijs = i.staffelPrijs || (i.priceB2B || 0);
+    return s + i.qty * (isB2C ? werkprijs / (1 + BTW_PCT) : werkprijs);
+  }, 0) + leveringExcl;
+  const subtotaalIncl = items.reduce((s, i) => {
+    const werkprijs = i.staffelPrijs || (i.priceB2B || 0);
+    return s + i.qty * (isB2C ? werkprijs : werkprijs * (1 + BTW_PCT));
+  }, 0) + leveringIncl;
+  const totaalBTW = subtotaalIncl - subtotaalExcl;
+
+  // Voor de tfoot en totaal-balk
+  const totaalExcl = subtotaalExcl;
+  const totaalIncl = subtotaalIncl;
+
+  // Kolom-headers per type
+  const colHeaders = isB2C ? `
+    <th style="padding:12px 14px;text-align:left;font-size:12px;color:#9ca3af;font-weight:600;text-transform:uppercase;letter-spacing:.5px;font-family:'Segoe UI',Arial,sans-serif">Omschrijving</th>
+    <th style="padding:12px 14px;text-align:center;font-size:12px;color:#9ca3af;font-weight:600;text-transform:uppercase;letter-spacing:.5px;font-family:'Segoe UI',Arial,sans-serif">Aantal</th>
+    <th style="padding:12px 14px;text-align:right;font-size:12px;color:#9ca3af;font-weight:600;text-transform:uppercase;letter-spacing:.5px;font-family:'Segoe UI',Arial,sans-serif">Stukprijs incl.</th>
+    <th style="padding:12px 14px;text-align:right;font-size:12px;color:#9ca3af;font-weight:600;text-transform:uppercase;letter-spacing:.5px;font-family:'Segoe UI',Arial,sans-serif">Totaal incl.</th>
+  ` : `
+    <th style="padding:12px 14px;text-align:left;font-size:12px;color:#9ca3af;font-weight:600;text-transform:uppercase;letter-spacing:.5px;font-family:'Segoe UI',Arial,sans-serif">Omschrijving</th>
+    <th style="padding:12px 14px;text-align:center;font-size:12px;color:#9ca3af;font-weight:600;text-transform:uppercase;letter-spacing:.5px;font-family:'Segoe UI',Arial,sans-serif">Aantal</th>
+    <th style="padding:12px 14px;text-align:right;font-size:12px;color:#9ca3af;font-weight:600;text-transform:uppercase;letter-spacing:.5px;font-family:'Segoe UI',Arial,sans-serif">Stukprijs excl.</th>
+    <th style="padding:12px 14px;text-align:right;font-size:12px;color:#9ca3af;font-weight:600;text-transform:uppercase;letter-spacing:.5px;font-family:'Segoe UI',Arial,sans-serif">Totaal excl.</th>
+  `;
+
+  // v18.4: B2C toont qty × €15,99 (stukprijs), B2B toont 1 × €150 (flat)
+  const levQty        = isB2C ? bandenQtyLev : 1;
+  const levStukIncl   = isB2C ? 15.99 : 150.00;
+  const levStukExcl   = levStukIncl / (1 + BTW_PCT);
+  const levOmschr     = isB2C ? '🚚 Bezorging aan huis' : '🚚 Levering/verzending';
+  const leveringRow = leveringIncl > 0 ? `
+    <tr>
+      <td style="padding:10px 14px;border-bottom:1px solid #e5e7eb;font-family:'Segoe UI',Arial,sans-serif">${levOmschr}${r.afleveradres ? '<br><span style="font-size:12px;color:#6b7280">' + r.afleveradres + '</span>' : ''}</td>
+      <td style="padding:10px 14px;border-bottom:1px solid #e5e7eb;text-align:center;font-family:'Segoe UI',Arial,sans-serif">${levQty}</td>
+      <td style="padding:10px 14px;border-bottom:1px solid #e5e7eb;text-align:right;font-family:'Segoe UI',Arial,sans-serif">€${(isB2C ? levStukIncl : levStukExcl).toFixed(2)}</td>
+      <td style="padding:10px 14px;border-bottom:1px solid #e5e7eb;text-align:right;font-family:'Segoe UI',Arial,sans-serif">€${(isB2C ? leveringIncl : leveringExcl).toFixed(2)}</td>
+    </tr>` : '';
+
+  return `<!DOCTYPE html>
+<html lang="nl"><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;background:#f3f4f6;font-family:'Segoe UI',Arial,sans-serif">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f3f4f6;padding:32px 0">
+<tr><td align="center">
+<table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08)">
+
+  <!-- Header -->
+  <tr><td style="background:#111214;padding:28px 32px">
+    <table width="100%"><tr>
+      <td><img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wgARCADUATsDASIAAhEBAxEB/8QAGgABAAMBAQEAAAAAAAAAAAAAAAMEBQIBBv/EABkBAQEBAQEBAAAAAAAAAAAAAAADAgEEBf/aAAwDAQACEAMQAAAC3wAAAAAAAAAAAAAAAAAAAIparmayfaT1WUNVleGsyfTVZQ1WUNX3IGt7kjWZI1WVad1tGrzPdwOgAKPPz+s6suRvuWcyjBjerfzNzoBVtVXPl/fPbRAAAAAAAFl1v+fOz37r4WvlrIfPJfrqhzrerSz8/wBPnd+/QUx5jq8qNBu9AAIZh88+hdz88+hHzz6EfN0vqPl94DWVun9FnWe+gY38979AMHVn+X68hKTa+Rrw3f8AHnz/AFVqnWb6sJH0Pq87H8ryr7ebveejoAAAAACt8t9T8vuYbw+h+e+hzufzzjx09qz1s8izNDP9UwtlqZenC16pHmx29XfRiWHmGVF3ne3jr3n3vPQ6AAAAQV2b3NWv3lj5u7SpgO8fQ4f02Nw8dQeLfsE0PMwZ+hn+vI0K8inZsLO2prlePqvKyfnVt5/fXG5ReOOpLNK5negMVAAAr1rNbUkUsWsZ9S3U1xI+izTnrJlhe24tebdXjvzmqmdoVfXJbr1tZd+arit7VhYLS71saTWNXnnmknEkfeLlO5zWgJXAA548i825IJuXI61qnndejp82zZpQx7y0M/QxqwPL6HHvHdQQTZ/qg9Xax9KsLFi1uGaNdDqbWw7Eu6UE8Pm9HvvLSfRyNe0gtMCGKWLxVeOJ6VrNZTyhcz/TIPRFoZ+hLdjxx5vS88d7BRv8+iT1V5zyeDR3C1FLF5s06t6K6sK6AsW8yxCtweb0e6+PsenzheQ84gh7j8lh7jXlO5E7Sqa9f0ToL3tZ0L3s098pUPRX8sN4qrFfqkn9vCvo1bOOS++cy5E9d5DW0Yt6prCiunHdmpYhbraxtDebItJFLHxRis8+a+XtUrVc2/YWpzR88u147HEK5fGjHvlFddUpp5OJuJ48doTc96a3tL20bnlQZsVjydfJ+O891lNaNzyoM6G1xOvliOfjUF4jg7RcFhWnOlXosKnBeV4C+gnCjZJWfbJVb0sKYuK0ZdUui2relhWiLyvOeq3haReEyl2WgK9iMzOr0JTnnGT1peHPXvJUvexHmhR7KySydU1kxbF/k586EFpyVu7Xhnw63JFO4KUtyQoc3OSjLoRENiDsugAAAAAAAAAAAAAAAAAAAA//2gAMAwEAAgADAAAAIfPPPPPPPPPPPPPPPPPPPKe8t+8874w8P/PPKE1sPK6wwwwwwwxLx5NEQBcHPLP/AP8AjDaPvYgVsm+eWc8888887DARCKzwzr5GZ08888mAIfDkV8ptgZtrMZ8888+6HfAaNZumzStF9o888WZ9NZZ2sre1R+sZVdd88U4iNsJ4ZEI4X8gM9K/86lJPi5n/AEauLVNr8fRVPPcxIwJMcOrrqWSYjXfcfODIANPNMMIBGNLPBFMFPKDMHMKPKDKLPBPGKBHDPPPPPPPPPPPPPPPPPPPPPP/aAAwDAQACAAMAAAAQ88888888888888888888vibGayyuiG228886t9t89pC0SueqCGW0Rdd8iA88sOOOJyfOqu+piiXqXc888888afgCq9NWP6rq188888Dp5hFvXqXLC8ekp48888eN11VrwAaQPuDIwl888BI1BVmbeu4KNKQgFbf88CeybQmV+t4yfOcwS088++I/6IQ8NroWJPaDdVf8tYEjjXvshtyjXxNiH6988wY0NMIMBQwsIUIwkIk84V1pdlJd1NRZFRJdVBl888888888888888888888/8QAMREAAQMCBQMDAgQHAAAAAAAAAQACAwQRBRITITEQFFEyQfAgcQYwMzQiI0BQUmGx/9oACAECAQE/AP6QC5su2j8Lto/C7aPwu2j8Lto/C7aNdtH4XbR+F20afBEwXKcL7gbfRDBn3dwp2xRjblA36t9Q/Je4NFygHTuueFi8zqamzMCONVP+lDi8x9QCw4PqGCSQWU0wiFhyrl5zH6AbbruZPK7mTyu5k8qmkc8HN0qHuY27V3MnldzJ5TA6d38R2TWhosF+If2hXKwfCS+00o2U0zYm2CuZDmPCt+RR8HpVehTTyCVwvtdMlcX8rCXEsJPTH7dtlKwjBg8iWUbKsrG0zMo5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" alt="TK Handelsonderneming" style="height:56px;width:auto;object-fit:contain;display:block" /></td>
+      <td align="right"><div style="font-size:12px;color:#9ca3af;line-height:1.8;font-family:'Segoe UI',Arial,sans-serif">
+        thomas@tkhandelsonderneming.nl<br>
+        +31 6 43481608<br>
+        Tilburg
+      </div></td>
+    </tr></table>
+  </td></tr>
+
+  <!-- Factuur titel -->
+  <tr><td style="padding:28px 32px 0">
+    <table width="100%"><tr>
+      <td><div style="font-size:22px;font-weight:800;color:#111214;font-family:'Segoe UI',Arial,sans-serif">Reserveringsbevestiging</div>
+          <div style="font-size:13px;color:#6b7280;margin-top:4px;font-family:'Segoe UI',Arial,sans-serif">& Factuuroverzicht</div></td>
+      <td align="right" style="font-size:13px;color:#6b7280;line-height:1.8;font-family:'Segoe UI',Arial,sans-serif">
+        <strong style="color:#111214">Factuurnummer:</strong> ${r.id}<br>
+        <strong style="color:#111214">Datum:</strong> ${datum}<br>
+        <strong style="color:#111214">Status:</strong> ${statusLabel(r.status)}
+      </td>
+    </tr></table>
+  </td></tr>
+
+  <!-- Klantgegevens -->
+  <tr><td style="padding:20px 32px">
+    <div style="background:#f9fafb;border-radius:8px;padding:16px 20px;border-left:4px solid #F59E0B">
+      <div style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-family:'Segoe UI',Arial,sans-serif">Geadresseerde${isB2C ? ' · Particulier' : ' · Zakelijk'}</div>
+      <div style="font-weight:700;font-size:15px;color:#111214;font-family:'Segoe UI',Arial,sans-serif">${r.name}</div>
+      ${r.company ? `<div style="color:#6b7280;font-size:13px;font-family:'Segoe UI',Arial,sans-serif">${r.company}${r.kvk ? ' — KvK ' + r.kvk : ''}${r.btw ? ' — BTW ' + r.btw : ''}</div>` : ''}
+      ${r.klantAdres ? `<div style="color:#6b7280;font-size:13px;margin-top:4px;font-family:'Segoe UI',Arial,sans-serif">${r.klantAdres}</div>` : ''}
+      <div style="color:#6b7280;font-size:13px;margin-top:4px;font-family:'Segoe UI',Arial,sans-serif">${r.email} · ${r.phone}</div>
+    </div>
+  </td></tr>
+
+  <!-- Factuurregels -->
+  <tr><td style="padding:0 32px">
+    <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e5e7eb;border-radius:8px;overflow:hidden">
+      <thead>
+        <tr style="background:#111214">
+          ${colHeaders}
+        </tr>
+      </thead>
+      <tbody>${itemsRows}${leveringRow}</tbody>
+      <tfoot>
+        ${isB2C ? `
+        <tr style="background:#f9fafb">
+          <td colspan="3" style="padding:10px 14px;text-align:right;font-size:13px;color:#374151;font-family:'Segoe UI',Arial,sans-serif">Subtotaal excl. BTW</td>
+          <td style="padding:10px 14px;text-align:right;font-size:13px;color:#6b7280;font-family:'Segoe UI',Arial,sans-serif">€${totaalExcl.toFixed(2)}</td>
+        </tr>
+        <tr style="background:#f9fafb">
+          <td colspan="3" style="padding:10px 14px;text-align:right;font-size:13px;color:#374151;font-family:'Segoe UI',Arial,sans-serif">Waarvan BTW 21%</td>
+          <td style="padding:10px 14px;text-align:right;font-size:13px;color:#6b7280;font-family:'Segoe UI',Arial,sans-serif">€${totaalBTW.toFixed(2)}</td>
+        </tr>
+        <tr style="background:#f0fdf4">
+          <td colspan="3" style="padding:14px;text-align:right;font-weight:700;font-size:14px;color:#111214;font-family:'Segoe UI',Arial,sans-serif">Totaal te betalen (incl. BTW)</td>
+          <td style="padding:14px;text-align:right;font-weight:900;font-size:18px;color:#F59E0B;font-family:'Segoe UI',Arial,sans-serif">€${totaalIncl.toFixed(2)}</td>
+        </tr>
+        ` : `
+        <tr style="background:#f9fafb">
+          <td colspan="3" style="padding:10px 14px;text-align:right;font-size:13px;color:#374151;font-family:'Segoe UI',Arial,sans-serif">Subtotaal excl. BTW</td>
+          <td style="padding:10px 14px;text-align:right;font-size:13px;font-weight:600;color:#111214;font-family:'Segoe UI',Arial,sans-serif">€${totaalExcl.toFixed(2)}</td>
+        </tr>
+        <tr style="background:#f9fafb">
+          <td colspan="3" style="padding:10px 14px;text-align:right;font-size:13px;color:#374151;font-family:'Segoe UI',Arial,sans-serif">BTW 21%</td>
+          <td style="padding:10px 14px;text-align:right;font-size:13px;font-weight:600;color:#111214;font-family:'Segoe UI',Arial,sans-serif">€${totaalBTW.toFixed(2)}</td>
+        </tr>
+        <tr style="background:#f0fdf4">
+          <td colspan="3" style="padding:14px;text-align:right;font-weight:700;font-size:14px;color:#111214;font-family:'Segoe UI',Arial,sans-serif">Totaal incl. BTW</td>
+          <td style="padding:14px;text-align:right;font-weight:900;font-size:18px;color:#F59E0B;font-family:'Segoe UI',Arial,sans-serif">€${totaalIncl.toFixed(2)}</td>
+        </tr>
+        `}
+      </tfoot>
+    </table>
+  </td></tr>
+
+  <!-- Info blok -->
+  <tr><td style="padding:24px 32px">
+    <table width="100%" cellpadding="0" cellspacing="0"><tr>
+      <td width="48%" style="background:#f0fdf4;border-radius:8px;padding:16px 20px;border-left:4px solid #10B981;vertical-align:top">
+        <div style="font-weight:700;color:#065f46;margin-bottom:6px;font-family:'Segoe UI',Arial,sans-serif">${leveringIncl > 0 ? '🚚 Verzending' : '📦 Ophalen op afspraak'}</div>
+        <div style="font-size:13px;color:#047857;line-height:1.6;font-family:'Segoe UI',Arial,sans-serif">${leveringIncl > 0 ? 'Verzending vindt plaats na ontvangst van betaling. U ontvangt hierover bericht.' : 'Uw banden liggen klaar na betaling. Ophalen op afspraak.'}</div>
+      </td>
+      <td width="4%"></td>
+      <td width="48%" style="background:#fefce8;border-radius:8px;padding:16px 20px;border-left:4px solid #F59E0B;vertical-align:top">
+        <div style="font-weight:700;color:#92400e;margin-bottom:6px;font-family:'Segoe UI',Arial,sans-serif">💳 Betaling</div>
+        <div style="font-size:13px;color:#b45309;line-height:1.6;font-family:'Segoe UI',Arial,sans-serif">Factuur dient binnen <strong>48 uur</strong> te worden voldaan via bankoverschrijving.<br><strong style="font-size:14px;color:#92400e;letter-spacing:0.5px">NL36 KNAB 0775 0572 90</strong></div>
+      </td>
+    </tr></table>
+  </td></tr>
+
+  ${r.notes ? `<tr><td style="padding:0 32px 20px">
+    <div style="background:#fef3c7;border-radius:8px;padding:14px 18px;font-size:13px;color:#92400e;font-family:'Segoe UI',Arial,sans-serif">
+      <strong>Opmerking:</strong> ${r.notes}
+    </div>
+  </td></tr>` : ''}
+
+  <!-- Afsluiting -->
+  <tr><td style="padding:24px 32px;border-top:1px solid #e5e7eb">
+    <div style="font-size:14px;color:#374151;line-height:1.8;margin-bottom:20px;font-family:'Segoe UI',Arial,sans-serif">
+      Met vriendelijke groet,<br>
+      <strong style="font-size:15px;color:#111214">Thomas Kada</strong>
+    </div>
+    <table cellpadding="0" cellspacing="0">
+      <tr>
+        <td style="padding-right:20px;font-size:12px;color:#6b7280;font-family:'Segoe UI',Arial,sans-serif">📞 <a href="tel:+31643481608" style="color:#6b7280;text-decoration:none">+31 6 43481608</a></td>
+        <td style="padding-right:20px;font-size:12px;color:#6b7280;font-family:'Segoe UI',Arial,sans-serif">✉️ <a href="mailto:thomas@tkhandelsonderneming.nl" style="color:#F59E0B;text-decoration:none">thomas@tkhandelsonderneming.nl</a></td>
+      </tr>
+    </table>
+  </td></tr>
+
+  <!-- Footer -->
+  <tr><td style="background:#111214;padding:16px 32px;text-align:center">
+    <div style="font-size:11px;color:#4b5563;font-family:'Segoe UI',Arial,sans-serif">TK Handelsonderneming · Tilburg · KVK: 92612253 · BTW: NL004964775B51 · IBAN: NL36 KNAB 0775 0572 90</div>
+  </td></tr>
+
+</table>
+</td></tr></table>
+</body></html>`;
+}
+
+function showFactuurPreview(resId) {
+  const r = state.reservations.find(x => x.id === resId);
+  if (!r) return;
+  setState({ factuurPreviewId: resId });
+}
+
+function closeFactuurPreview() {
+  setState({ factuurPreviewId: null });
+}
+
+async function copyFactuurRichText(resId) {
+  const r = state.reservations.find(x => x.id === resId);
+  if (!r) return;
+  const htmlStr = buildFactuurHTML(r);
+
+  try {
+    // Moderne clipboard API met rich text
+    const blob = new Blob([htmlStr], { type: 'text/html' });
+    const clipItem = new ClipboardItem({ 'text/html': blob });
+    await navigator.clipboard.write([clipItem]);
+    notify('✅ Factuur gekopieerd als opgemaakte tekst — plak in je mailprogramma');
+  } catch(e) {
+    // Fallback: open in nieuw venster
+    const w = window.open('', '_blank');
+    w.document.write(htmlStr);
+    w.document.close();
+    notify('📋 Factuur geopend in nieuw venster — selecteer alles (Ctrl+A) en kopieer', 'success');
+  }
+}
+
+function openFactuurWindow(resId) {
+  const r = state.reservations.find(x => x.id === resId);
+  if (!r) return;
+  const htmlStr = buildFactuurHTML(r);
+  const w = window.open('', '_blank', 'width=720,height=800');
+  w.document.write(htmlStr);
+  w.document.close();
+}
+
+function renderFactuurPreviewModal() {
+  const r = state.reservations.find(x => x.id === state.factuurPreviewId);
+  if (!r) return '';
+  const htmlStr = buildFactuurHTML(r);
+  return `
+  <div class="factuur-modal-overlay" onclick="closeFactuurPreview()">
+    <div class="factuur-modal-box" onclick="event.stopPropagation()">
+      <div class="factuur-modal-actions">
+        <span>📄 Factuurpreview — ${r.name}</span>
+        <button class="btn-primary" style="font-size:12px;padding:6px 14px" onclick="copyFactuurRichText('${r.id}')">📋 Kopieer voor mail</button>
+        <button class="btn-primary" style="font-size:12px;padding:6px 14px;background:var(--red)" onclick="downloadFactuurPDF('${r.id}')">⬇️ PDF</button>
+        <button class="btn-ghost" style="font-size:12px;padding:6px 14px" onclick="openFactuurWindow('${r.id}')">🔗 Open venster</button>
+        <button class="btn-ghost" style="font-size:12px;padding:6px 14px" onclick="closeFactuurPreview()">✕ Sluiten</button>
+      </div>
+      <iframe srcdoc="${htmlStr.replace(/"/g, '&quot;').replace(/`/g, '&#96;')}" style="width:100%;height:70vh;border:none;border-radius:0 0 12px 12px"></iframe>
+    </div>
+  </div>`;
+}
+
+async function downloadFactuurPDF(resId) {
+  const r = state.reservations.find(x => x.id === resId);
+  if (!r) return;
+  return generatePDFfromReservation(r);
+}
+
+async function generatePDFfromReservation(r) {
+  notify("⏳ PDF wordt gegenereerd...", "success");
+
+  const htmlStr = buildFactuurHTML(r);
+
+  // Render in verborgen iframe op vaste breedte
+  const iframe = document.createElement('iframe');
+  iframe.style.cssText = 'position:fixed;left:-9999px;top:0;width:794px;height:auto;border:none;visibility:hidden;';
+  document.body.appendChild(iframe);
+  iframe.contentDocument.open();
+  // Voeg page-break CSS toe aan de factuur
+  const htmlWithBreaks = htmlStr.replace('</head>', `<style>
+    .pdf-section { page-break-inside: avoid; break-inside: avoid; }
+    table { border-collapse: collapse; }
+  </style></head>`);
+  iframe.contentDocument.write(htmlWithBreaks);
+  iframe.contentDocument.close();
+
+  // Wacht tot content geladen is
+  await new Promise(resolve => {
+    if (iframe.contentDocument.readyState === 'complete') resolve();
+    else iframe.onload = resolve;
+  });
+  await new Promise(resolve => setTimeout(resolve, 600));
+
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = iframe.contentDocument;
+    const body = doc.body;
+
+    // A4 dimensies in pixels bij 96dpi: 794 x 1123
+    const A4_W_PX = 794;
+    const A4_H_PX = 1050; // iets minder dan vol voor marges
+    const SCALE = 2;
+
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const pdfW = pdf.internal.pageSize.getWidth();   // 210mm
+    const pdfH = pdf.internal.pageSize.getHeight();  // 297mm
+
+    // Haal alle top-level secties op uit de factuur tabel
+    // We renderen de volledige body maar snijden slim
+    const totalH = body.scrollHeight;
+    const totalPages = Math.ceil(totalH / A4_H_PX);
+
+    for (let page = 0; page < totalPages; page++) {
+      if (page > 0) pdf.addPage();
+
+      const yStart = page * A4_H_PX;
+      const yEnd = Math.min(yStart + A4_H_PX, totalH);
+
+      // Zoek veilig afbreekpunt: geen blok halverwege
+      // Scan DOM elementen voor veilige snijpunten
+      let safeY = yEnd;
+      if (page < totalPages - 1) {
+        const allElems = Array.from(doc.querySelectorAll('tr, td > div, td > table'));
+        for (const el of allElems) {
+          const rect = el.getBoundingClientRect();
+          const elTop = rect.top + doc.documentElement.scrollTop;
+          const elBot = elTop + rect.height;
+          // Als dit element over de paginagrens loopt, snij ervoor
+          if (elTop < yEnd && elBot > yEnd && rect.height < A4_H_PX * 0.4) {
+            safeY = elTop;
+            break;
+          }
+        }
+      }
+
+      const clipH = (page === totalPages - 1) ? (totalH - yStart) : (safeY - yStart);
+
+      const canvas = await html2canvas(body, {
+        scale: SCALE,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#f3f4f6',
+        width: A4_W_PX,
+        windowWidth: A4_W_PX,
+        y: yStart,
+        height: clipH,
+        scrollY: -yStart
+      });
+
+      const imgData = canvas.toDataURL('image/jpeg', 0.92);
+      const imgH = (clipH * pdfW) / A4_W_PX;
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfW, imgH);
+    }
+
+    const datum = new Date().toISOString().slice(0, 10);
+    pdf.save('Factuur_' + r.id + '_' + datum + '.pdf');
+    notify("✅ PDF opgeslagen!");
+  } catch(err) {
+    notify("Fout bij PDF: " + err.message, "error");
+    console.error(err);
+  } finally {
+    document.body.removeChild(iframe);
+  }
+}
+
+function toggleLeveringFields() {
+  const cb = document.getElementById("resLevering");
+  const fields = document.getElementById("leveringFields");
+  if (fields) fields.style.display = cb?.checked ? "block" : "none";
+}
+
+function toggleSoldOut() { setState({ showAllSoldOut: !state.showAllSoldOut }); }
+function toggleStaffel() { setState({ showStaffel: !state.showStaffel }); }
+
+// ========== CUSTOMER TYPE / NAVIGATIE ==========
+function chooseCustomerType(ct) {
+  saveCustomerType(ct);
+  setState({ customerType: ct, view: "shop" });
+  fetchInventory();
+}
+function switchCustomerType(ct) {
+  if (state.customerType === ct) return;
+  const cartCount = getCartCount();
+  if (cartCount > 0) {
+    const msg = ct === 'b2c'
+      ? `U wisselt naar de Particulier-weergave.\n\nDe prijzen in uw mandje (${cartCount} band${cartCount !== 1 ? 'en' : ''}) veranderen: nu incl. BTW met 25% korting in plaats van de zakelijke staffelprijs.\n\nMandje leegmaken en opnieuw beginnen?`
+      : `U wisselt naar de Zakelijk-weergave.\n\nDe prijzen in uw mandje (${cartCount} band${cartCount !== 1 ? 'en' : ''}) veranderen: nu excl. BTW met staffelkorting in plaats van de particuliere prijs.\n\nMandje leegmaken en opnieuw beginnen?`;
+    if (confirm(msg)) {
+      saveCustomerType(ct);
+      setState({ customerType: ct, cart: {}, cardQty: {} });
+    } else {
+      // Gebruiker wil mandje houden — alleen type wisselen, prijzen her-renderen
+      saveCustomerType(ct);
+      setState({ customerType: ct });
+    }
+  } else {
+    saveCustomerType(ct);
+    setState({ customerType: ct });
+  }
+}
+function goLanding() {
+  setState({ view: "landing" });
+}
+function goShop() {
+  if (!state.customerType) {
+    setState({ view: "landing" });
+  } else {
+    setState({ view: "shop" });
+    fetchInventory();
+  }
+}
+function goAdmin() {
+  if (state.isAdmin) { setState({ view: "admin" }); fetchReservations(); }
+  else setState({ showPinModal: true });
+}
+function closePin() { setState({ showPinModal: false }); }
+function openCart() { setState({ showCartModal: true }); }
+function closeCart() { setState({ showCartModal: false }); }
+
+function doReserve() {
+  const isB2C = state.customerType === 'b2c';
+  const levering = document.getElementById("resLevering")?.checked || false;
+  const f = {
+    name: document.getElementById("resName")?.value || "",
+    company: isB2C ? "" : (document.getElementById("resCompany")?.value || ""),
+    kvk: isB2C ? "" : (document.getElementById("resKvK")?.value || ""),
+    btw: isB2C ? "" : (document.getElementById("resBTW")?.value || ""),
+    email: document.getElementById("resEmail")?.value || "",
+    phone: document.getElementById("resPhone")?.value || "",
+    notes: document.getElementById("resNotes")?.value || "",
+    // Particulier-adres (primair adres)
+    straat: isB2C ? (document.getElementById("resStraat")?.value || "") : "",
+    huisnummer: isB2C ? (document.getElementById("resHuisnummer")?.value || "") : "",
+    postcode: isB2C ? (document.getElementById("resPostcode")?.value || "") : "",
+    stad: isB2C ? (document.getElementById("resStad")?.value || "") : "",
+    // Levering-adres (afwijkend)
+    levering,
+    levStraat: levering ? (document.getElementById("resLevStraat")?.value || "") : "",
+    levHuisnummer: levering ? (document.getElementById("resLevHuisnummer")?.value || "") : "",
+    levPostcode: levering ? (document.getElementById("resLevPostcode")?.value || "") : "",
+    levStad: levering ? (document.getElementById("resLevStad")?.value || "") : ""
+  };
+  if (levering && (!f.levStraat || !f.levPostcode || !f.levStad)) {
+    notify("Vul het volledige afleveradres in", "error"); return;
+  }
+  state.reserveForm = f;
+  submitReservation();
+}
+
+function doAdminLogin() {
+  const pin = document.getElementById("pinInput")?.value || "";
+  setState({ adminPin: pin, isAdmin: true, showPinModal: false, view: "admin" });
+  fetchReservations();
+}
+
+function adminLogout() { setState({ isAdmin: false, adminPin: "", view: "shop", reservations: [] }); }
+
+// ========== INIT ==========
+// Laad eerder opgeslagen klanttype
+const savedCT = loadCustomerType();
+if (savedCT === 'b2c' || savedCT === 'b2b') {
+  state.customerType = savedCT;
+  state.view = "shop";
+} else {
+  state.view = "landing";
+}
+
+// URL-param override: ?view=shop&type=b2c slaat landing over
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('view') === 'shop' && (urlParams.get('type') === 'b2c' || urlParams.get('type') === 'b2b')) {
+  state.customerType = urlParams.get('type');
+  saveCustomerType(state.customerType);
+  state.view = "shop";
+}
+
+// Alleen voorraad laden als we niet op landing zijn (scheelt call)
+if (state.view !== "landing") {
+  fetchInventory();
+}
+render();
+// Refresh voorraad elke 60s, maar alleen als shop actief is
+setInterval(() => { if (state.view === "shop" && !state.confirmationData && !state.showCartModal) fetchInventory(); }, 60000);
+</script>
+</body>
+</html>
