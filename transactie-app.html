@@ -75,12 +75,12 @@
         <div class="status-bar" id="status">🔄 Initialiseren...</div>
 
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('transactie')">💾 Transactie</button>
-            <button class="tab-btn" onclick="switchTab('bonnen')">📋 Bonnen</button>
-            <button class="tab-btn" onclick="switchTab('uitgaven')">💸 Uitgaven</button>
-            <button class="tab-btn" onclick="switchTab('reports')">📊 Reports</button>
-            <button class="tab-btn" onclick="switchTab('backup')">💾 Backup</button>
-            <button class="tab-btn" onclick="switchTab('dashboard')">📈 Dashboard</button>
+            <button class="tab-btn active" data-tab="transactie">💾 Transactie</button>
+            <button class="tab-btn" data-tab="bonnen">📋 Bonnen</button>
+            <button class="tab-btn" data-tab="uitgaven">💸 Uitgaven</button>
+            <button class="tab-btn" data-tab="reports">📊 Reports</button>
+            <button class="tab-btn" data-tab="backup">💾 Backup</button>
+            <button class="tab-btn" data-tab="dashboard">📈 Dashboard</button>
         </div>
 
         <!-- TAB 1: TRANSACTIE -->
@@ -395,6 +395,9 @@
                 document.getElementById('product').value = '';
                 document.getElementById('prijs').value = '';
                 
+                // Generate PDF
+                generatePDFBon(tx_num, product, prijs, klanttype, betalingswijze, now);
+                
                 if (isOnline && firebaseDB) syncToFirebase();
                 updateDashboard();
                 updateBonnenList();
@@ -665,6 +668,80 @@
         }
 
         // ===== FIREBASE SYNC =====
+        function generatePDFBon(tx_num, product, prijs, klanttype, betalingswijze, datum) {
+            try {
+                const doc = new jsPDF();
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
+
+                // Header
+                doc.setFillColor(31, 51, 84); // Navy
+                doc.rect(0, 0, pageWidth, 40, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(20);
+                doc.text('TK HANDELSONDERNEMING', 15, 25);
+                
+                doc.setTextColor(232, 130, 30); // Oranje
+                doc.setFontSize(10);
+                doc.text('KASSABON', pageWidth - 30, 15);
+
+                // Reset
+                doc.setTextColor(0, 0, 0);
+                doc.setFontSize(11);
+                let y = 55;
+
+                // Info
+                doc.text(`TX-Nummer: ${tx_num}`, 15, y);
+                y += 8;
+                doc.text(`Datum: ${datum.toLocaleDateString('nl-NL')} ${datum.toLocaleTimeString('nl-NL')}`, 15, y);
+                y += 8;
+                doc.text(`Klant: ${klanttype === 'b2b' ? 'B2B (Zakelijk)' : 'B2C (Anoniem)'}`, 15, y);
+                y += 8;
+                doc.text(`Betaling: ${betalingswijze === 'tikkie' ? 'Tikkie' : betalingswijze === 'overschrijving' ? 'Overschrijving' : 'Contant'}`, 15, y);
+                y += 15;
+
+                // Product
+                doc.setFillColor(232, 130, 30);
+                doc.rect(15, y - 5, pageWidth - 30, 7, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.text('Product', 20, y);
+                doc.text('Bedrag', pageWidth - 35, y);
+                y += 12;
+
+                // Items
+                doc.setTextColor(0, 0, 0);
+                doc.text(product, 20, y);
+                doc.text(`€ ${prijs.toFixed(2)}`, pageWidth - 35, y);
+                y += 15;
+
+                // Totaal
+                doc.setFillColor(31, 51, 84);
+                doc.rect(15, y - 5, pageWidth - 30, 10, 'F');
+                doc.setTextColor(232, 130, 30);
+                doc.setFontSize(14);
+                doc.text('TOTAAL:', 20, y + 3);
+                doc.text(`€ ${prijs.toFixed(2)}`, pageWidth - 35, y + 3);
+                y += 20;
+
+                // Footer
+                doc.setTextColor(102, 102, 102);
+                doc.setFontSize(9);
+                if (klanttype === 'b2c') {
+                    doc.text('Deze bon is een kwitantie van aankoop.', 15, y);
+                    y += 6;
+                    doc.text('Bewaar deze bon voor reclamatie.', 15, y);
+                }
+                y += 8;
+                doc.text('Bedankt voor uw aankoop!', 15, y);
+
+                // Download
+                doc.save(`Bon_${tx_num}.pdf`);
+                showMsg('msg-transactie', `✅ PDF gedownload: Bon_${tx_num}.pdf`, 'success');
+            } catch (e) {
+                console.error('PDF error:', e);
+                showMsg('msg-transactie', `⚠️ PDF niet gedownload: ${e.message}`, 'error');
+            }
+        }
         function syncToFirebase() {
             if (!firebaseDB) return;
             try {
@@ -706,23 +783,88 @@
             });
         }
 
-        // ===== UTIL =====
         function switchTab(name) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(name).classList.add('active');
-            event.target.classList.add('active');
+            document.querySelector(`[data-tab="${name}"]`).classList.add('active');
         }
 
         function showMsg(id, msg, type) {
             document.getElementById(id).innerHTML = `<div class="${type}">${msg}</div>`;
         }
 
+        // Initialize event listeners
+        function initEventListeners() {
+            // Tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    switchTab(btn.getAttribute('data-tab'));
+                });
+            });
+
+            // Search bonnen
+            const searchBonnen = document.getElementById('search-bonnen');
+            if (searchBonnen) {
+                searchBonnen.addEventListener('input', (e) => updateBonnenList(e.target.value));
+            }
+
+            // Search uitgaven
+            const searchUitgaven = document.getElementById('search-uitgaven');
+            if (searchUitgaven) {
+                searchUitgaven.addEventListener('input', (e) => updateUitgavenList(e.target.value));
+            }
+
+            // Report period filter
+            const reportPeriod = document.getElementById('report-period');
+            if (reportPeriod) {
+                reportPeriod.addEventListener('change', updateReportPeriod);
+            }
+
+            // Backup file upload
+            const backupFile = document.getElementById('backup-file');
+            if (backupFile) {
+                backupFile.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    const reader = new FileReader();
+                    reader.onload = (evt) => {
+                        try {
+                            const backup = JSON.parse(evt.target.result);
+                            
+                            db.run('DELETE FROM transacties');
+                            backup.transacties.forEach(tx => {
+                                db.run('INSERT INTO transacties VALUES (?, ?, ?, ?, ?, ?, ?, ?)', tx);
+                            });
+
+                            db.run('DELETE FROM uitgaven');
+                            backup.uitgaven.forEach(u => {
+                                db.run('INSERT INTO uitgaven VALUES (?, ?, ?, ?, ?)', u);
+                            });
+
+                            loadAllData();
+                            showMsg('backup-msg', '✅ Hersteld', 'success');
+                            if (isOnline && firebaseDB) syncToFirebase();
+                            updateDashboard();
+                        } catch (e) {
+                            showMsg('backup-msg', 'Fout: ' + e.message, 'error');
+                        }
+                    };
+                    reader.readAsText(file);
+                });
+            }
+        }
+
         // Init
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initDB);
+            document.addEventListener('DOMContentLoaded', () => {
+                initDB();
+                setTimeout(initEventListeners, 100);
+            });
         } else {
             initDB();
+            initEventListeners();
         }
     </script>
 </body>
