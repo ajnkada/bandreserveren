@@ -223,15 +223,26 @@
 
         let db = null, SQL = null;
         let allTransactions = [];
+        let dbReady = false;
 
         async function initDB() {
-            SQL = await initSqlJs();
-            db = new SQL.Database();
-            createSchema();
-            populateProducts();
-            loadAllTransactions();
-            updateDashboard();
+            try {
+                SQL = await initSqlJs();
+                db = new SQL.Database();
+                dbReady = true;
+                createSchema();
+                populateProducts();
+                loadAllTransactions();
+                updateDashboard();
+                console.log('✅ Database geinitialiseerd');
+            } catch (e) {
+                console.error('DB fout:', e);
+                alert('Database init fout: ' + e.message);
+            }
         }
+
+        // Start init onmiddellijk
+        initDB();
 
         function createSchema() {
             db.run(`
@@ -282,6 +293,11 @@
         }
 
         function saveAndGenerateBon() {
+            if (!dbReady || !db) {
+                showMsg('msg-transactie', '⏳ Database wordt nog geladen... wacht even.', 'error');
+                return;
+            }
+
             const product = document.getElementById('custom-product').value.trim();
             const prijs = parseFloat(document.getElementById('prijs').value);
             const klanttype = document.getElementById('klanttype').value;
