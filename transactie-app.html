@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TK Transactie App v3.0</title>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js"></script>
+    <title>TK Transactie App v5.0 - Google Drive Sync</title>
+    <script src="https://accounts.google.com/gsi/client"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
@@ -17,9 +16,7 @@
         h1 { color: #1F3354; font-size: 28px; margin-bottom: 5px; }
         .subtitle { color: #E8821E; font-size: 14px; }
         
-        .status-bar { padding: 10px 15px; margin-bottom: 20px; border-radius: 4px; font-size: 13px; font-weight: bold; }
-        .status-online { background: #d4edda; color: #155724; }
-        .status-offline { background: #f8d7da; color: #721c24; }
+        .status-bar { padding: 10px 15px; margin-bottom: 20px; border-radius: 4px; font-size: 13px; font-weight: bold; background: #d4edda; color: #155724; display: flex; justify-content: space-between; align-items: center; }
         
         .tabs { display: flex; gap: 10px; margin: 20px 0 30px 0; border-bottom: 2px solid #ddd; overflow-x: auto; flex-wrap: wrap; }
         .tab-btn { padding: 12px 20px; border: none; background: transparent; cursor: pointer; color: #666; font-weight: bold; border-bottom: 3px solid transparent; }
@@ -34,243 +31,208 @@
         
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; color: #1F3354; }
-        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #1F3354; font-size: 13px; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; }
         
-        button { padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        button { padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px; }
         .btn-primary { background: #27ae60; color: white; width: 100%; margin-top: 10px; }
-        .btn-secondary { background: #3498db; color: white; padding: 8px 16px; margin-right: 10px; }
+        .btn-secondary { background: #3498db; color: white; padding: 10px 20px; margin: 5px 5px 5px 0; }
         
-        .success { color: #27ae60; padding: 10px; background: #d5f4e6; border-radius: 4px; margin-bottom: 10px; }
-        .error { color: #c00000; padding: 10px; background: #ffe6e6; border-radius: 4px; margin-bottom: 10px; }
+        .success { color: #27ae60; padding: 10px; background: #d5f4e6; border-radius: 4px; margin-bottom: 10px; border-left: 4px solid #27ae60; }
+        .error { color: #c00000; padding: 10px; background: #ffe6e6; border-radius: 4px; margin-bottom: 10px; border-left: 4px solid #c00000; }
         
-        .transaction-item { background: white; padding: 15px; margin-bottom: 10px; border-left: 4px solid #3498db; border-radius: 4px; }
-        .transaction-item.expense { border-left-color: #f39c12; }
+        .item { background: white; padding: 12px; margin-bottom: 8px; border-left: 4px solid #3498db; border-radius: 3px; font-size: 13px; }
+        .item.expense { border-left-color: #f39c12; }
         
-        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        .stat-item { background: white; padding: 15px; border-radius: 4px; border-left: 4px solid #E8821E; }
-        .stat-item span { display: block; color: #666; font-size: 12px; margin-bottom: 5px; }
-        .stat-item strong { display: block; font-size: 18px; color: #1F3354; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 20px 0; }
+        .stat { background: white; padding: 15px; border-left: 4px solid #E8821E; border-radius: 4px; }
+        .stat-label { color: #666; font-size: 12px; margin-bottom: 5px; }
+        .stat-value { font-size: 20px; font-weight: bold; color: #1F3354; }
         
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th { background: #1F3354; color: white; padding: 10px; text-align: left; }
-        td { padding: 10px; border-bottom: 1px solid #ddd; }
-        tr:hover { background: #f5f5f5; }
+        #g_id_onload { margin-bottom: 15px; }
         
-        .filter-section { background: #f9f9f9; padding: 15px; border-radius: 4px; margin-bottom: 20px; }
+        .search-box { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 15px; }
+        .no-data { padding: 20px; text-align: center; color: #999; }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>TK Transactie App v3.0</h1>
-            <p class="subtitle">Transacties • Uitgaven • Financial Reports • BTW</p>
+            <h1>TK Transactie App v5.0</h1>
+            <p class="subtitle">✅ Google Drive Sync • 100% Offline • Shared Access</p>
         </header>
 
-        <div class="status-bar" id="status">🔄 Initialiseren...</div>
-
-        <div class="tabs">
-            <button class="tab-btn active" data-tab="transactie">💾 Transactie</button>
-            <button class="tab-btn" data-tab="bonnen">📋 Bonnen</button>
-            <button class="tab-btn" data-tab="uitgaven">💸 Uitgaven</button>
-            <button class="tab-btn" data-tab="reports">📊 Reports</button>
-            <button class="tab-btn" data-tab="backup">💾 Backup</button>
-            <button class="tab-btn" data-tab="dashboard">📈 Dashboard</button>
+        <div class="status-bar">
+            <span>📱 Lokale Database + Google Drive Sync</span>
+            <div id="auth-status">🔐 Inloggen met Google</div>
         </div>
 
-        <div id="transactie" class="tab-content active">
-            <div class="form-section">
-                <h2>Nieuwe Transactie</h2>
-                <div id="msg-transactie"></div>
-                <div class="grid-2">
-                    <div>
-                        <label>Klanttype</label>
-                        <select id="klanttype">
-                            <option value="b2c" selected>B2C - Anoniem</option>
-                            <option value="b2b">B2B - Zakelijk</option>
-                        </select>
+        <div class="form-section" style="text-align:center;">
+            <div id="g_id_onload" data-client_id="403325180927-bod7tegffh8c6i16d4qtqpt0slrcvtif.apps.googleusercontent.com" 
+                 data-callback="handleCredentialResponse"></div>
+            <div id="buttonDiv"></div>
+        </div>
+
+        <div id="app-content" style="display:none;">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('transactie')">💾 Transactie</button>
+                <button class="tab-btn" onclick="switchTab('bonnen')">📋 Bonnen</button>
+                <button class="tab-btn" onclick="switchTab('uitgaven')">💸 Uitgaven</button>
+                <button class="tab-btn" onclick="switchTab('reports')">📊 Reports</button>
+                <button class="tab-btn" onclick="switchTab('dashboard')">📈 Dashboard</button>
+            </div>
+
+            <div id="transactie" class="tab-content active">
+                <div class="form-section">
+                    <h2>Nieuwe Transactie</h2>
+                    <div id="msg-tx"></div>
+                    <div class="grid-2">
+                        <div>
+                            <label>Klanttype</label>
+                            <select id="tx-klanttype">
+                                <option value="b2c">B2C - Anoniem</option>
+                                <option value="b2b">B2B - Zakelijk</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Betalingswijze</label>
+                            <select id="tx-betaling">
+                                <option value="tikkie">Tikkie</option>
+                                <option value="overschrijving">Overschrijving</option>
+                                <option value="contant">Contant</option>
+                            </select>
+                        </div>
                     </div>
-                    <div>
-                        <label>Betalingswijze</label>
-                        <select id="betaling">
-                            <option value="tikkie" selected>Tikkie</option>
-                            <option value="overschrijving">Overschrijving</option>
-                            <option value="contant">Contant</option>
-                        </select>
+                    <div class="grid-2">
+                        <div>
+                            <label>Product</label>
+                            <input type="text" id="tx-product">
+                        </div>
+                        <div>
+                            <label>Prijs (€)</label>
+                            <input type="number" id="tx-prijs" step="0.01" min="0">
+                        </div>
                     </div>
+                    <button class="btn-primary" onclick="saveTx()">💾 Opslaan & PDF</button>
                 </div>
-                <div class="grid-2">
-                    <div>
-                        <label>Product</label>
-                        <input type="text" id="product" placeholder="Bijv. Samsung TV 55 inch">
-                    </div>
-                    <div>
-                        <label>Prijs (€)</label>
-                        <input type="number" id="prijs" placeholder="0.00" step="0.01" min="0">
-                    </div>
+            </div>
+
+            <div id="bonnen" class="tab-content">
+                <div class="form-section">
+                    <h2>Alle Bonnen</h2>
+                    <input type="text" id="search-bonnen" class="search-box" placeholder="Zoeken...">
+                    <div id="bonnen-list"></div>
                 </div>
-                <button class="btn-primary" onclick="saveTransactie()">💾 Opslaan & PDF Bon</button>
             </div>
-        </div>
 
-        <div id="bonnen" class="tab-content">
-            <div class="form-section">
-                <h2>Alle Bonnen</h2>
-                <input type="text" id="search-bonnen" placeholder="Zoeken..." style="margin-bottom: 15px;">
-                <div id="bonnen-list"></div>
-            </div>
-        </div>
-
-        <div id="uitgaven" class="tab-content">
-            <div class="form-section">
-                <h2>Uitgave / Investering Registreren</h2>
-                <div id="msg-uitgaven"></div>
-                <div class="grid-3">
-                    <div>
-                        <label>Type</label>
-                        <select id="expense-type">
-                            <option value="operationeel">Operationeel</option>
-                            <option value="investering">Investering</option>
-                            <option value="andere">Andere</option>
-                        </select>
+            <div id="uitgaven" class="tab-content">
+                <div class="form-section">
+                    <h2>Uitgave Registreren</h2>
+                    <div id="msg-ug"></div>
+                    <div class="grid-3">
+                        <div>
+                            <label>Type</label>
+                            <select id="ug-type">
+                                <option value="operationeel">Operationeel</option>
+                                <option value="investering">Investering</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Omschrijving</label>
+                            <input type="text" id="ug-desc">
+                        </div>
+                        <div>
+                            <label>Bedrag (€)</label>
+                            <input type="number" id="ug-bedrag" step="0.01" min="0">
+                        </div>
                     </div>
-                    <div>
-                        <label>Omschrijving</label>
-                        <input type="text" id="expense-desc" placeholder="Bijv. Huurkosten">
-                    </div>
-                    <div>
-                        <label>Bedrag (€)</label>
-                        <input type="number" id="expense-bedrag" placeholder="0.00" step="0.01" min="0">
-                    </div>
+                    <button class="btn-primary" onclick="saveUg()">💸 Opslaan</button>
                 </div>
-                <button class="btn-primary" onclick="saveUitgave()">💸 Opslaan</button>
+
+                <div class="form-section">
+                    <h2>Alle Uitgaven</h2>
+                    <input type="text" id="search-ug" class="search-box" placeholder="Zoeken...">
+                    <div id="ug-list"></div>
+                </div>
             </div>
 
-            <div class="form-section">
-                <h2>Alle Uitgaven</h2>
-                <input type="text" id="search-uitgaven" placeholder="Zoeken..." style="margin-bottom: 15px;">
-                <div id="uitgaven-list"></div>
-            </div>
-        </div>
-
-        <div id="reports" class="tab-content">
-            <div class="form-section">
-                <h2>Financial Reports</h2>
-                <div class="filter-section">
-                    <h3 style="margin-bottom: 15px; color: #1F3354;">Filter opties</h3>
+            <div id="reports" class="tab-content">
+                <div class="form-section">
+                    <h2>Financial Reports</h2>
                     <div class="grid-3">
                         <div>
                             <label>Periode</label>
-                            <select id="report-period" onchange="updateReportPeriod()">
-                                <option value="custom">Custom (Van/Tot)</option>
+                            <select id="report-period" onchange="updateReportUI()">
+                                <option value="custom">Custom</option>
                                 <option value="maand">Deze Maand</option>
                                 <option value="kwartaal">Dit Kwartaal</option>
                                 <option value="jaar">Dit Jaar</option>
                                 <option value="alles">Alles</option>
                             </select>
                         </div>
-                        <div id="report-van-div" style="display: none;">
+                        <div id="div-van" style="display:none;">
                             <label>Van</label>
                             <input type="date" id="report-van">
                         </div>
-                        <div id="report-tot-div" style="display: none;">
+                        <div id="div-tot" style="display:none;">
                             <label>Tot</label>
                             <input type="date" id="report-tot">
                         </div>
                     </div>
-                    <button class="btn-secondary" style="margin-top: 15px; width: 100%;" onclick="genererReport()">📊 Genereer Report</button>
+                    <button class="btn-secondary" style="width:100%; margin-top:15px;" onclick="genReport()">📊 Genereer</button>
+                    <div id="report-out" style="margin-top:20px;"></div>
                 </div>
-                <div id="report-content"></div>
             </div>
-        </div>
 
-        <div id="backup" class="tab-content">
-            <div class="form-section">
-                <h2>💾 Lokale Backup</h2>
-                <button class="btn-secondary" style="background: #27ae60; width: 100%;" onclick="downloadBackup()">💾 Download Backup</button>
-                <button class="btn-secondary" style="background: #27ae60; width: 100%; margin-top: 10px;" onclick="uploadBackup()">📂 Upload Backup</button>
-                <input type="file" id="backup-file" accept=".json" style="display: none;">
-                <div id="backup-msg" style="margin-top: 15px;"></div>
-            </div>
-        </div>
-
-        <div id="dashboard" class="tab-content">
-            <div class="form-section">
-                <h2>Dashboard</h2>
-                <div class="stats">
-                    <div class="stat-item"><span>Transacties</span><strong id="stat-count">0</strong></div>
-                    <div class="stat-item"><span>Omzet</span><strong id="stat-omzet">€ 0.00</strong></div>
-                    <div class="stat-item"><span>Netto</span><strong id="stat-netto">€ 0.00</strong></div>
-                    <div class="stat-item"><span>BTW 21%</span><strong id="stat-btw" style="color: #e74c3c;">€ 0.00</strong></div>
-                    <div class="stat-item"><span>Uitgaven</span><strong id="stat-uitgaven">€ 0.00</strong></div>
-                    <div class="stat-item"><span>Winst</span><strong id="stat-winst" style="color: #27ae60;">€ 0.00</strong></div>
+            <div id="dashboard" class="tab-content">
+                <div class="form-section">
+                    <h2>Dashboard</h2>
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-label">Transacties</div>
+                            <div class="stat-value" id="d-count">0</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">Omzet</div>
+                            <div class="stat-value" id="d-omzet">€ 0.00</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">BTW 21%</div>
+                            <div class="stat-value" id="d-btw">€ 0.00</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">Uitgaven</div>
+                            <div class="stat-value" id="d-ug">€ 0.00</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">Winst</div>
+                            <div class="stat-value" id="d-winst">€ 0.00</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyBFH1hsL18Ai5WMT2zxkc-OtPa8zEvVP_o",
-            authDomain: "tk-transactie-app.firebaseapp.com",
-            databaseURL: "https://tk-transactie-app-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "tk-transactie-app"
-        };
-
-        let firebaseApp = null, firebaseDB = null;
         let db = null, SQL = null;
-        let allTransacties = [], allUitgaven = [];
+        let txs = [], ugs = [];
         let dbReady = false;
-        let isOnline = navigator.onLine;
+        let gdriveToken = null;
+        let gdriveFileId = null;
 
-        // Firebase init
-        async function initFirebase() {
-            try {
-                console.log('🔥 Firebase init...');
-                
-                // Wacht op Firebase SDK
-                await new Promise((resolve) => {
-                    let i = 0;
-                    const check = setInterval(() => {
-                        if (typeof firebase !== 'undefined' && firebase.initializeApp) {
-                            clearInterval(check);
-                            resolve();
-                        }
-                        i++;
-                        if (i > 50) { clearInterval(check); resolve(); }
-                    }, 100);
-                });
-
-                if (!firebase.apps || firebase.apps.length === 0) {
-                    firebaseApp = firebase.initializeApp(firebaseConfig);
-                } else {
-                    firebaseApp = firebase.apps[0];
-                }
-                
-                firebaseDB = firebase.database();
-                console.log('✅ Firebase klaar!');
-                updateStatus();
-            } catch (e) {
-                console.error('Firebase error:', e);
-                updateStatus();
-            }
-        }
-
-        function updateStatus() {
-            const el = document.getElementById('status');
-            if (firebaseDB && navigator.onLine) {
-                el.className = 'status-bar status-online';
-                el.textContent = '🟢 Online - Data syncet met Firebase';
-            } else {
-                el.className = 'status-bar status-offline';
-                el.textContent = '🔴 Offline - Lokale mode';
-            }
+        function handleCredentialResponse(response) {
+            gdriveToken = response.credential;
+            document.getElementById('auth-status').textContent = '✅ Ingelogd! Initialiseren...';
+            document.getElementById('app-content').style.display = 'block';
+            document.querySelector('.form-section:first-of-type').style.display = 'none';
+            initDB();
         }
 
         async function initDB() {
             try {
                 window.SQL = await initSqlJs({
-                    locateFile: (f) => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${f}`
+                    locateFile: f => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${f}`
                 });
                 SQL = window.SQL;
                 db = new SQL.Database();
@@ -283,133 +245,165 @@
                     klanttype TEXT,
                     betalingswijze TEXT,
                     product TEXT,
-                    prijs REAL,
-                    is_retour INTEGER DEFAULT 0
+                    prijs REAL
                 );`);
 
                 db.run(`CREATE TABLE IF NOT EXISTS uitgaven (
                     id INTEGER PRIMARY KEY,
                     datum TEXT,
                     type TEXT,
-                    omschrijving TEXT,
+                    desc TEXT,
                     bedrag REAL
                 );`);
 
-                loadAllData();
-                updateDashboard();
-                console.log('✅ Database klaar!');
+                loadData();
+                updateDash();
+                syncToGDrive();
+                console.log('✅ Ready!');
             } catch (e) {
-                console.error('DB error:', e);
+                alert('Error: ' + e.message);
             }
         }
 
-        function loadAllData() {
+        function loadData() {
             try {
                 let r = db.exec('SELECT * FROM transacties ORDER BY id DESC');
-                allTransacties = r.length > 0 ? r[0].values : [];
+                txs = r.length > 0 ? r[0].values : [];
                 r = db.exec('SELECT * FROM uitgaven ORDER BY id DESC');
-                allUitgaven = r.length > 0 ? r[0].values : [];
+                ugs = r.length > 0 ? r[0].values : [];
             } catch (e) {
-                console.error('Load error:', e);
+                txs = []; ugs = [];
             }
         }
 
-        function saveTransactie() {
-            if (!dbReady) {
-                showMsg('msg-transactie', 'Database niet klaar', 'error');
-                return;
-            }
-
-            const product = document.getElementById('product').value.trim();
-            const prijs = parseFloat(document.getElementById('prijs').value);
-
+        function saveTx() {
+            const product = document.getElementById('tx-product').value.trim();
+            const prijs = parseFloat(document.getElementById('tx-prijs').value);
+            
             if (!product || isNaN(prijs) || prijs <= 0) {
-                showMsg('msg-transactie', 'Voer product en prijs in', 'error');
+                msg('msg-tx', 'Voer product en prijs in!', 'error');
                 return;
             }
 
             const now = new Date();
-            const tx_num = 'TX-' + now.getFullYear() + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0') + String(now.getHours()).padStart(2,'0') + String(now.getMinutes()).padStart(2,'0') + String(now.getSeconds()).padStart(2,'0') + String(now.getMilliseconds()).padStart(3,'0');
+            const tx_num = 'TX-' + now.getFullYear() + 
+                String(now.getMonth()+1).padStart(2,'0') + 
+                String(now.getDate()).padStart(2,'0') +
+                String(now.getHours()).padStart(2,'0') +
+                String(now.getMinutes()).padStart(2,'0') +
+                String(now.getSeconds()).padStart(2,'0') +
+                String(now.getMilliseconds()).padStart(3,'0');
 
             try {
-                db.run(
-                    'INSERT INTO transacties (tx_num, datum, klanttype, betalingswijze, product, prijs, is_retour) VALUES (?, ?, ?, ?, ?, ?, 0)',
-                    [tx_num, now.toISOString(), document.getElementById('klanttype').value, document.getElementById('betaling').value, product, prijs]
-                );
+                db.run('INSERT INTO transacties VALUES (NULL, ?, ?, ?, ?, ?, ?)', 
+                    [tx_num, now.toISOString(), 
+                     document.getElementById('tx-klanttype').value,
+                     document.getElementById('tx-betaling').value,
+                     product, prijs]);
                 
-                loadAllData();
-                showMsg('msg-transactie', '✅ Opgeslagen');
-                document.getElementById('product').value = '';
-                document.getElementById('prijs').value = '';
-                updateDashboard();
-                updateBonnenList();
+                loadData();
+                msg('msg-tx', '✅ Opgeslagen');
+                document.getElementById('tx-product').value = '';
+                document.getElementById('tx-prijs').value = '';
+                
+                genPDF(tx_num, product, prijs);
+                updateDash();
+                loadBonnen();
+                syncToGDrive();
             } catch (e) {
-                showMsg('msg-transactie', 'Fout: ' + e.message, 'error');
+                msg('msg-tx', 'Fout: ' + e.message, 'error');
             }
         }
 
-        function updateBonnenList(search = '') {
-            let html = '';
-            allTransacties.forEach(tx => {
-                if (search && !tx[5].toLowerCase().includes(search.toLowerCase())) return;
-                html += `<div class="transaction-item"><div><strong>${tx[1]}</strong> | ${tx[5]} | € ${tx[6].toFixed(2)}</div></div>`;
-            });
-            document.getElementById('bonnen-list').innerHTML = html || '<p>Geen bonnen</p>';
+        function genPDF(tx_num, product, prijs) {
+            try {
+                if (typeof window.jsPDF === 'undefined') return;
+                const doc = new window.jsPDF.jsPDF();
+                const w = doc.internal.pageSize.getWidth();
+                
+                doc.setFillColor(31, 51, 84);
+                doc.rect(0, 0, w, 35, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(16);
+                doc.text('TK HANDELSONDERNEMING', 15, 22);
+                
+                doc.setTextColor(0, 0, 0);
+                doc.setFontSize(11);
+                let y = 50;
+                doc.text(`TX: ${tx_num}`, 15, y);
+                y += 15;
+                doc.text(product, 15, y);
+                y += 8;
+                doc.text(`€ ${prijs.toFixed(2)}`, 15, y);
+                
+                doc.save(`Bon_${tx_num}.pdf`);
+            } catch (e) {
+                console.error('PDF error:', e);
+            }
         }
 
-        function saveUitgave() {
-            const type = document.getElementById('expense-type').value;
-            const desc = document.getElementById('expense-desc').value.trim();
-            const bedrag = parseFloat(document.getElementById('expense-bedrag').value);
-
+        function saveUg() {
+            const desc = document.getElementById('ug-desc').value.trim();
+            const bedrag = parseFloat(document.getElementById('ug-bedrag').value);
+            
             if (!desc || isNaN(bedrag) || bedrag <= 0) {
-                showMsg('msg-uitgaven', 'Vul alles in', 'error');
+                msg('msg-ug', 'Vul alles in!', 'error');
                 return;
             }
 
-            db.run('INSERT INTO uitgaven (datum, type, omschrijving, bedrag) VALUES (?, ?, ?, ?)',
-                [new Date().toISOString(), type, desc, bedrag]);
+            db.run('INSERT INTO uitgaven VALUES (NULL, ?, ?, ?, ?)',
+                [new Date().toISOString(), document.getElementById('ug-type').value, desc, bedrag]);
             
-            loadAllData();
-            showMsg('msg-uitgaven', '✅ Opgeslagen');
-            document.getElementById('expense-desc').value = '';
-            document.getElementById('expense-bedrag').value = '';
-            updateDashboard();
-            updateUitgavenList();
+            loadData();
+            msg('msg-ug', '✅ Opgeslagen');
+            document.getElementById('ug-desc').value = '';
+            document.getElementById('ug-bedrag').value = '';
+            updateDash();
+            loadUg();
+            syncToGDrive();
         }
 
-        function updateUitgavenList(search = '') {
+        function loadBonnen(s = '') {
             let html = '';
-            allUitgaven.forEach(u => {
-                if (search && !u[3].toLowerCase().includes(search.toLowerCase())) return;
-                html += `<div class="transaction-item expense"><div><strong>${u[3]}</strong> | € ${u[4].toFixed(2)}</div></div>`;
+            txs.forEach(tx => {
+                if (s && !tx[5].toLowerCase().includes(s.toLowerCase())) return;
+                html += `<div class="item"><strong>${tx[1]}</strong> | ${tx[5]} | € ${tx[6].toFixed(2)}</div>`;
             });
-            document.getElementById('uitgaven-list').innerHTML = html || '<p>Geen uitgaven</p>';
+            document.getElementById('bonnen-list').innerHTML = html || '<div class="no-data">Geen bonnen</div>';
         }
 
-        function updateReportPeriod() {
-            const period = document.getElementById('report-period').value;
-            document.getElementById('report-van-div').style.display = period === 'custom' ? 'block' : 'none';
-            document.getElementById('report-tot-div').style.display = period === 'custom' ? 'block' : 'none';
+        function loadUg(s = '') {
+            let html = '';
+            ugs.forEach(u => {
+                if (s && !u[3].toLowerCase().includes(s.toLowerCase())) return;
+                html += `<div class="item expense"><strong>${u[3]}</strong> | € ${u[4].toFixed(2)}</div>`;
+            });
+            document.getElementById('ug-list').innerHTML = html || '<div class="no-data">Geen uitgaven</div>';
         }
 
-        function genererReport() {
-            const period = document.getElementById('report-period').value;
+        function updateReportUI() {
+            const p = document.getElementById('report-period').value;
+            document.getElementById('div-van').style.display = p === 'custom' ? 'block' : 'none';
+            document.getElementById('div-tot').style.display = p === 'custom' ? 'block' : 'none';
+        }
+
+        function genReport() {
+            const p = document.getElementById('report-period').value;
             let van, tot;
             const now = new Date();
 
-            if (period === 'custom') {
+            if (p === 'custom') {
                 van = new Date(document.getElementById('report-van').value);
                 tot = new Date(document.getElementById('report-tot').value);
                 tot.setDate(tot.getDate() + 1);
-            } else if (period === 'maand') {
+            } else if (p === 'maand') {
                 van = new Date(now.getFullYear(), now.getMonth(), 1);
                 tot = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-            } else if (period === 'kwartaal') {
+            } else if (p === 'kwartaal') {
                 const q = Math.floor(now.getMonth() / 3);
                 van = new Date(now.getFullYear(), q * 3, 1);
                 tot = new Date(now.getFullYear(), (q + 1) * 3, 1);
-            } else if (period === 'jaar') {
+            } else if (p === 'jaar') {
                 van = new Date(now.getFullYear(), 0, 1);
                 tot = new Date(now.getFullYear() + 1, 0, 1);
             } else {
@@ -417,107 +411,101 @@
                 tot = new Date(2100, 0, 1);
             }
 
-            const txs = allTransacties.filter(t => new Date(t[2]) >= van && new Date(t[2]) <= tot);
-            const omzet = txs.reduce((s, t) => s + t[6], 0);
+            const ftxs = txs.filter(tx => new Date(tx[2]) >= van && new Date(tx[2]) <= tot);
+            const omzet = ftxs.reduce((s, t) => s + t[6], 0);
             const btw = omzet * 0.21;
-            const ugs = allUitgaven.reduce((s, u) => s + u[4], 0);
+            const fugs = ugs.filter(u => new Date(u[1]) >= van && new Date(u[1]) <= tot);
+            const ug_tot = fugs.reduce((s, u) => s + u[4], 0);
+            const winst = omzet - ug_tot;
 
             let html = `<h3>Periode: ${van.toLocaleDateString('nl-NL')} tot ${tot.toLocaleDateString('nl-NL')}</h3>
                 <div class="stats">
-                    <div class="stat-item"><span>Transacties</span><strong>${txs.length}</strong></div>
-                    <div class="stat-item"><span>Omzet</span><strong>€ ${omzet.toFixed(2)}</strong></div>
-                    <div class="stat-item"><span>BTW</span><strong>€ ${btw.toFixed(2)}</strong></div>
-                    <div class="stat-item"><span>Uitgaven</span><strong>€ ${ugs.toFixed(2)}</strong></div>
+                    <div class="stat"><div class="stat-label">Transacties</div><div class="stat-value">${ftxs.length}</div></div>
+                    <div class="stat"><div class="stat-label">Omzet</div><div class="stat-value">€ ${omzet.toFixed(2)}</div></div>
+                    <div class="stat"><div class="stat-label">BTW 21%</div><div class="stat-value">€ ${btw.toFixed(2)}</div></div>
+                    <div class="stat"><div class="stat-label">Uitgaven</div><div class="stat-value">€ ${ug_tot.toFixed(2)}</div></div>
+                    <div class="stat"><div class="stat-label">Winst</div><div class="stat-value">€ ${winst.toFixed(2)}</div></div>
                 </div>`;
-            document.getElementById('report-content').innerHTML = html;
+            document.getElementById('report-out').innerHTML = html;
         }
 
-        function downloadBackup() {
-            const backup = JSON.stringify({
-                timestamp: new Date().toISOString(),
-                transacties: allTransacties,
-                uitgaven: allUitgaven
-            }, null, 2);
-
-            const a = document.createElement('a');
-            a.href = 'data:text/json,' + encodeURIComponent(backup);
-            a.download = `TK_Backup_${new Date().toISOString().split('T')[0]}.json`;
-            a.click();
-        }
-
-        function uploadBackup() {
-            document.getElementById('backup-file').click();
-            document.getElementById('backup-file').onchange = (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-
-                const reader = new FileReader();
-                reader.onload = (evt) => {
-                    try {
-                        const backup = JSON.parse(evt.target.result);
-                        db.run('DELETE FROM transacties');
-                        backup.transacties.forEach(tx => {
-                            db.run('INSERT INTO transacties VALUES (?, ?, ?, ?, ?, ?, ?, ?)', tx);
-                        });
-                        db.run('DELETE FROM uitgaven');
-                        backup.uitgaven.forEach(u => {
-                            db.run('INSERT INTO uitgaven VALUES (?, ?, ?, ?, ?)', u);
-                        });
-                        loadAllData();
-                        showMsg('backup-msg', '✅ Hersteld');
-                        updateDashboard();
-                    } catch (e) {
-                        showMsg('backup-msg', 'Fout: ' + e.message, 'error');
-                    }
-                };
-                reader.readAsText(file);
-            };
-        }
-
-        function updateDashboard() {
-            const omzet = allTransacties.reduce((s, t) => s + t[6], 0);
+        function updateDash() {
+            const omzet = txs.reduce((s, t) => s + t[6], 0);
             const btw = omzet * 0.21;
-            const ugs = allUitgaven.reduce((s, u) => s + u[4], 0);
-            const winst = omzet - ugs;
+            const ug_tot = ugs.reduce((s, u) => s + u[4], 0);
+            const winst = omzet - ug_tot;
 
-            document.getElementById('stat-count').textContent = allTransacties.length;
-            document.getElementById('stat-omzet').textContent = '€ ' + omzet.toFixed(2);
-            document.getElementById('stat-netto').textContent = '€ ' + omzet.toFixed(2);
-            document.getElementById('stat-btw').textContent = '€ ' + btw.toFixed(2);
-            document.getElementById('stat-uitgaven').textContent = '€ ' + ugs.toFixed(2);
-            document.getElementById('stat-winst').textContent = '€ ' + winst.toFixed(2);
+            document.getElementById('d-count').textContent = txs.length;
+            document.getElementById('d-omzet').textContent = '€ ' + omzet.toFixed(2);
+            document.getElementById('d-btw').textContent = '€ ' + btw.toFixed(2);
+            document.getElementById('d-ug').textContent = '€ ' + ug_tot.toFixed(2);
+            document.getElementById('d-winst').textContent = '€ ' + winst.toFixed(2);
+        }
+
+        async function syncToGDrive() {
+            if (!gdriveToken) return;
+            try {
+                const data = JSON.stringify({
+                    timestamp: new Date().toISOString(),
+                    transacties: txs,
+                    uitgaven: ugs
+                });
+
+                const response = await fetch('https://www.googleapis.com/drive/v3/files?q=name=%27TK_Transactie_Backup.json%27', {
+                    headers: { 'Authorization': 'Bearer ' + gdriveToken }
+                });
+                
+                const files = await response.json();
+                
+                if (files.files && files.files.length > 0) {
+                    gdriveFileId = files.files[0].id;
+                    await fetch(`https://www.googleapis.com/upload/drive/v3/files/${gdriveFileId}?uploadType=media`, {
+                        method: 'PATCH',
+                        headers: { 'Authorization': 'Bearer ' + gdriveToken },
+                        body: data
+                    });
+                } else {
+                    const metadata = { name: 'TK_Transactie_Backup.json' };
+                    const formData = new FormData();
+                    formData.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+                    formData.append('file', new Blob([data], { type: 'application/json' }));
+                    
+                    const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+                        method: 'POST',
+                        headers: { 'Authorization': 'Bearer ' + gdriveToken },
+                        body: formData
+                    });
+                }
+                console.log('✅ Google Drive synced');
+            } catch (e) {
+                console.error('GDrive sync error:', e);
+            }
         }
 
         function switchTab(name) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(name).classList.add('active');
-            document.querySelector(`[data-tab="${name}"]`).classList.add('active');
         }
 
-        function showMsg(id, msg, type = 'success') {
-            const div = document.getElementById(id);
-            if (div) div.innerHTML = `<div class="${type}">${msg}</div>`;
+        function msg(id, text, type = 'success') {
+            const el = document.getElementById(id);
+            if (el) el.innerHTML = `<div class="${type}">${text}</div>`;
         }
 
-        function initEventListeners() {
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab')));
+        document.getElementById('search-bonnen').addEventListener('input', (e) => loadBonnen(e.target.value));
+        document.getElementById('search-ug').addEventListener('input', (e) => loadUg(e.target.value));
+
+        window.onload = () => {
+            google.accounts.id.initialize({
+                client_id: '403325180927-bod7tegffh8c6i16d4qtqpt0slrcvtif.apps.googleusercontent.com',
+                callback: handleCredentialResponse,
+                scope: 'https://www.googleapis.com/auth/drive.file'
             });
-
-            const sb = document.getElementById('search-bonnen');
-            if (sb) sb.addEventListener('input', (e) => updateBonnenList(e.target.value));
-
-            const su = document.getElementById('search-uitgaven');
-            if (su) su.addEventListener('input', (e) => updateUitgavenList(e.target.value));
-        }
-
-        window.addEventListener('load', async () => {
-            await initFirebase();
-            await initDB();
-            initEventListeners();
-            updateStatus();
-        });
+            google.accounts.id.renderButton(
+                document.getElementById('buttonDiv'),
+                { theme: 'outline', size: 'large', text: 'signin_with' }
+            );
+        };
     </script>
 </body>
 </html>
