@@ -58,8 +58,10 @@
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('transactie')">💾 Nieuwe Transactie</button>
             <button class="tab-btn" onclick="switchTab('bons')">📋 Alle Bons</button>
+            <button class="tab-btn" onclick="switchTab('beheer')">🔧 Beheer</button>
             <button class="tab-btn" onclick="switchTab('garantie')">🔍 Garantie Zoeken</button>
-            <button class="tab-btn" onclick="switchTab('dashboard')">📊 Dashboard</button>
+            <button class="tab-btn" onclick="switchTab('belasting')">📊 Belastingrapport</button>
+            <button class="tab-btn" onclick="switchTab('dashboard')">📈 Dashboard</button>
         </div>
 
         <!-- TAB 1: NIEUWE TRANSACTIE -->
@@ -174,37 +176,45 @@
             </div>
         </div>
 
-        <!-- TAB 4: DASHBOARD -->
-        <div id="dashboard" class="tab-content">
+        <!-- TAB 5: BEHEER TRANSACTIES -->
+        <div id="beheer" class="tab-content">
             <div class="form-section">
-                <h2>📊 Dashboard & Marge Berekening</h2>
-                <div class="stats">
-                    <div class="stat-item">
-                        <span>Totaal Transacties:</span>
-                        <strong id="stat-count">0</strong>
+                <h2>🔧 Transacties Beheer (Edit/Delete)</h2>
+                <input type="text" id="search-beheer" placeholder="Zoeken..." style="margin-bottom: 15px; width: 100%;">
+                <div id="beheer-list"></div>
+            </div>
+        </div>
+
+        <!-- TAB 6: BELASTINGRAPPORT -->
+        <div id="belasting" class="tab-content">
+            <div class="form-section">
+                <h2>📊 Belastingrapport (Kwartaal Export)</h2>
+                
+                <div class="grid-2">
+                    <div>
+                        <div class="form-group">
+                            <label for="rapport-jaar">Jaar</label>
+                            <input type="number" id="rapport-jaar" value="2026" min="2020" max="2099">
+                        </div>
                     </div>
-                    <div class="stat-item">
-                        <span>Totale Omzet:</span>
-                        <strong id="stat-omzet">€ 0.00</strong>
-                    </div>
-                    <div class="stat-item">
-                        <span>Retours/Creditnota's:</span>
-                        <strong id="stat-retours">€ 0.00</strong>
-                    </div>
-                    <div class="stat-item">
-                        <span>Derving (Garantie):</span>
-                        <strong id="stat-derving">€ 0.00</strong>
-                    </div>
-                    <div class="stat-item" style="background: #f0f8ff; padding: 10px; margin: 10px -15px -15px -15px; border-radius: 0 0 4px 4px;">
-                        <span>Netto Omzet:</span>
-                        <strong id="stat-netto" style="color: #c00000;">€ 0.00</strong>
+                    <div>
+                        <div class="form-group">
+                            <label for="rapport-kwartaal">Kwartaal</label>
+                            <select id="rapport-kwartaal">
+                                <option value="1">Q1 (Jan-Mrt)</option>
+                                <option value="2">Q2 (Apr-Jun)</option>
+                                <option value="3">Q3 (Jul-Sep)</option>
+                                <option value="4">Q4 (Okt-Dec)</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="form-section">
-                <h2>Transactie Geschiedenis</h2>
-                <div id="dashboard-list"></div>
+                <button onclick="genererRapport()" class="btn-secondary">📋 Genereer Rapport</button>
+                <button onclick="exportExcel()" class="btn-secondary" style="background: #27ae60;">📊 Download Excel</button>
+                <button onclick="exportRapportPDF()" class="btn-secondary" style="background: #e74c3c;">📄 Download PDF</button>
+
+                <div id="rapport-content" style="margin-top: 20px;"></div>
             </div>
         </div>
     </div>
@@ -347,116 +357,129 @@
             const doc = new jsPDF();
             const pageWidth = doc.internal.pageSize.getWidth();
             const pageHeight = doc.internal.pageSize.getHeight();
+            const margin = 15;
 
-            // Header met Navy achtergrond + Logo
-            doc.setFillColor(31, 51, 84); // Navy #1F3354
-            doc.rect(0, 0, pageWidth, 45, 'F');
-            
-            // Logo (base64) - klein formaat
+            // Logo linksboven (groter)
             const logoBase64 = 'data:image/jpeg;base64,LOGO_PLACEHOLDER';
             try {
-                doc.addImage(logoBase64, 'JPEG', 12, 5, 20, 20);
+                doc.addImage(logoBase64, 'JPEG', margin, margin, 30, 30);
             } catch (e) {
-                // Logo load fout - continue zonder logo
+                // Logo load fout - continue
             }
-            
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(16);
-            doc.setFont(undefined, 'bold');
-            doc.text('TK HANDELSONDERNEMING', 35, 18);
-            
-            doc.setFontSize(10);
-            doc.setFont(undefined, 'normal');
-            doc.text('Kassabon', 35, 28);
-            
-            // Oranje accent line
-            doc.setDrawColor(232, 130, 30); // Oranje #E8821E
-            doc.setLineWidth(1);
-            doc.line(0, 45, pageWidth, 45);
 
-            // Content
-            doc.setTextColor(31, 51, 84); // Navy text
+            // Titel rechtsboven
+            doc.setTextColor(31, 51, 84); // Navy
+            doc.setFontSize(24);
+            doc.setFont(undefined, 'bold');
+            doc.text('KASSABON', pageWidth - margin, margin + 12, { align: 'right' });
+
+            // Header info blok (Navy background)
+            doc.setFillColor(31, 51, 84);
+            doc.rect(margin, 55, pageWidth - 2*margin, 8, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(11);
+            doc.setFont(undefined, 'bold');
+            doc.text('TK HANDELSONDERNEMING', margin + 5, 60);
+
+            // Oranje lijn
+            doc.setDrawColor(232, 130, 30);
+            doc.setLineWidth(1.5);
+            doc.line(margin, 64, pageWidth - margin, 64);
+
+            // Transactie info (2 kolommen)
+            doc.setTextColor(31, 51, 84);
             doc.setFontSize(10);
-            let y = 55;
-            
             doc.setFont(undefined, 'bold');
-            doc.text('Transactie Nr:', 15, y);
+            let y = 72;
+            
+            const col1X = margin;
+            const col2X = pageWidth / 2;
+            
+            // Kolom 1
+            doc.text('Transactie Nr:', col1X, y);
             doc.setFont(undefined, 'normal');
-            doc.text(tx_num, 60, y);
-            y += 7;
+            doc.text(tx_num, col1X + 45, y);
             
+            // Kolom 2
             doc.setFont(undefined, 'bold');
-            doc.text('Datum/Tijd:', 15, y);
+            doc.text('Datum/Tijd:', col2X, y);
             doc.setFont(undefined, 'normal');
-            doc.text(datum.toLocaleDateString('nl-NL') + ' ' + datum.toLocaleTimeString('nl-NL'), 60, y);
-            y += 7;
+            doc.text(datum.toLocaleDateString('nl-NL') + ' ' + datum.toLocaleTimeString('nl-NL'), col2X + 30, y);
             
+            y += 8;
+            
+            // Klanttype & Betaling
             doc.setFont(undefined, 'bold');
-            doc.text('Klanttype:', 15, y);
+            doc.text('Klanttype:', col1X, y);
             doc.setFont(undefined, 'normal');
-            doc.text(klanttype === 'b2c' ? 'B2C (Anoniem)' : 'B2B: ' + bedrijf, 60, y);
-            y += 7;
+            doc.text(klanttype === 'b2c' ? 'B2C (Anoniem)' : 'B2B: ' + bedrijf, col1X + 45, y);
             
             doc.setFont(undefined, 'bold');
-            doc.text('Betaling:', 15, y);
+            doc.text('Betaling:', col2X, y);
             doc.setFont(undefined, 'normal');
             const betaalText = betalingswijze === 'tikkie' ? 'Tikkie' : betalingswijze === 'overschrijving' ? 'Overschrijving' : 'Contant';
-            doc.text(betaalText, 60, y);
-            y += 10;
-
-            // Product section
-            doc.setFont(undefined, 'bold');
-            doc.setFillColor(232, 130, 30, 20); // Licht oranje achtergrond
-            doc.rect(15, y - 3, 170, 25, 'F');
-            doc.setTextColor(31, 51, 84);
-            doc.text('Product:', 17, y);
-            y += 6;
+            doc.text(betaalText, col2X + 30, y);
             
+            y += 12;
+
+            // Product section (Oranje background)
+            doc.setFillColor(232, 130, 30);
+            doc.rect(margin, y - 5, pageWidth - 2*margin, 6, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFont(undefined, 'bold');
+            doc.text('PRODUCT', margin + 5, y);
+            
+            y += 12;
+            doc.setTextColor(31, 51, 84);
+            doc.setFont(undefined, 'bold');
+            doc.text('Omschrijving:', margin, y);
             doc.setFont(undefined, 'normal');
             doc.setFontSize(9);
-            const productLines = doc.splitTextToSize(product, 160);
-            productLines.forEach(line => {
-                doc.text(line, 17, y);
-                y += 4;
+            const productLines = doc.splitTextToSize(product, pageWidth - 2*margin - 10);
+            productLines.forEach((line, idx) => {
+                doc.text(line, margin + 5, y + 5 + (idx * 4));
             });
+            y += productLines.length * 4 + 5;
             
-            y += 3;
             doc.setFontSize(10);
             doc.setFont(undefined, 'bold');
-            doc.text('Conditie: ' + conditie, 15, y);
-            y += 7;
+            doc.text('Conditie: ' + conditie, margin, y);
             
-            doc.setFillColor(31, 51, 84);
-            doc.rect(15, y, 170, 12, 'F');
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(14);
-            doc.setFont(undefined, 'bold');
-            doc.text('Bedrag: € ' + prijs.toFixed(2), 90, y + 8, { align: 'center' });
-            y += 16;
+            y += 10;
 
-            // DISCLAIMERS (alleen B2C)
+            // Bedrag section (Navy background)
+            doc.setFillColor(31, 51, 84);
+            doc.rect(margin, y, pageWidth - 2*margin, 14, 'F');
+            doc.setTextColor(232, 130, 30); // Oranje text
+            doc.setFontSize(18);
+            doc.setFont(undefined, 'bold');
+            doc.text('€ ' + prijs.toFixed(2), pageWidth / 2, y + 10, { align: 'center' });
+            
+            y += 18;
+
+            // Disclaimer (alleen B2C)
             if (klanttype === 'b2c') {
                 doc.setTextColor(100, 100, 100);
                 doc.setFontSize(7);
                 doc.setFont(undefined, 'normal');
-                y += 5;
+                y += 3;
                 const disclaimer = "Dit product betreft een uniek single-item afkomstig uit een restpartij (zonder regresrecht). Op deze transactie is uitsluitend de wettelijke conformiteitsgarantie van toepassing. Vanwege de unieke voorraadpositie (enkelstuks) is levering van een vervangend exemplaar bij een defect uitgesloten. Indien het product binnen de wettelijke kaders een aantoonbaar defect vertoont, heeft u recht op kosteloze reparatie of – indien reparatie onuitvoerbaar is – volledige ontbinding (restitutie van het aankoopbedrag) tegen inlevering van het product. Omruiling of geld terug wegens spijt/verkeerde maat is UITGESLOTEN (koop is koop).";
-                const disclaimerLines = doc.splitTextToSize(disclaimer, 175);
+                const disclaimerLines = doc.splitTextToSize(disclaimer, pageWidth - 2*margin - 5);
                 disclaimerLines.forEach(line => {
-                    if (y + 2 > pageHeight - 15) {
+                    if (y + 2.5 > pageHeight - 15) {
                         doc.addPage();
-                        y = 10;
+                        y = 15;
                     }
-                    doc.text(line, 10, y);
+                    doc.text(line, margin + 2, y);
                     y += 2.5;
                 });
             }
 
             // Footer
-            doc.setFontSize(9);
+            doc.setFontSize(10);
             doc.setTextColor(31, 51, 84);
             doc.setFont(undefined, 'bold');
-            doc.text('Bedankt voor uw aankoop!', pageWidth / 2, pageHeight - 8, { align: 'center' });
+            doc.text('Bedankt voor uw aankoop!', pageWidth / 2, pageHeight - 12, { align: 'center' });
 
             // Download
             doc.save('Bon_' + tx_num + '.pdf');
@@ -611,6 +634,215 @@
             localStorage.setItem('tk_db_v2', btoa(String.fromCharCode(...new Uint8Array(data))));
         }
 
+        function editTransaction(id) {
+            const tx = allTransactions.find(t => t[0] === id);
+            if (!tx) return;
+            const [,tx_num, datum, klanttype, betalingswijze, bedrijf, kvk, product, conditie, prijs, opm] = tx;
+            
+            const newProduct = prompt('Product:', product);
+            if (!newProduct) return;
+            const newPrijs = parseFloat(prompt('Prijs:', prijs));
+            if (isNaN(newPrijs)) return;
+            
+            try {
+                db.run('UPDATE transacties SET product=?, prijs=? WHERE id=?', [newProduct, newPrijs, id]);
+                saveDB();
+                loadAllTransactions();
+                alert('✅ Transactie gewijzigd');
+                updateBeheerList();
+            } catch (e) {
+                alert('Fout: ' + e.message);
+            }
+        }
+
+        function deleteTransaction(id, tx_num) {
+            if (!confirm('❌ Weet je zeker dat je ' + tx_num + ' wilt verwijderen?')) return;
+            
+            try {
+                db.run('DELETE FROM transacties WHERE id=?', [id]);
+                saveDB();
+                loadAllTransactions();
+                alert('✅ Transactie verwijderd');
+                updateBeheerList();
+            } catch (e) {
+                alert('Fout: ' + e.message);
+            }
+        }
+
+        function updateBeheerList(searchTerm = '') {
+            const list = document.getElementById('beheer-list');
+            const filtered = allTransactions.filter(tx => {
+                if (!searchTerm) return true;
+                const [,,,,,,product] = tx;
+                return product.toLowerCase().includes(searchTerm.toLowerCase());
+            });
+
+            let html = '';
+            filtered.forEach(tx => {
+                const [id, tx_num, datum, klanttype, betalingswijze, bedrijf, kvk, product, conditie, prijs] = tx;
+                html += `
+                    <div class="transaction-item">
+                        <div class="transaction-info">
+                            <strong>${tx_num}</strong><br>
+                            ${product} • € ${prijs.toFixed(2)}<br>
+                            ${new Date(datum).toLocaleDateString('nl-NL')}
+                        </div>
+                        <div class="transaction-actions">
+                            <button onclick="editTransaction(${id})" class="btn-secondary" style="background: #f39c12;">✏️ Edit</button>
+                            <button onclick="deleteTransaction(${id}, '${tx_num}')" class="btn-secondary" style="background: #e74c3c;">🗑️ Delete</button>
+                        </div>
+                    </div>
+                `;
+            });
+            list.innerHTML = html || '<p>Geen transacties</p>';
+        }
+
+        let rapportData = null;
+
+        function genererRapport() {
+            const jaar = parseInt(document.getElementById('rapport-jaar').value);
+            const kwartaal = parseInt(document.getElementById('rapport-kwartaal').value);
+            
+            const maandStart = (kwartaal - 1) * 3 + 1;
+            const maandEind = kwartaal * 3;
+            
+            const dateStart = new Date(jaar, maandStart - 1, 1);
+            const dateEnd = new Date(jaar, maandEind, 0, 23, 59, 59);
+
+            const rapport = allTransactions.filter(tx => {
+                const txDate = new Date(tx[2]);
+                return txDate >= dateStart && txDate <= dateEnd;
+            });
+
+            rapportData = {
+                jaar,
+                kwartaal,
+                transacties: rapport,
+                dateStart,
+                dateEnd
+            };
+
+            // Bereken totalen
+            const verkopenB2C = rapport.filter(t => !t[11] && t[3] === 'b2c').reduce((s, t) => s + t[9], 0);
+            const verkopenB2B = rapport.filter(t => !t[11] && t[3] === 'b2b').reduce((s, t) => s + t[9], 0);
+            const retours = rapport.filter(t => t[11]).reduce((s, t) => s + Math.abs(t[9]), 0);
+            const totaalOmzet = verkopenB2C + verkopenB2B;
+            const netto = totaalOmzet - retours;
+            const btw21 = netto * 0.21;
+            const brutoBtw = netto + btw21;
+
+            let html = `
+                <div class="stats">
+                    <div class="stat-item"><span>Periode:</span> <strong>Q${kwartaal} ${jaar}</strong></div>
+                    <div class="stat-item"><span>Verkopen B2C:</span> <strong>€ ${verkopenB2C.toFixed(2)}</strong></div>
+                    <div class="stat-item"><span>Verkopen B2B:</span> <strong>€ ${verkopenB2B.toFixed(2)}</strong></div>
+                    <div class="stat-item"><span>Retours:</span> <strong>€ ${retours.toFixed(2)}</strong></div>
+                    <div class="stat-item"><span>Netto Omzet:</span> <strong>€ ${netto.toFixed(2)}</strong></div>
+                    <div class="stat-item" style="background: #fff3cd;"><span>BTW 21% (verschuldigd):</span> <strong>€ ${btw21.toFixed(2)}</strong></div>
+                    <div class="stat-item" style="background: #f0f8ff;"><span>Bruto (incl. BTW):</span> <strong>€ ${brutoBtw.toFixed(2)}</strong></div>
+                </div>
+
+                <h3 style="margin-top: 20px; color: #1F3354;">Transactiedetails</h3>
+                <div style="max-height: 400px; overflow-y: auto;">
+            `;
+
+            rapport.forEach(tx => {
+                const [id, tx_num, datum, klanttype, betaling, bedrijf, kvk, product, conditie, prijs, opm, is_ret] = tx;
+                const label = is_ret ? '↩️ RETOUR' : '✓';
+                html += `
+                    <div class="transaction-item ${is_ret ? 'credit' : ''}">
+                        <div><strong>${label} ${tx_num}</strong><br>${product}<br>€ ${prijs.toFixed(2)}</div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            document.getElementById('rapport-content').innerHTML = html;
+        }
+
+        function exportExcel() {
+            if (!rapportData) { alert('Genereer eerst een rapport'); return; }
+            
+            const { jaar, kwartaal, transacties } = rapportData;
+            let csv = 'TX-NUMMER,DATUM,KLANTTYPE,PRODUCT,BEDRAG,STATUS\n';
+            
+            transacties.forEach(tx => {
+                const [,tx_num, datum, klanttype,,,,product,,prijs,,is_ret] = tx;
+                const status = is_ret ? 'RETOUR' : 'VERKOOP';
+                csv += `${tx_num},${new Date(datum).toLocaleDateString('nl-NL')},${klanttype},${product},${prijs.toFixed(2)},${status}\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `TK_Belastingrapport_Q${kwartaal}_${jaar}.csv`;
+            link.click();
+        }
+
+        function exportRapportPDF() {
+            if (!rapportData) { alert('Genereer eerst een rapport'); return; }
+            
+            const { jaar, kwartaal, transacties } = rapportData;
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Header
+            doc.setFillColor(31, 51, 84);
+            doc.rect(0, 0, doc.internal.pageSize.getWidth(), 30, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(16);
+            doc.text('TK Belastingrapport Q' + kwartaal + ' ' + jaar, 15, 18);
+
+            // Totalen
+            let y = 45;
+            doc.setTextColor(31, 51, 84);
+            doc.setFontSize(11);
+            doc.setFont(undefined, 'bold');
+
+            const verkopenB2C = transacties.filter(t => !t[11] && t[3] === 'b2c').reduce((s, t) => s + t[9], 0);
+            const verkopenB2B = transacties.filter(t => !t[11] && t[3] === 'b2b').reduce((s, t) => s + t[9], 0);
+            const retours = transacties.filter(t => t[11]).reduce((s, t) => s + Math.abs(t[9]), 0);
+            const netto = verkopenB2C + verkopenB2B - retours;
+            const btw = netto * 0.21;
+
+            doc.text('Netto Omzet: € ' + netto.toFixed(2), 15, y); y += 7;
+            doc.text('BTW 21%: € ' + btw.toFixed(2), 15, y); y += 7;
+            doc.text('TOTAAL (Bruto): € ' + (netto + btw).toFixed(2), 15, y); y += 15;
+
+            // Tabel
+            doc.setFontSize(9);
+            doc.setFont(undefined, 'normal');
+            doc.text('TX-NUMMER', 15, y);
+            doc.text('PRODUCT', 45, y);
+            doc.text('BEDRAG', 150, y);
+            y += 5;
+
+            transacties.slice(0, 30).forEach(tx => {
+                const [,tx_num,,,,,,,product,,prijs] = tx;
+                doc.text(tx_num, 15, y);
+                const productShort = product.substring(0, 40);
+                doc.text(productShort, 45, y);
+                doc.text('€ ' + prijs.toFixed(2), 150, y);
+                y += 5;
+                if (y > 270) {
+                    doc.addPage();
+                    y = 20;
+                }
+            });
+
+            doc.save('Belastingrapport_Q' + kwartaal + '_' + jaar + '.pdf');
+        }
+
+        // Event listeners voor tabs
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchBeheer = document.getElementById('search-beheer');
+            if (searchBeheer) {
+                searchBeheer.addEventListener('input', (e) => {
+                    updateBeheerList(e.target.value);
+                });
+            }
+        });
+
         function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -618,10 +850,15 @@
             event.target.classList.add('active');
 
             if (tabName === 'bons') {
-                document.getElementById('search-transactie').addEventListener('input', (e) => {
-                    updateTransactionList(e.target.value);
-                });
+                const searchInput = document.getElementById('search-transactie');
+                if (searchInput) {
+                    searchInput.addEventListener('input', (e) => {
+                        updateTransactionList(e.target.value);
+                    });
+                }
                 loadAllTransactions();
+            } else if (tabName === 'beheer') {
+                updateBeheerList();
             } else if (tabName === 'dashboard') {
                 updateDashboard();
             }
