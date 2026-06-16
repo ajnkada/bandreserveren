@@ -317,11 +317,14 @@
             }
 
             const now = new Date();
+            // Format: TX-YYYYMMDDHHMMSS-XXX (met milliseconden voor uniciteit)
             const tx_num = 'TX-' + now.getFullYear() + 
                           String(now.getMonth()+1).padStart(2,'0') + 
                           String(now.getDate()).padStart(2,'0') + 
                           String(now.getHours()).padStart(2,'0') + 
-                          String(now.getMinutes()).padStart(2,'0');
+                          String(now.getMinutes()).padStart(2,'0') +
+                          String(now.getSeconds()).padStart(2,'0') +
+                          String(now.getMilliseconds()).padStart(3,'0');
 
             try {
                 db.run(
@@ -335,6 +338,7 @@
                 loadAllTransactions();
             } catch (e) {
                 showMsg('msg-transactie', 'Fout: ' + e.message, 'error');
+                console.error('Save error:', e);
             }
         }
 
@@ -344,59 +348,115 @@
             const pageWidth = doc.internal.pageSize.getWidth();
             const pageHeight = doc.internal.pageSize.getHeight();
 
-            // Header
-            doc.setFillColor(192, 0, 0);
-            doc.rect(0, 0, pageWidth, 30, 'F');
+            // Header met Navy achtergrond + Logo
+            doc.setFillColor(31, 51, 84); // Navy #1F3354
+            doc.rect(0, 0, pageWidth, 45, 'F');
+            
+            // Logo (base64) - klein formaat
+            const logoBase64 = 'data:image/jpeg;base64,LOGO_PLACEHOLDER';
+            try {
+                doc.addImage(logoBase64, 'JPEG', 12, 5, 20, 20);
+            } catch (e) {
+                // Logo load fout - continue zonder logo
+            }
+            
             doc.setTextColor(255, 255, 255);
-            doc.setFontSize(18);
-            doc.text('TK HANDELSONDERNEMING', 15, 15);
-            doc.setFontSize(10);
-            doc.text('Kassabon', 15, 23);
-
-            doc.setTextColor(0, 0, 0);
-            doc.setFontSize(10);
-            let y = 40;
-            doc.text('Transactie Nr: ' + tx_num, 15, y); y += 7;
-            doc.text('Datum: ' + datum.toLocaleDateString('nl-NL') + ' ' + datum.toLocaleTimeString('nl-NL'), 15, y); y += 7;
-            doc.text('Klanttype: ' + (klanttype === 'b2c' ? 'B2C (Anoniem)' : 'B2B: ' + bedrijf), 15, y); y += 5;
-            doc.text('Betalingswijze: ' + (betalingswijze === 'tikkie' ? 'Tikkie' : betalingswijze === 'overschrijving' ? 'Overschrijving' : 'Contant'), 15, y); y += 10;
-
-            doc.setFontSize(11);
+            doc.setFontSize(16);
             doc.setFont(undefined, 'bold');
-            doc.text('Product:', 15, y); 
-            doc.setFont(undefined, 'normal');
-            y += 5;
+            doc.text('TK HANDELSONDERNEMING', 35, 18);
+            
             doc.setFontSize(10);
-            const productLines = doc.splitTextToSize(product, 170);
-            productLines.forEach(line => { doc.text(line, 15, y); y += 5; });
+            doc.setFont(undefined, 'normal');
+            doc.text('Kassabon', 35, 28);
+            
+            // Oranje accent line
+            doc.setDrawColor(232, 130, 30); // Oranje #E8821E
+            doc.setLineWidth(1);
+            doc.line(0, 45, pageWidth, 45);
+
+            // Content
+            doc.setTextColor(31, 51, 84); // Navy text
+            doc.setFontSize(10);
+            let y = 55;
+            
+            doc.setFont(undefined, 'bold');
+            doc.text('Transactie Nr:', 15, y);
+            doc.setFont(undefined, 'normal');
+            doc.text(tx_num, 60, y);
+            y += 7;
+            
+            doc.setFont(undefined, 'bold');
+            doc.text('Datum/Tijd:', 15, y);
+            doc.setFont(undefined, 'normal');
+            doc.text(datum.toLocaleDateString('nl-NL') + ' ' + datum.toLocaleTimeString('nl-NL'), 60, y);
+            y += 7;
+            
+            doc.setFont(undefined, 'bold');
+            doc.text('Klanttype:', 15, y);
+            doc.setFont(undefined, 'normal');
+            doc.text(klanttype === 'b2c' ? 'B2C (Anoniem)' : 'B2B: ' + bedrijf, 60, y);
+            y += 7;
+            
+            doc.setFont(undefined, 'bold');
+            doc.text('Betaling:', 15, y);
+            doc.setFont(undefined, 'normal');
+            const betaalText = betalingswijze === 'tikkie' ? 'Tikkie' : betalingswijze === 'overschrijving' ? 'Overschrijving' : 'Contant';
+            doc.text(betaalText, 60, y);
+            y += 10;
+
+            // Product section
+            doc.setFont(undefined, 'bold');
+            doc.setFillColor(232, 130, 30, 20); // Licht oranje achtergrond
+            doc.rect(15, y - 3, 170, 25, 'F');
+            doc.setTextColor(31, 51, 84);
+            doc.text('Product:', 17, y);
+            y += 6;
+            
+            doc.setFont(undefined, 'normal');
+            doc.setFontSize(9);
+            const productLines = doc.splitTextToSize(product, 160);
+            productLines.forEach(line => {
+                doc.text(line, 17, y);
+                y += 4;
+            });
             
             y += 3;
-            doc.text('Conditie: ' + conditie, 15, y); y += 7;
+            doc.setFontSize(10);
             doc.setFont(undefined, 'bold');
-            doc.setFontSize(12);
-            doc.text('Bedrag: € ' + prijs.toFixed(2), 15, y); y += 10;
+            doc.text('Conditie: ' + conditie, 15, y);
+            y += 7;
+            
+            doc.setFillColor(31, 51, 84);
+            doc.rect(15, y, 170, 12, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text('Bedrag: € ' + prijs.toFixed(2), 90, y + 8, { align: 'center' });
+            y += 16;
 
-            // DISCLAIMERS (alleen voor B2C)
+            // DISCLAIMERS (alleen B2C)
             if (klanttype === 'b2c') {
-                doc.setFontSize(8);
                 doc.setTextColor(100, 100, 100);
+                doc.setFontSize(7);
+                doc.setFont(undefined, 'normal');
                 y += 5;
                 const disclaimer = "Dit product betreft een uniek single-item afkomstig uit een restpartij (zonder regresrecht). Op deze transactie is uitsluitend de wettelijke conformiteitsgarantie van toepassing. Vanwege de unieke voorraadpositie (enkelstuks) is levering van een vervangend exemplaar bij een defect uitgesloten. Indien het product binnen de wettelijke kaders een aantoonbaar defect vertoont, heeft u recht op kosteloze reparatie of – indien reparatie onuitvoerbaar is – volledige ontbinding (restitutie van het aankoopbedrag) tegen inlevering van het product. Omruiling of geld terug wegens spijt/verkeerde maat is UITGESLOTEN (koop is koop).";
-                const disclaimerLines = doc.splitTextToSize(disclaimer, 180);
+                const disclaimerLines = doc.splitTextToSize(disclaimer, 175);
                 disclaimerLines.forEach(line => {
-                    if (y + 3 > pageHeight - 20) {
+                    if (y + 2 > pageHeight - 15) {
                         doc.addPage();
-                        y = 20;
+                        y = 10;
                     }
                     doc.text(line, 10, y);
-                    y += 3;
+                    y += 2.5;
                 });
             }
 
             // Footer
             doc.setFontSize(9);
-            doc.setTextColor(0, 0, 0);
-            doc.text('Bedankt voor uw aankoop!', pageWidth / 2, pageHeight - 10, { align: 'center' });
+            doc.setTextColor(31, 51, 84);
+            doc.setFont(undefined, 'bold');
+            doc.text('Bedankt voor uw aankoop!', pageWidth / 2, pageHeight - 8, { align: 'center' });
 
             // Download
             doc.save('Bon_' + tx_num + '.pdf');
@@ -497,21 +557,22 @@
         }
 
         function startRetour(id, tx_num, bedrag) {
-            const reason = prompt('Reden retour:\n1 = Defect (derving)\n2 = Klantretour');
-            if (!reason) return;
-
-            const is_derving = reason === '1' ? 1 : 0;
-            const retour_tx_num = tx_num + '-RETOUR';
+            // Modal dialog ipv prompt
+            const choice = confirm('🔄 RETOUR - Kies reden:\n\n[OK] = Defect (derving - geen regres)\n[CANCEL] = Klantretour (gewone retour)');
+            
+            const is_derving = choice ? 1 : 0;
+            const derving_label = choice ? 'Defect (geen regres)' : 'Klantretour';
+            const retour_tx_num = tx_num + (choice ? '-DEFECT' : '-RETOUR');
 
             try {
                 db.run(
                     'INSERT INTO transacties (tx_num, datum, klanttype, betalingswijze, bedrijf, kvk, product, conditie, prijs, is_retour, original_tx_id, derving_reden) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)',
-                    [retour_tx_num, new Date().toISOString(), 'retour', 'retour', '', '', '', '', -bedrag, id, is_derving ? 'Defect (geen regres)' : 'Klantretour']
+                    [retour_tx_num, new Date().toISOString(), 'retour', 'retour', '', '', '', '', -bedrag, id, derving_label]
                 );
                 saveDB();
                 loadAllTransactions();
                 updateDashboard();
-                alert('✅ Creditnota aangemaakt: ' + retour_tx_num);
+                alert('✅ Creditnota aangemaakt:\n' + retour_tx_num + '\nReden: ' + derving_label);
             } catch (e) {
                 alert('Fout: ' + e.message);
             }
