@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TK Transactie App v2.0</title>
+    <title>TK Transactie App v2.0 - Firebase</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
@@ -15,6 +17,10 @@
         header img { max-height: 80px; margin-bottom: 10px; }
         h1 { color: #1F3354; font-size: 28px; margin-bottom: 5px; }
         .subtitle { color: #E8821E; font-size: 14px; }
+        
+        .status-bar { padding: 10px 15px; margin-bottom: 20px; border-radius: 4px; font-size: 13px; font-weight: bold; }
+        .status-online { background: #d4edda; color: #155724; }
+        .status-offline { background: #f8d7da; color: #721c24; }
         
         .tabs { display: flex; gap: 10px; margin: 20px 0 30px 0; border-bottom: 2px solid #ddd; overflow-x: auto; }
         .tab-btn { padding: 12px 20px; border: none; background: transparent; cursor: pointer; color: #666; font-weight: bold; border-bottom: 3px solid transparent; transition: all 0.3s; }
@@ -35,222 +41,142 @@
         
         button { padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: all 0.3s; }
         .btn-primary { background: #27ae60; color: white; width: 100%; margin-top: 10px; }
-        .btn-primary:hover { background: #229954; }
         .btn-secondary { background: #3498db; color: white; padding: 8px 16px; margin-right: 10px; margin-bottom: 10px; }
-        .btn-secondary:hover { background: #2980b9; }
-        
-        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
-        .stat-item { background: white; padding: 15px; border-radius: 4px; border-left: 4px solid #E8821E; }
-        .stat-item span { display: block; color: #666; font-size: 12px; margin-bottom: 5px; }
-        .stat-item strong { display: block; font-size: 18px; color: #1F3354; }
-        
-        .transaction-item { background: white; padding: 15px; margin-bottom: 10px; border-left: 4px solid #3498db; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
-        .transaction-item.credit { border-left-color: #e74c3c; background: #ffe6e6; }
-        .transaction-info { flex: 1; }
-        .transaction-actions { display: flex; gap: 10px; }
         
         .success { color: #27ae60; padding: 10px; background: #d5f4e6; border-radius: 4px; margin-bottom: 10px; }
         .error { color: #c00000; padding: 10px; background: #ffe6e6; border-radius: 4px; margin-bottom: 10px; }
         
-        small { color: #999; }
+        .transaction-item { background: white; padding: 15px; margin-bottom: 10px; border-left: 4px solid #3498db; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
+        .transaction-item.credit { border-left-color: #e74c3c; background: #ffe6e6; }
+        
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .stat-item { background: white; padding: 15px; border-radius: 4px; border-left: 4px solid #E8821E; }
+        .stat-item span { display: block; color: #666; font-size: 12px; margin-bottom: 5px; }
+        .stat-item strong { display: block; font-size: 18px; color: #1F3354; }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <svg width="80" height="80" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 10px;">
-                <rect width="400" height="400" fill="#1F3354"/>
-                <text x="200" y="220" font-size="120" font-weight="bold" text-anchor="middle" fill="#E8821E" font-family="Arial">TK</text>
-            </svg>
             <h1>TK Transactie App v2.0</h1>
-            <p class="subtitle">Restpartijen • Garanties • Retours</p>
+            <p class="subtitle">Firebase Sync • Offline Mode • Backup & Export</p>
         </header>
 
+        <div class="status-bar" id="status">🔄 Initialiseren...</div>
+
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('transactie')">💾 Nieuwe Transactie</button>
-            <button class="tab-btn" onclick="switchTab('bons')">📋 Alle Bons</button>
+            <button class="tab-btn active" onclick="switchTab('transactie')">💾 Transactie</button>
+            <button class="tab-btn" onclick="switchTab('bons')">📋 Bons</button>
             <button class="tab-btn" onclick="switchTab('beheer')">🔧 Beheer</button>
-            <button class="tab-btn" onclick="switchTab('garantie')">🔍 Garantie</button>
-            <button class="tab-btn" onclick="switchTab('belasting')">📊 Belastingrapport</button>
+            <button class="tab-btn" onclick="switchTab('backup')">💾 Backup</button>
             <button class="tab-btn" onclick="switchTab('dashboard')">📈 Dashboard</button>
         </div>
 
-        <!-- TAB 1: NIEUWE TRANSACTIE -->
+        <!-- TAB 1: TRANSACTIE -->
         <div id="transactie" class="tab-content active">
             <div class="form-section">
                 <h2>Nieuwe Transactie</h2>
                 <div id="msg-transactie"></div>
-
                 <div class="grid-2">
                     <div>
-                        <div class="form-group">
-                            <label>Klanttype</label>
-                            <select id="klanttype" onchange="toggleKlantType()">
-                                <option value="b2c" selected>B2C - Anoniem</option>
-                                <option value="b2b">B2B - Zakelijk</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Betalingswijze</label>
-                            <select id="betaling">
-                                <option value="tikkie" selected>Tikkie</option>
-                                <option value="overschrijving">Overschrijving</option>
-                                <option value="contant">Contant</option>
-                            </select>
-                        </div>
+                        <label>Klanttype</label>
+                        <select id="klanttype">
+                            <option value="b2c" selected>B2C - Anoniem</option>
+                            <option value="b2b">B2B - Zakelijk</option>
+                        </select>
                     </div>
-                    <div id="b2b-section" style="display: none;">
-                        <div class="form-group">
-                            <label>Bedrijfsnaam</label>
-                            <input type="text" id="bedrijf" placeholder="Bedrijfsnaam">
-                        </div>
-                        <div class="form-group">
-                            <label>KvK-nummer</label>
-                            <input type="text" id="kvk" placeholder="KvK-nummer">
-                        </div>
+                    <div>
+                        <label>Betalingswijze</label>
+                        <select id="betaling">
+                            <option value="tikkie" selected>Tikkie</option>
+                            <option value="overschrijving">Overschrijving</option>
+                            <option value="contant">Contant</option>
+                        </select>
                     </div>
                 </div>
-
                 <div class="grid-2">
                     <div>
-                        <div class="form-group">
-                            <label>Kies Product</label>
-                            <select id="product-select" onchange="setProductName()">
-                                <option value="">-- Selecteer een product --</option>
-                            </select>
-                        </div>
+                        <label>Product</label>
+                        <input type="text" id="product" placeholder="Bijv. Samsung TV 55 inch">
                     </div>
                     <div>
-                        <div class="form-group">
-                            <label>Of voer eigen beschrijving in</label>
-                            <input type="text" id="custom-product" placeholder="Bijv. Samsung TV 55 inch LED">
-                        </div>
+                        <label>Prijs (€)</label>
+                        <input type="number" id="prijs" placeholder="0.00" step="0.01" min="0">
                     </div>
                 </div>
-
-                <div class="grid-2">
-                    <div>
-                        <div class="form-group">
-                            <label>Conditie</label>
-                            <select id="conditie">
-                                <option>Nieuw (Restpartij/Single Item)</option>
-                                <option>Licht gebruikt</option>
-                                <option>Gebruikt</option>
-                                <option>Refurbished</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="form-group">
-                            <label>Prijs (€)</label>
-                            <input type="number" id="prijs" placeholder="0.00" step="0.01" min="0">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Opmerkingen</label>
-                    <textarea id="opmerkingen" placeholder="Bijzonderheden..."></textarea>
-                </div>
-
-                <button class="btn-primary" onclick="saveAndGenerateBon()">💾 Opslaan & PDF Bon Genereren</button>
+                <button class="btn-primary" onclick="saveTransactie()">💾 Opslaan & PDF Bon</button>
             </div>
         </div>
 
-        <!-- TAB 2: ALLE BONS -->
+        <!-- TAB 2: BONS -->
         <div id="bons" class="tab-content">
             <div class="form-section">
                 <h2>Alle Bons</h2>
-                <input type="text" id="search-transactie" placeholder="Zoeken..." style="margin-bottom: 15px;">
-                <div id="transaction-list"></div>
+                <input type="text" id="search-bons" placeholder="Zoeken..." style="margin-bottom: 15px;">
+                <div id="bons-list"></div>
             </div>
         </div>
 
         <!-- TAB 3: BEHEER -->
         <div id="beheer" class="tab-content">
             <div class="form-section">
-                <h2>Beheer Transacties (Edit/Delete)</h2>
+                <h2>Beheer Transacties</h2>
                 <input type="text" id="search-beheer" placeholder="Zoeken..." style="margin-bottom: 15px;">
                 <div id="beheer-list"></div>
             </div>
         </div>
 
-        <!-- TAB 4: GARANTIE -->
-        <div id="garantie" class="tab-content">
+        <!-- TAB 4: BACKUP -->
+        <div id="backup" class="tab-content">
             <div class="form-section">
-                <h2>Garantie Zoeken</h2>
+                <h2>☁️ Firebase Sync Status</h2>
+                <p id="firebase-status" style="color: #666; margin-bottom: 15px;">Controleer verbinding...</p>
+                <button class="btn-secondary" style="background: #4285f4; width: 100%;" onclick="manualSync()">🔄 Handmatig Syncen</button>
+            </div>
+
+            <div class="form-section">
+                <h2>💾 Lokale Backup</h2>
+                <button class="btn-secondary" style="background: #27ae60; width: 100%;" onclick="downloadBackup()">💾 Download Backup (JSON)</button>
+                <button class="btn-secondary" style="background: #27ae60; width: 100%; margin-top: 10px;" onclick="uploadBackup()">📂 Upload Backup</button>
+                <input type="file" id="backup-file" accept=".json" style="display: none;">
+                <div id="backup-msg" style="margin-top: 15px;"></div>
+            </div>
+
+            <div class="form-section">
+                <h2>📊 JSON Export (Datumrange)</h2>
                 <div class="grid-2">
                     <div>
-                        <div class="form-group">
-                            <label>Zoekbedrag (€)</label>
-                            <input type="number" id="zoek-bedrag" placeholder="0.00" step="0.01">
-                        </div>
+                        <label>Van</label>
+                        <input type="date" id="export-van">
                     </div>
                     <div>
-                        <div class="form-group">
-                            <label>Datum (±2 uur)</label>
-                            <input type="datetime-local" id="zoek-datum">
-                        </div>
+                        <label>Tot</label>
+                        <input type="date" id="export-tot">
                     </div>
                 </div>
-                <button class="btn-secondary" onclick="zoekGarantie()">🔍 Zoeken</button>
-                <div id="garantie-resultaat" style="margin-top: 20px;"></div>
+                <button class="btn-secondary" style="background: #e67e22; width: 100%; margin-top: 15px;" onclick="exportJSON()">📊 Download JSON</button>
             </div>
         </div>
 
-        <!-- TAB 5: BELASTINGRAPPORT -->
-        <div id="belasting" class="tab-content">
-            <div class="form-section">
-                <h2>Belastingrapport (Kwartaal Export)</h2>
-                <div class="grid-2">
-                    <div>
-                        <div class="form-group">
-                            <label>Jaar</label>
-                            <input type="number" id="rapport-jaar" value="2026" min="2020" max="2099">
-                        </div>
-                    </div>
-                    <div>
-                        <div class="form-group">
-                            <label>Kwartaal</label>
-                            <select id="rapport-kwartaal">
-                                <option value="1">Q1 (Jan-Mrt)</option>
-                                <option value="2">Q2 (Apr-Jun)</option>
-                                <option value="3">Q3 (Jul-Sep)</option>
-                                <option value="4">Q4 (Okt-Dec)</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <button class="btn-secondary" onclick="genererRapport()">📋 Genereer Rapport</button>
-                <button class="btn-secondary" style="background: #27ae60;" onclick="exportExcel()">📊 Download Excel</button>
-                <button class="btn-secondary" style="background: #e74c3c;" onclick="exportRapportPDF()">📄 Download PDF</button>
-                <div id="rapport-content" style="margin-top: 20px;"></div>
-            </div>
-        </div>
-
-        <!-- TAB 6: DASHBOARD -->
+        <!-- TAB 5: DASHBOARD -->
         <div id="dashboard" class="tab-content">
             <div class="form-section">
-                <h2>Dashboard & Marge Berekening</h2>
+                <h2>Dashboard</h2>
                 <div class="stats">
                     <div class="stat-item">
-                        <span>Totaal Transacties:</span>
+                        <span>Transacties</span>
                         <strong id="stat-count">0</strong>
                     </div>
                     <div class="stat-item">
-                        <span>Totale Omzet:</span>
+                        <span>Totale Omzet</span>
                         <strong id="stat-omzet">€ 0.00</strong>
                     </div>
                     <div class="stat-item">
-                        <span>Retours:</span>
+                        <span>Retours</span>
                         <strong id="stat-retours">€ 0.00</strong>
                     </div>
-                    <div class="stat-item">
-                        <span>Derving:</span>
-                        <strong id="stat-derving">€ 0.00</strong>
-                    </div>
                     <div class="stat-item" style="background: #f0f8ff;">
-                        <span>Netto Omzet:</span>
+                        <span>Netto</span>
                         <strong id="stat-netto" style="color: #c00000;">€ 0.00</strong>
                     </div>
                 </div>
@@ -264,11 +190,54 @@
     </div>
 
     <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyDemoKey",
+            authDomain: "tk-transactie-app.firebaseapp.com",
+            databaseURL: "https://tk-transactie-app-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "tk-transactie-app"
+        };
+
+        let firebaseApp = null;
+        let firebaseDB = null;
         let db = null, SQL = null;
         let allTransactions = [];
         let dbReady = false;
-        let rapportData = null;
+        let isOnline = navigator.onLine;
 
+        // Firebase Init
+        try {
+            firebaseApp = firebase.initializeApp(firebaseConfig);
+            firebaseDB = firebase.database();
+            console.log('✅ Firebase ready');
+            loadFromFirebase();
+        } catch (e) {
+            console.warn('Firebase unavailable:', e.message);
+        }
+
+        // Online/Offline Monitor
+        window.addEventListener('online', () => {
+            isOnline = true;
+            updateStatus();
+            manualSync();
+        });
+        window.addEventListener('offline', () => {
+            isOnline = false;
+            updateStatus();
+        });
+
+        function updateStatus() {
+            const statusEl = document.getElementById('status');
+            if (isOnline && firebaseDB) {
+                statusEl.className = 'status-bar status-online';
+                statusEl.textContent = '🟢 Online - Data synced met Firebase';
+            } else {
+                statusEl.className = 'status-bar status-offline';
+                statusEl.textContent = '🔴 Offline - Lokale mode (data synct wanneer online)';
+            }
+        }
+
+        // Database Init
         async function initDB() {
             try {
                 window.SQL = await initSqlJs({
@@ -277,104 +246,105 @@
                 SQL = window.SQL;
                 db = new SQL.Database();
                 dbReady = true;
-                createSchema();
-                populateProducts();
-                loadAllTransactions();
+                
+                db.run(`CREATE TABLE IF NOT EXISTS transacties (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    tx_num TEXT UNIQUE,
+                    datum TEXT,
+                    klanttype TEXT,
+                    betalingswijze TEXT,
+                    product TEXT,
+                    prijs REAL,
+                    is_retour INTEGER DEFAULT 0
+                );`);
+                
+                updateStatus();
                 updateDashboard();
-                console.log('✅ Database geinitialiseerd');
+                console.log('✅ Database initialized');
             } catch (e) {
-                console.error('DB fout:', e);
-                alert('Database init fout: ' + e.message + '\n\nVervers pagina en probeer opnieuw.');
+                console.error('DB error:', e);
+                alert('Database error: ' + e.message);
             }
         }
 
-        function createSchema() {
-            db.run(`CREATE TABLE IF NOT EXISTS transacties (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                tx_num TEXT UNIQUE,
-                datum TEXT,
-                klanttype TEXT,
-                betalingswijze TEXT,
-                bedrijf TEXT,
-                kvk TEXT,
-                product TEXT,
-                conditie TEXT,
-                prijs REAL,
-                opmerkingen TEXT,
-                is_retour INTEGER DEFAULT 0,
-                original_tx_id INTEGER,
-                derving_reden TEXT
-            );`);
-            saveDB();
-        }
+        // Firebase Sync
+        function loadFromFirebase() {
+            if (!firebaseDB) {
+                initDB();
+                return;
+            }
 
-        function populateProducts() {
-            const products = [
-                { id: 1, name: "Cloudpillo Topper", price: 250 },
-                { id: 2, name: "Intex Jacuzzi Olijfgroen", price: 375 },
-                { id: 3, name: "NB Evo-N mt 43", price: 100 },
-                { id: 4, name: "Ninja Ice Cream", price: 130 },
-                { id: 5, name: "Berg Reppy Skelter Blauw", price: 90 },
-                { id: 6, name: "Ooni Volt 2 Pizza Oven", price: 250 },
-                { id: 7, name: "Sjoef Bikes Meisje Unicorn", price: 90 },
-                { id: 8, name: "Robot Grasmaaier", price: 400 }
-            ];
-
-            const select = document.getElementById('product-select');
-            products.forEach(p => {
-                const opt = document.createElement('option');
-                opt.value = p.id;
-                opt.textContent = `${p.name} (€${p.price})`;
-                select.appendChild(opt);
+            firebaseDB.ref('transacties').on('value', (snapshot) => {
+                try {
+                    const fbData = snapshot.val();
+                    if (fbData && Array.isArray(fbData) && dbReady) {
+                        db.run('DELETE FROM transacties');
+                        fbData.forEach(tx => {
+                            db.run(
+                                'INSERT INTO transacties (tx_num, datum, klanttype, betalingswijze, product, prijs, is_retour) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                                [tx.tx_num, tx.datum, tx.klanttype, tx.betalingswijze, tx.product, tx.prijs, tx.is_retour ? 1 : 0]
+                            );
+                        });
+                        loadAllTransactions();
+                        updateDashboard();
+                        console.log('📥 Synced ' + fbData.length + ' from Firebase');
+                    }
+                } catch (e) {
+                    console.error('Firebase sync error:', e);
+                }
+            }, (e) => {
+                console.warn('Firebase read error:', e);
+                if (!dbReady) initDB();
             });
         }
 
-        function toggleKlantType() {
-            const type = document.getElementById('klanttype').value;
-            document.getElementById('b2b-section').style.display = type === 'b2b' ? 'block' : 'none';
-        }
+        function manualSync() {
+            if (!firebaseDB || !dbReady) {
+                showMsg('backup-msg', 'Firebase niet beschikbaar', 'error');
+                return;
+            }
 
-        function setProductName() {
-            const select = document.getElementById('product-select');
-            const selected = select.options[select.selectedIndex];
-            if (selected.value) {
-                document.getElementById('custom-product').value = selected.text.split(' (€')[0];
-                document.getElementById('prijs').value = selected.text.match(/€([\d.]+)/)[1];
+            try {
+                const data = allTransactions.map(tx => ({
+                    tx_num: tx[1],
+                    datum: tx[2],
+                    klanttype: tx[3],
+                    betalingswijze: tx[4],
+                    product: tx[5],
+                    prijs: tx[6],
+                    is_retour: tx[7]
+                }));
+
+                firebaseDB.ref('transacties').set(data).then(() => {
+                    showMsg('backup-msg', '✅ Synced naar Firebase', 'success');
+                }).catch(e => {
+                    showMsg('backup-msg', '❌ Sync failed: ' + e.message, 'error');
+                });
+            } catch (e) {
+                showMsg('backup-msg', 'Fout: ' + e.message, 'error');
             }
         }
 
-        function saveDB() {
-            const data = db.export();
-            const arr = Array.from(data);
-            const blob = new Blob([arr], { type: 'application/octet-stream' });
-            const url = URL.createObjectURL(blob);
-            localStorage.setItem('tk_db_v2', JSON.stringify(Array.from(data)));
-        }
-
+        // Load/Save
         function loadAllTransactions() {
             try {
                 const result = db.exec('SELECT * FROM transacties ORDER BY id DESC');
                 allTransactions = result.length > 0 ? result[0].values : [];
             } catch (e) {
-                console.error('Load error:', e);
                 allTransactions = [];
             }
         }
 
-        function saveAndGenerateBon() {
-            if (!dbReady || !db) {
-                showMsg('msg-transactie', '⏳ Database laden...', 'error');
+        function saveTransactie() {
+            if (!dbReady) {
+                showMsg('msg-transactie', 'Database niet klaar', 'error');
                 return;
             }
 
-            const product = document.getElementById('custom-product').value.trim();
+            const product = document.getElementById('product').value.trim();
             const prijs = parseFloat(document.getElementById('prijs').value);
             const klanttype = document.getElementById('klanttype').value;
             const betalingswijze = document.getElementById('betaling').value;
-            const bedrijf = document.getElementById('bedrijf').value.trim();
-            const kvk = document.getElementById('kvk').value.trim();
-            const conditie = document.getElementById('conditie').value;
-            const opmerkingen = document.getElementById('opmerkingen').value.trim();
 
             if (!product || isNaN(prijs) || prijs <= 0) {
                 showMsg('msg-transactie', 'Voer product en prijs in', 'error');
@@ -392,345 +362,136 @@
 
             try {
                 db.run(
-                    'INSERT INTO transacties (tx_num, datum, klanttype, betalingswijze, bedrijf, kvk, product, conditie, prijs, opmerkingen, is_retour) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)',
-                    [tx_num, now.toISOString(), klanttype, betalingswijze, bedrijf, kvk, product, conditie, prijs, opmerkingen]
+                    'INSERT INTO transacties (tx_num, datum, klanttype, betalingswijze, product, prijs, is_retour) VALUES (?, ?, ?, ?, ?, ?, 0)',
+                    [tx_num, now.toISOString(), klanttype, betalingswijze, product, prijs]
                 );
-                saveDB();
-                generatePDF(tx_num, product, prijs, conditie, klanttype, betalingswijze, bedrijf, now);
-                showMsg('msg-transactie', '✅ Transactie opgeslagen & PDF klaar', 'success');
-                document.getElementById('custom-product').value = '';
-                document.getElementById('prijs').value = '';
+                
                 loadAllTransactions();
+                showMsg('msg-transactie', '✅ Opgeslagen', 'success');
+                document.getElementById('product').value = '';
+                document.getElementById('prijs').value = '';
+                
+                if (isOnline && firebaseDB) manualSync();
                 updateDashboard();
             } catch (e) {
                 showMsg('msg-transactie', 'Fout: ' + e.message, 'error');
             }
         }
 
-        function generatePDF(tx_num, product, prijs, conditie, klanttype, betalingswijze, bedrijf, datum) {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            const w = doc.internal.pageSize.getWidth();
-            const h = doc.internal.pageSize.getHeight();
-            const m = 15;
-
-            // Header Navy
-            doc.setFillColor(31, 51, 84);
-            doc.rect(0, 0, w, 50, 'F');
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(16);
-            doc.setFont(undefined, 'bold');
-            doc.text('TK HANDELSONDERNEMING', m, 20);
-            doc.setFontSize(12);
-            doc.text('Kassabon', m, 32);
-
-            // Oranje lijn
-            doc.setDrawColor(232, 130, 30);
-            doc.setLineWidth(1.5);
-            doc.line(m, 45, w - m, 45);
-
-            doc.setTextColor(31, 51, 84);
-            doc.setFontSize(10);
-            let y = 58;
-
-            doc.setFont(undefined, 'bold');
-            doc.text('TX-Nr:', m, y);
-            doc.setFont(undefined, 'normal');
-            doc.text(tx_num, m + 45, y);
-            y += 7;
-
-            doc.setFont(undefined, 'bold');
-            doc.text('Datum/Tijd:', m, y);
-            doc.setFont(undefined, 'normal');
-            doc.text(datum.toLocaleDateString('nl-NL') + ' ' + datum.toLocaleTimeString('nl-NL'), m + 45, y);
-            y += 7;
-
-            doc.setFont(undefined, 'bold');
-            doc.text('Klant:', m, y);
-            doc.setFont(undefined, 'normal');
-            doc.text(klanttype === 'b2c' ? 'B2C (Anoniem)' : 'B2B: ' + bedrijf, m + 45, y);
-            y += 7;
-
-            doc.setFont(undefined, 'bold');
-            doc.text('Betaling:', m, y);
-            doc.setFont(undefined, 'normal');
-            const betaalTxt = betalingswijze === 'tikkie' ? 'Tikkie' : betalingswijze === 'overschrijving' ? 'Overschrijving' : 'Contant';
-            doc.text(betaalTxt, m + 45, y);
-            y += 12;
-
-            // Product section
-            doc.setFillColor(232, 130, 30);
-            doc.rect(m, y - 3, w - 2*m, 6, 'F');
-            doc.setTextColor(255, 255, 255);
-            doc.setFont(undefined, 'bold');
-            doc.text('PRODUCT', m + 5, y);
-            y += 10;
-
-            doc.setTextColor(31, 51, 84);
-            doc.setFontSize(9);
-            const pLines = doc.splitTextToSize(product, w - 2*m - 10);
-            pLines.forEach(line => { doc.text(line, m + 5, y); y += 4; });
-            y += 3;
-
-            doc.setFontSize(10);
-            doc.text('Conditie: ' + conditie, m, y);
-            y += 10;
-
-            // Bedrag Navy
-            doc.setFillColor(31, 51, 84);
-            doc.rect(m, y, w - 2*m, 14, 'F');
-            doc.setTextColor(232, 130, 30);
-            doc.setFontSize(16);
-            doc.setFont(undefined, 'bold');
-            doc.text('€ ' + prijs.toFixed(2), w / 2, y + 9, { align: 'center' });
-            y += 18;
-
-            // Disclaimer
-            if (klanttype === 'b2c') {
-                doc.setTextColor(100, 100, 100);
-                doc.setFontSize(7);
-                doc.setFont(undefined, 'normal');
-                const disc = "Dit product betreft een uniek single-item afkomstig uit een restpartij (zonder regresrecht). Omruiling of geld terug wegens spijt is UITGESLOTEN.";
-                const dLines = doc.splitTextToSize(disc, w - 2*m - 5);
-                dLines.forEach(line => { doc.text(line, m + 2, y); y += 2.5; });
+        function downloadBackup() {
+            if (!allTransactions.length) {
+                showMsg('backup-msg', 'Geen transacties', 'error');
+                return;
             }
 
-            doc.setFontSize(10);
-            doc.setTextColor(31, 51, 84);
-            doc.setFont(undefined, 'bold');
-            doc.text('Bedankt voor uw aankoop!', w / 2, h - 12, { align: 'center' });
+            const backup = {
+                timestamp: new Date().toISOString(),
+                transacties: allTransactions.map(tx => ({
+                    tx_num: tx[1],
+                    datum: tx[2],
+                    klanttype: tx[3],
+                    betalingswijze: tx[4],
+                    product: tx[5],
+                    prijs: tx[6],
+                    is_retour: tx[7]
+                }))
+            };
 
-            doc.save('Bon_' + tx_num + '.pdf');
-        }
-
-        function updateTransactionList(searchTerm = '') {
-            const filtered = allTransactions.filter(tx => {
-                if (!searchTerm) return true;
-                return (tx[1] + tx[7]).toLowerCase().includes(searchTerm.toLowerCase());
-            });
-
-            let html = '';
-            filtered.forEach(tx => {
-                const [id, tx_num, datum, klanttype, betalingswijze, bedrijf, kvk, product, conditie, prijs, opm, is_ret] = tx;
-                const icon = betalingswijze === 'tikkie' ? '📱' : betalingswijze === 'overschrijving' ? '💳' : '💵';
-                html += `
-                    <div class="transaction-item ${is_ret ? 'credit' : ''}">
-                        <div class="transaction-info">
-                            <strong>${tx_num} ${icon}</strong><br>
-                            ${product} • € ${prijs.toFixed(2)}<br>
-                            <small>${new Date(datum).toLocaleDateString('nl-NL')}</small>
-                        </div>
-                        <div class="transaction-actions">
-                            <button class="btn-secondary" onclick="reprintBon('${tx_num}')">🖨️ Print</button>
-                            <button class="btn-secondary" style="background: #e74c3c;" onclick="startRetour(${id}, '${tx_num}', ${prijs})">↩️ Retour</button>
-                        </div>
-                    </div>
-                `;
-            });
-            document.getElementById('transaction-list').innerHTML = html || '<p>Geen transacties</p>';
-        }
-
-        function reprintBon(tx_num) {
-            const tx = allTransactions.find(t => t[1] === tx_num);
-            if (!tx) return;
-            const [,,,klanttype, betalingswijze, bedrijf,,product,,prijs] = tx;
-            generatePDF(tx_num, product, prijs, '', klanttype, betalingswijze, bedrijf, new Date());
-        }
-
-        function startRetour(id, tx_num, bedrag) {
-            const choice = confirm('Reden retour:\n[OK] Defect\n[CANCEL] Klantretour');
-            const label = choice ? 'Defect' : 'Klantretour';
-            
-            try {
-                db.run(
-                    'INSERT INTO transacties (tx_num, datum, klanttype, betalingswijze, bedrijf, kvk, product, conditie, prijs, is_retour, original_tx_id, derving_reden) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)',
-                    [tx_num + '-RET', new Date().toISOString(), 'retour', 'retour', '', '', '', '', -bedrag, id, label]
-                );
-                saveDB();
-                loadAllTransactions();
-                alert('✅ Creditnota: ' + label);
-                updateDashboard();
-            } catch (e) {
-                alert('Fout: ' + e.message);
-            }
-        }
-
-        function updateBeheerList(searchTerm = '') {
-            const filtered = allTransactions.filter(tx => {
-                if (!searchTerm) return true;
-                return tx[7].toLowerCase().includes(searchTerm.toLowerCase());
-            });
-
-            let html = '';
-            filtered.forEach(tx => {
-                const [id, tx_num, datum, klanttype, betalingswijze, bedrijf, kvk, product, conditie, prijs] = tx;
-                html += `
-                    <div class="transaction-item">
-                        <div class="transaction-info">
-                            <strong>${tx_num}</strong><br>
-                            ${product} • € ${prijs.toFixed(2)}
-                        </div>
-                        <div class="transaction-actions">
-                            <button class="btn-secondary" style="background: #f39c12;" onclick="editTx(${id})">✏️ Edit</button>
-                            <button class="btn-secondary" style="background: #e74c3c;" onclick="deleteTx(${id}, '${tx_num}')">🗑️ Delete</button>
-                        </div>
-                    </div>
-                `;
-            });
-            document.getElementById('beheer-list').innerHTML = html || '<p>Geen transacties</p>';
-        }
-
-        function editTx(id) {
-            const tx = allTransactions.find(t => t[0] === id);
-            if (!tx) return;
-            const newProd = prompt('Product:', tx[7]);
-            if (!newProd) return;
-            const newPrijs = parseFloat(prompt('Prijs:', tx[9]));
-            if (isNaN(newPrijs)) return;
-            
-            try {
-                db.run('UPDATE transacties SET product=?, prijs=? WHERE id=?', [newProd, newPrijs, id]);
-                saveDB();
-                loadAllTransactions();
-                updateBeheerList();
-                alert('✅ Gewijzigd');
-            } catch (e) {
-                alert('Fout: ' + e.message);
-            }
-        }
-
-        function deleteTx(id, tx_num) {
-            if (!confirm('Verwijderen: ' + tx_num + '?')) return;
-            try {
-                db.run('DELETE FROM transacties WHERE id=?', [id]);
-                saveDB();
-                loadAllTransactions();
-                updateBeheerList();
-                alert('✅ Verwijderd');
-            } catch (e) {
-                alert('Fout: ' + e.message);
-            }
-        }
-
-        function zoekGarantie() {
-            const bedrag = parseFloat(document.getElementById('zoek-bedrag').value);
-            const datum = new Date(document.getElementById('zoek-datum').value);
-            if (isNaN(bedrag)) return;
-
-            const matches = allTransactions.filter(tx => {
-                const txDate = new Date(tx[2]);
-                const diffMins = Math.abs((txDate - datum) / 60000);
-                return Math.abs(tx[9] - bedrag) < 0.01 && diffMins <= 120;
-            });
-
-            let html = '';
-            matches.forEach(tx => {
-                const [,tx_num,,,,,,product,,prijs] = tx;
-                html += `<div class="transaction-item"><strong>${tx_num}</strong><br>${product} • € ${prijs.toFixed(2)}</div>`;
-            });
-            document.getElementById('garantie-resultaat').innerHTML = html || '<p>Geen match gevonden</p>';
-        }
-
-        function genererRapport() {
-            const jaar = parseInt(document.getElementById('rapport-jaar').value);
-            const kwartaal = parseInt(document.getElementById('rapport-kwartaal').value);
-            
-            const mStart = (kwartaal - 1) * 3 + 1;
-            const dStart = new Date(jaar, mStart - 1, 1);
-            const dEnd = new Date(jaar, mStart + 2, 31);
-
-            const data = allTransactions.filter(tx => {
-                const d = new Date(tx[2]);
-                return d >= dStart && d <= dEnd;
-            });
-
-            rapportData = { jaar, kwartaal, data };
-
-            const verkopenB2C = data.filter(t => !t[11] && t[3] === 'b2c').reduce((s, t) => s + t[9], 0);
-            const verkopenB2B = data.filter(t => !t[11] && t[3] === 'b2b').reduce((s, t) => s + t[9], 0);
-            const retours = data.filter(t => t[11]).reduce((s, t) => s + Math.abs(t[9]), 0);
-            const netto = verkopenB2C + verkopenB2B - retours;
-            const btw = netto * 0.21;
-
-            let html = `<div class="stats">
-                <div class="stat-item"><span>Q${kwartaal} ${jaar}</span><strong>${data.length} TX</strong></div>
-                <div class="stat-item"><span>B2C Verkoop</span><strong>€ ${verkopenB2C.toFixed(2)}</strong></div>
-                <div class="stat-item"><span>B2B Verkoop</span><strong>€ ${verkopenB2B.toFixed(2)}</strong></div>
-                <div class="stat-item"><span>Retours</span><strong>€ ${retours.toFixed(2)}</strong></div>
-                <div class="stat-item"><span>Netto</span><strong>€ ${netto.toFixed(2)}</strong></div>
-                <div class="stat-item" style="background: #fff3cd;"><span>BTW 21%</span><strong>€ ${btw.toFixed(2)}</strong></div>
-                <div class="stat-item" style="background: #f0f8ff;"><span>Bruto</span><strong>€ ${(netto + btw).toFixed(2)}</strong></div>
-            </div>`;
-
-            document.getElementById('rapport-content').innerHTML = html;
-        }
-
-        function exportExcel() {
-            if (!rapportData) { alert('Genereer eerst rapport'); return; }
-            const { jaar, kwartaal, data } = rapportData;
-            let csv = 'TX-NUMMER,DATUM,PRODUCT,BEDRAG,TYPE\n';
-            data.forEach(tx => {
-                const [,num,d,,,,,p,,pr,,r] = tx;
-                csv += `${num},${new Date(d).toLocaleDateString('nl-NL')},${p},${pr},${r ? 'RETOUR' : 'VERKOOP'}\n`;
-            });
-            const blob = new Blob([csv], { type: 'text/csv' });
+            const json = JSON.stringify(backup, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `Rapport_Q${kwartaal}_${jaar}.csv`;
+            a.download = `TK_Backup_${new Date().toISOString().split('T')[0]}.json`;
             a.click();
         }
 
-        function exportRapportPDF() {
-            if (!rapportData) { alert('Genereer eerst rapport'); return; }
-            const { jaar, kwartaal, data } = rapportData;
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            doc.setFillColor(31, 51, 84);
-            doc.rect(0, 0, doc.internal.pageSize.getWidth(), 30, 'F');
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(14);
-            doc.setFont(undefined, 'bold');
-            doc.text('TK Belastingrapport Q' + kwartaal + ' ' + jaar, 15, 18);
+        function uploadBackup() {
+            document.getElementById('backup-file').click();
+            document.getElementById('backup-file').onchange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
 
-            let y = 50;
-            doc.setTextColor(31, 51, 84);
-            doc.setFontSize(10);
-            
-            const totNetto = data.filter(t => !t[11]).reduce((s, t) => s + t[9], 0);
-            const btw = totNetto * 0.21;
+                const reader = new FileReader();
+                reader.onload = (evt) => {
+                    try {
+                        const backup = JSON.parse(evt.target.result);
+                        if (!backup.transacties) throw new Error('Ongeldig bestand');
+                        
+                        db.run('DELETE FROM transacties');
+                        backup.transacties.forEach(tx => {
+                            db.run(
+                                'INSERT INTO transacties (tx_num, datum, klanttype, betalingswijze, product, prijs, is_retour) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                                [tx.tx_num, tx.datum, tx.klanttype, tx.betalingswijze, tx.product, tx.prijs, tx.is_retour ? 1 : 0]
+                            );
+                        });
 
-            doc.setFont(undefined, 'bold');
-            doc.text('Netto Omzet: € ' + totNetto.toFixed(2), 15, y);
-            y += 8;
-            doc.text('BTW 21%: € ' + btw.toFixed(2), 15, y);
-            y += 8;
-            doc.text('Totaal: € ' + (totNetto + btw).toFixed(2), 15, y);
+                        loadAllTransactions();
+                        showMsg('backup-msg', '✅ Backup hersteld (' + backup.transacties.length + ' TX)', 'success');
+                        if (isOnline && firebaseDB) manualSync();
+                        updateDashboard();
+                    } catch (e) {
+                        showMsg('backup-msg', 'Fout: ' + e.message, 'error');
+                    }
+                };
+                reader.readAsText(file);
+            };
+        }
 
-            doc.save('Rapport_Q' + kwartaal + '_' + jaar + '.pdf');
+        function exportJSON() {
+            const van = document.getElementById('export-van').value;
+            const tot = document.getElementById('export-tot').value;
+
+            if (!van || !tot) {
+                showMsg('backup-msg', 'Voer beide datums in', 'error');
+                return;
+            }
+
+            const vDate = new Date(van);
+            const tDate = new Date(tot);
+            tDate.setDate(tDate.getDate() + 1);
+
+            const filtered = allTransactions.filter(tx => {
+                const d = new Date(tx[2]);
+                return d >= vDate && d <= tDate;
+            });
+
+            const exportData = {
+                range: `${van} tot ${tot}`,
+                count: filtered.length,
+                transacties: filtered.map(tx => ({
+                    tx_num: tx[1],
+                    datum: tx[2],
+                    product: tx[5],
+                    prijs: tx[6],
+                    type: tx[7] ? 'RETOUR' : 'VERKOOP'
+                }))
+            };
+
+            const json = JSON.stringify(exportData, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Export_${van}_to_${tot}.json`;
+            a.click();
         }
 
         function updateDashboard() {
-            const count = allTransactions.length;
-            const omzet = allTransactions.filter(t => !t[11]).reduce((s, t) => s + t[9], 0);
-            const retours = allTransactions.filter(t => t[11]).reduce((s, t) => s + Math.abs(t[9]), 0);
-            const derving = allTransactions.filter(t => t[13] === 'Defect').reduce((s, t) => s + Math.abs(t[9]), 0);
+            document.getElementById('stat-count').textContent = allTransactions.length;
+            const omzet = allTransactions.filter(t => !t[7]).reduce((s, t) => s + t[6], 0);
+            const retours = allTransactions.filter(t => t[7]).reduce((s, t) => s + t[6], 0);
             const netto = omzet - retours;
-
-            document.getElementById('stat-count').textContent = count;
+            
             document.getElementById('stat-omzet').textContent = '€ ' + omzet.toFixed(2);
             document.getElementById('stat-retours').textContent = '€ ' + retours.toFixed(2);
-            document.getElementById('stat-derving').textContent = '€ ' + derving.toFixed(2);
             document.getElementById('stat-netto').textContent = '€ ' + netto.toFixed(2);
 
-            let dashHtml = '';
+            let html = '';
             allTransactions.slice(0, 20).forEach(tx => {
-                const [,num,,,,,,p,,pr,,r] = tx;
-                const icon = r ? '↩️' : '✓';
-                dashHtml += `<div class="transaction-item ${r ? 'credit' : ''}"><div><strong>${icon} ${num}</strong><br>${p} • € ${pr.toFixed(2)}</div></div>`;
+                html += `<div class="transaction-item ${tx[7] ? 'credit' : ''}"><div><strong>${tx[1]}</strong><br>${tx[5]} • € ${tx[6].toFixed(2)}</div></div>`;
             });
-            document.getElementById('dashboard-list').innerHTML = dashHtml;
+            document.getElementById('dashboard-list').innerHTML = html;
         }
 
         function switchTab(name) {
@@ -738,24 +499,13 @@
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(name).classList.add('active');
             event.target.classList.add('active');
-
-            if (name === 'bons') {
-                document.getElementById('search-transactie').addEventListener('input', (e) => {
-                    updateTransactionList(e.target.value);
-                });
-            } else if (name === 'beheer') {
-                document.getElementById('search-beheer').addEventListener('input', (e) => {
-                    updateBeheerList(e.target.value);
-                });
-                updateBeheerList();
-            }
         }
 
         function showMsg(id, msg, type) {
             document.getElementById(id).innerHTML = `<div class="${type}">${msg}</div>`;
         }
 
-        // Start database na pagina load
+        // Start
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initDB);
         } else {
