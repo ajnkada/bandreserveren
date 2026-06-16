@@ -227,7 +227,11 @@
 
         async function initDB() {
             try {
-                SQL = await initSqlJs();
+                // Zeg sql.js waar het WASM bestand zit
+                window.SQL = await initSqlJs({
+                    locateFile: (filename) => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${filename}`
+                });
+                SQL = window.SQL;
                 db = new SQL.Database();
                 dbReady = true;
                 createSchema();
@@ -237,7 +241,7 @@
                 console.log('✅ Database geinitialiseerd');
             } catch (e) {
                 console.error('DB fout:', e);
-                alert('Database init fout: ' + e.message);
+                alert('Database init fout: ' + e.message + '\n\nVervers de pagina en probeer opnieuw.');
             }
         }
 
