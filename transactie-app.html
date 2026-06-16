@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TK Transactie App v5.1 - Google Drive Sync FIXED</title>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <title>TK Transactie App v5.2</title>
+    <script src="https://accounts.google.com/gsi/client"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
@@ -16,15 +16,7 @@
         h1 { color: #1F3354; font-size: 28px; margin-bottom: 5px; }
         .subtitle { color: #E8821E; font-size: 14px; }
         
-        .status-bar { padding: 10px 15px; margin-bottom: 20px; border-radius: 4px; font-size: 13px; font-weight: bold; background: #d4edda; color: #155724; display: flex; justify-content: space-between; align-items: center; }
-        
-        .tabs { display: flex; gap: 10px; margin: 20px 0 30px 0; border-bottom: 2px solid #ddd; overflow-x: auto; flex-wrap: wrap; }
-        .tab-btn { padding: 12px 20px; border: none; background: transparent; cursor: pointer; color: #666; font-weight: bold; border-bottom: 3px solid transparent; }
-        .tab-btn:hover { color: #c00000; }
-        .tab-btn.active { color: #c00000; border-bottom-color: #c00000; }
-        
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        .status-bar { padding: 10px 15px; margin-bottom: 20px; border-radius: 4px; font-size: 13px; font-weight: bold; background: #d4edda; color: #155724; }
         
         .form-section { background: #f9f9f9; padding: 20px; margin-bottom: 20px; border-left: 4px solid #E8821E; border-radius: 4px; }
         h2 { color: #1F3354; font-size: 18px; margin-bottom: 15px; }
@@ -36,7 +28,7 @@
         
         button { padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px; }
         .btn-primary { background: #27ae60; color: white; width: 100%; margin-top: 10px; }
-        .btn-secondary { background: #3498db; color: white; padding: 10px 20px; margin: 5px 5px 5px 0; }
+        .btn-secondary { background: #3498db; color: white; padding: 10px 20px; margin-right: 10px; margin-top: 10px; }
         
         .success { color: #27ae60; padding: 10px; background: #d5f4e6; border-radius: 4px; margin-bottom: 10px; border-left: 4px solid #27ae60; }
         .error { color: #c00000; padding: 10px; background: #ffe6e6; border-radius: 4px; margin-bottom: 10px; border-left: 4px solid #c00000; }
@@ -49,166 +41,150 @@
         .stat-label { color: #666; font-size: 12px; margin-bottom: 5px; }
         .stat-value { font-size: 20px; font-weight: bold; color: #1F3354; }
         
-        #g_id_onload { margin-bottom: 15px; }
-        
         .search-box { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 15px; }
         .no-data { padding: 20px; text-align: center; color: #999; }
+        
+        #login-section { text-align: center; }
+        #app-content { display: none; }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>TK Transactie App v5.1</h1>
-            <p class="subtitle">✅ Google Drive Sync • 100% Offline • Fixed OAuth2</p>
+            <h1>TK Transactie App v5.2</h1>
+            <p class="subtitle">✅ Google Drive Sync • Alles Zichtbaar</p>
         </header>
 
-        <div class="status-bar">
-            <span>📱 Lokale Database + Google Drive Sync</span>
-            <div id="auth-status">🔐 Inloggen met Google</div>
-        </div>
+        <div class="status-bar" id="auth-status">🔐 Inloggen met Google</div>
 
-        <div class="form-section" style="text-align:center;">
-            <div id="g_id_onload"
-                 data-client_id="403325180927-bod7tegffh8c61l6d4qtqpt0slrcvtif.apps.googleusercontent.com"
+        <div id="login-section" class="form-section">
+            <div id="g_id_onload" data-client_id="403325180927-bod7tegffh8c61l6d4qtqpt0slrcvtif.apps.googleusercontent.com" 
                  data-callback="handleCredentialResponse"></div>
             <div id="buttonDiv"></div>
         </div>
 
-        <div id="app-content" style="display:none;">
-            <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('transactie')">💾 Transactie</button>
-                <button class="tab-btn" onclick="switchTab('bonnen')">📋 Bonnen</button>
-                <button class="tab-btn" onclick="switchTab('uitgaven')">💸 Uitgaven</button>
-                <button class="tab-btn" onclick="switchTab('reports')">📊 Reports</button>
-                <button class="tab-btn" onclick="switchTab('dashboard')">📈 Dashboard</button>
-            </div>
-
-            <div id="transactie" class="tab-content active">
-                <div class="form-section">
-                    <h2>Nieuwe Transactie</h2>
-                    <div id="msg-tx"></div>
-                    <div class="grid-2">
-                        <div>
-                            <label>Klanttype</label>
-                            <select id="tx-klanttype">
-                                <option value="b2c">B2C - Anoniem</option>
-                                <option value="b2b">B2B - Zakelijk</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label>Betalingswijze</label>
-                            <select id="tx-betaling">
-                                <option value="tikkie">Tikkie</option>
-                                <option value="overschrijving">Overschrijving</option>
-                                <option value="contant">Contant</option>
-                            </select>
-                        </div>
+        <div id="app-content">
+            <!-- TRANSACTIE SECTION -->
+            <div class="form-section">
+                <h2>💾 Nieuwe Transactie</h2>
+                <div id="msg-tx"></div>
+                <div class="grid-2">
+                    <div>
+                        <label>Klanttype</label>
+                        <select id="tx-klanttype">
+                            <option value="b2c">B2C - Anoniem</option>
+                            <option value="b2b">B2B - Zakelijk</option>
+                        </select>
                     </div>
-                    <div class="grid-2">
-                        <div>
-                            <label>Product</label>
-                            <input type="text" id="tx-product">
-                        </div>
-                        <div>
-                            <label>Prijs (€)</label>
-                            <input type="number" id="tx-prijs" step="0.01" min="0">
-                        </div>
+                    <div>
+                        <label>Betalingswijze</label>
+                        <select id="tx-betaling">
+                            <option value="tikkie">Tikkie</option>
+                            <option value="overschrijving">Overschrijving</option>
+                            <option value="contant">Contant</option>
+                        </select>
                     </div>
-                    <button class="btn-primary" onclick="saveTx()">💾 Opslaan & PDF</button>
                 </div>
-            </div>
-
-            <div id="bonnen" class="tab-content">
-                <div class="form-section">
-                    <h2>Alle Bonnen</h2>
-                    <input type="text" id="search-bonnen" class="search-box" placeholder="Zoeken...">
-                    <div id="bonnen-list"></div>
-                </div>
-            </div>
-
-            <div id="uitgaven" class="tab-content">
-                <div class="form-section">
-                    <h2>Uitgave Registreren</h2>
-                    <div id="msg-ug"></div>
-                    <div class="grid-3">
-                        <div>
-                            <label>Type</label>
-                            <select id="ug-type">
-                                <option value="operationeel">Operationeel</option>
-                                <option value="investering">Investering</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label>Omschrijving</label>
-                            <input type="text" id="ug-desc">
-                        </div>
-                        <div>
-                            <label>Bedrag (€)</label>
-                            <input type="number" id="ug-bedrag" step="0.01" min="0">
-                        </div>
+                <div class="grid-2">
+                    <div>
+                        <label>Product</label>
+                        <input type="text" id="tx-product">
                     </div>
-                    <button class="btn-primary" onclick="saveUg()">💸 Opslaan</button>
-                </div>
-
-                <div class="form-section">
-                    <h2>Alle Uitgaven</h2>
-                    <input type="text" id="search-ug" class="search-box" placeholder="Zoeken...">
-                    <div id="ug-list"></div>
-                </div>
-            </div>
-
-            <div id="reports" class="tab-content">
-                <div class="form-section">
-                    <h2>Financial Reports</h2>
-                    <div class="grid-3">
-                        <div>
-                            <label>Periode</label>
-                            <select id="report-period" onchange="updateReportUI()">
-                                <option value="custom">Custom</option>
-                                <option value="maand">Deze Maand</option>
-                                <option value="kwartaal">Dit Kwartaal</option>
-                                <option value="jaar">Dit Jaar</option>
-                                <option value="alles">Alles</option>
-                            </select>
-                        </div>
-                        <div id="div-van" style="display:none;">
-                            <label>Van</label>
-                            <input type="date" id="report-van">
-                        </div>
-                        <div id="div-tot" style="display:none;">
-                            <label>Tot</label>
-                            <input type="date" id="report-tot">
-                        </div>
+                    <div>
+                        <label>Prijs (€)</label>
+                        <input type="number" id="tx-prijs" step="0.01" min="0">
                     </div>
-                    <button class="btn-secondary" style="width:100%; margin-top:15px;" onclick="genReport()">📊 Genereer</button>
-                    <div id="report-out" style="margin-top:20px;"></div>
                 </div>
+                <button class="btn-primary" onclick="saveTx()">💾 Opslaan & PDF</button>
             </div>
 
-            <div id="dashboard" class="tab-content">
-                <div class="form-section">
-                    <h2>Dashboard</h2>
-                    <div class="stats">
-                        <div class="stat">
-                            <div class="stat-label">Transacties</div>
-                            <div class="stat-value" id="d-count">0</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-label">Omzet</div>
-                            <div class="stat-value" id="d-omzet">€ 0.00</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-label">BTW 21%</div>
-                            <div class="stat-value" id="d-btw">€ 0.00</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-label">Uitgaven</div>
-                            <div class="stat-value" id="d-ug">€ 0.00</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-label">Winst</div>
-                            <div class="stat-value" id="d-winst">€ 0.00</div>
-                        </div>
+            <!-- BONNEN SECTION -->
+            <div class="form-section">
+                <h2>📋 Alle Bonnen</h2>
+                <input type="text" id="search-bonnen" class="search-box" placeholder="Zoeken...">
+                <div id="bonnen-list"></div>
+            </div>
+
+            <!-- UITGAVEN SECTION -->
+            <div class="form-section">
+                <h2>💸 Uitgave Registreren</h2>
+                <div id="msg-ug"></div>
+                <div class="grid-3">
+                    <div>
+                        <label>Type</label>
+                        <select id="ug-type">
+                            <option value="operationeel">Operationeel</option>
+                            <option value="investering">Investering</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Omschrijving</label>
+                        <input type="text" id="ug-desc">
+                    </div>
+                    <div>
+                        <label>Bedrag (€)</label>
+                        <input type="number" id="ug-bedrag" step="0.01" min="0">
+                    </div>
+                </div>
+                <button class="btn-primary" onclick="saveUg()">💸 Opslaan</button>
+            </div>
+
+            <div class="form-section">
+                <h2>Alle Uitgaven</h2>
+                <input type="text" id="search-ug" class="search-box" placeholder="Zoeken...">
+                <div id="ug-list"></div>
+            </div>
+
+            <!-- REPORTS SECTION -->
+            <div class="form-section">
+                <h2>📊 Financial Reports</h2>
+                <div class="grid-3">
+                    <div>
+                        <label>Periode</label>
+                        <select id="report-period" onchange="updateReportUI()">
+                            <option value="custom">Custom</option>
+                            <option value="maand">Deze Maand</option>
+                            <option value="kwartaal">Dit Kwartaal</option>
+                            <option value="jaar">Dit Jaar</option>
+                            <option value="alles">Alles</option>
+                        </select>
+                    </div>
+                    <div id="div-van" style="display:none;">
+                        <label>Van</label>
+                        <input type="date" id="report-van">
+                    </div>
+                    <div id="div-tot" style="display:none;">
+                        <label>Tot</label>
+                        <input type="date" id="report-tot">
+                    </div>
+                </div>
+                <button class="btn-secondary" onclick="genReport()">📊 Genereer</button>
+                <div id="report-out" style="margin-top:20px;"></div>
+            </div>
+
+            <!-- DASHBOARD SECTION -->
+            <div class="form-section">
+                <h2>📈 Dashboard</h2>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-label">Transacties</div>
+                        <div class="stat-value" id="d-count">0</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Omzet</div>
+                        <div class="stat-value" id="d-omzet">€ 0.00</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">BTW 21%</div>
+                        <div class="stat-value" id="d-btw">€ 0.00</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Uitgaven</div>
+                        <div class="stat-value" id="d-ug">€ 0.00</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Winst</div>
+                        <div class="stat-value" id="d-winst">€ 0.00</div>
                     </div>
                 </div>
             </div>
@@ -220,12 +196,12 @@
         let txs = [], ugs = [];
         let dbReady = false;
         let gdriveAccessToken = null;
-        let gdriveFileId = null;
         const CLIENT_ID = '403325180927-bod7tegffh8c61l6d4qtqpt0slrcvtif.apps.googleusercontent.com';
 
         function handleCredentialResponse(response) {
-            console.log('✅ ID token received, initiating Drive access...');
-            document.getElementById('auth-status').textContent = '✅ ID Token OK, Getting Drive access...';
+            console.log('✅ Auth success');
+            document.getElementById('auth-status').textContent = '✅ Ingelogd! Database laden...';
+            document.getElementById('login-section').style.display = 'none';
             initDB();
             requestDriveAccess();
         }
@@ -241,12 +217,10 @@
         function handleTokenResponse(tokenResponse) {
             if (tokenResponse.access_token) {
                 gdriveAccessToken = tokenResponse.access_token;
-                document.getElementById('auth-status').textContent = '✅ Ingelogd! Drive Sync Active';
+                console.log('✅ Drive access OK');
+                document.getElementById('auth-status').textContent = '✅ Ingelogd! Gereed.';
                 document.getElementById('app-content').style.display = 'block';
-                document.querySelector('.form-section:first-of-type').style.display = 'none';
                 syncToGDrive();
-            } else {
-                console.error('Failed to get access token');
             }
         }
 
@@ -279,9 +253,11 @@
 
                 loadData();
                 updateDash();
-                console.log('✅ Database Ready!');
+                loadBonnen();
+                loadUg();
+                console.log('✅ Database ready');
             } catch (e) {
-                alert('Error: ' + e.message);
+                alert('DB Error: ' + e.message);
             }
         }
 
@@ -292,7 +268,7 @@
                 r = db.exec('SELECT * FROM uitgaven ORDER BY id DESC');
                 ugs = r.length > 0 ? r[0].values : [];
             } catch (e) {
-                txs = []; ugs = [];
+                console.error('Load error:', e);
             }
         }
 
@@ -337,7 +313,6 @@
 
         function genPDF(tx_num, product, prijs) {
             try {
-                if (typeof window.jsPDF === 'undefined') return;
                 const doc = new window.jsPDF.jsPDF();
                 const w = doc.internal.pageSize.getWidth();
                 
@@ -371,16 +346,20 @@
                 return;
             }
 
-            db.run('INSERT INTO uitgaven VALUES (NULL, ?, ?, ?, ?)',
-                [new Date().toISOString(), document.getElementById('ug-type').value, desc, bedrag]);
-            
-            loadData();
-            msg('msg-ug', '✅ Opgeslagen');
-            document.getElementById('ug-desc').value = '';
-            document.getElementById('ug-bedrag').value = '';
-            updateDash();
-            loadUg();
-            syncToGDrive();
+            try {
+                db.run('INSERT INTO uitgaven VALUES (NULL, ?, ?, ?, ?)',
+                    [new Date().toISOString(), document.getElementById('ug-type').value, desc, bedrag]);
+                
+                loadData();
+                msg('msg-ug', '✅ Opgeslagen');
+                document.getElementById('ug-desc').value = '';
+                document.getElementById('ug-bedrag').value = '';
+                updateDash();
+                loadUg();
+                syncToGDrive();
+            } catch (e) {
+                msg('msg-ug', 'Fout: ' + e.message, 'error');
+            }
         }
 
         function loadBonnen(s = '') {
@@ -463,10 +442,7 @@
         }
 
         async function syncToGDrive() {
-            if (!gdriveAccessToken) {
-                console.warn('⚠️ No Drive access token yet');
-                return;
-            }
+            if (!gdriveAccessToken) return;
             try {
                 const data = JSON.stringify({
                     timestamp: new Date().toISOString(),
@@ -474,15 +450,14 @@
                     uitgaven: ugs
                 });
 
-                const response = await fetch("https://www.googleapis.com/drive/v3/files?q=name='TK_Transactie_Backup.json'", {
+                const response = await fetch('https://www.googleapis.com/drive/v3/files?q=name=%27TK_Transactie_Backup.json%27', {
                     headers: { 'Authorization': 'Bearer ' + gdriveAccessToken }
                 });
                 
                 const files = await response.json();
                 
                 if (files.files && files.files.length > 0) {
-                    gdriveFileId = files.files[0].id;
-                    await fetch(`https://www.googleapis.com/upload/drive/v3/files/${gdriveFileId}?uploadType=media`, {
+                    await fetch(`https://www.googleapis.com/upload/drive/v3/files/${files.files[0].id}?uploadType=media`, {
                         method: 'PATCH',
                         headers: { 'Authorization': 'Bearer ' + gdriveAccessToken },
                         body: data
@@ -499,15 +474,10 @@
                         body: formData
                     });
                 }
-                console.log('✅ Google Drive synced');
+                console.log('✅ Drive synced');
             } catch (e) {
-                console.error('GDrive sync error:', e);
+                console.error('Sync error:', e);
             }
-        }
-
-        function switchTab(name) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.getElementById(name).classList.add('active');
         }
 
         function msg(id, text, type = 'success') {
