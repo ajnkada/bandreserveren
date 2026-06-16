@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TK Transactie App v2.0 - Firebase</title>
+    <title>TK Transactie App v3.0</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
@@ -11,10 +11,9 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: Lato, sans-serif; background: #f5f5f5; color: #333; }
-        .container { max-width: 1000px; margin: 0 auto; padding: 20px; background: white; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; background: white; }
         
         header { text-align: center; padding: 30px 0; border-bottom: 3px solid #c00000; }
-        header img { max-height: 80px; margin-bottom: 10px; }
         h1 { color: #1F3354; font-size: 28px; margin-bottom: 5px; }
         .subtitle { color: #E8821E; font-size: 14px; }
         
@@ -22,8 +21,8 @@
         .status-online { background: #d4edda; color: #155724; }
         .status-offline { background: #f8d7da; color: #721c24; }
         
-        .tabs { display: flex; gap: 10px; margin: 20px 0 30px 0; border-bottom: 2px solid #ddd; overflow-x: auto; }
-        .tab-btn { padding: 12px 20px; border: none; background: transparent; cursor: pointer; color: #666; font-weight: bold; border-bottom: 3px solid transparent; transition: all 0.3s; }
+        .tabs { display: flex; gap: 10px; margin: 20px 0 30px 0; border-bottom: 2px solid #ddd; overflow-x: auto; flex-wrap: wrap; }
+        .tab-btn { padding: 12px 20px; border: none; background: transparent; cursor: pointer; color: #666; font-weight: bold; border-bottom: 3px solid transparent; }
         .tab-btn:hover { color: #c00000; }
         .tab-btn.active { color: #c00000; border-bottom-color: #c00000; }
         
@@ -34,40 +33,52 @@
         h2 { color: #1F3354; font-size: 18px; margin-bottom: 15px; }
         
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
         .form-group { margin-bottom: 15px; }
         label { display: block; font-weight: bold; margin-bottom: 5px; color: #1F3354; }
         input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; }
         textarea { resize: vertical; min-height: 80px; }
         
-        button { padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: all 0.3s; }
+        button { padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .btn-primary { background: #27ae60; color: white; width: 100%; margin-top: 10px; }
         .btn-secondary { background: #3498db; color: white; padding: 8px 16px; margin-right: 10px; margin-bottom: 10px; }
         
         .success { color: #27ae60; padding: 10px; background: #d5f4e6; border-radius: 4px; margin-bottom: 10px; }
         .error { color: #c00000; padding: 10px; background: #ffe6e6; border-radius: 4px; margin-bottom: 10px; }
         
-        .transaction-item { background: white; padding: 15px; margin-bottom: 10px; border-left: 4px solid #3498db; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
-        .transaction-item.credit { border-left-color: #e74c3c; background: #ffe6e6; }
+        .transaction-item { background: white; padding: 15px; margin-bottom: 10px; border-left: 4px solid #3498db; border-radius: 4px; }
+        .transaction-item.credit { border-left-color: #e74c3c; }
+        .transaction-item.expense { border-left-color: #f39c12; }
         
         .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
         .stat-item { background: white; padding: 15px; border-radius: 4px; border-left: 4px solid #E8821E; }
         .stat-item span { display: block; color: #666; font-size: 12px; margin-bottom: 5px; }
         .stat-item strong { display: block; font-size: 18px; color: #1F3354; }
+        .stat-item.total { background: #f0f8ff; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th { background: #1F3354; color: white; padding: 10px; text-align: left; }
+        td { padding: 10px; border-bottom: 1px solid #ddd; }
+        tr:hover { background: #f5f5f5; }
+        
+        .filter-section { background: #f9f9f9; padding: 15px; border-radius: 4px; margin-bottom: 20px; }
+        .mini-btn { padding: 6px 12px; font-size: 12px; margin-right: 5px; }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>TK Transactie App v2.0</h1>
-            <p class="subtitle">Firebase Sync • Offline Mode • Backup & Export</p>
+            <h1>TK Transactie App v3.0</h1>
+            <p class="subtitle">Transacties • Uitgaven • Financial Reports • BTW</p>
         </header>
 
         <div class="status-bar" id="status">🔄 Initialiseren...</div>
 
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('transactie')">💾 Transactie</button>
-            <button class="tab-btn" onclick="switchTab('bons')">📋 Bons</button>
-            <button class="tab-btn" onclick="switchTab('beheer')">🔧 Beheer</button>
+            <button class="tab-btn" onclick="switchTab('bonnen')">📋 Bonnen</button>
+            <button class="tab-btn" onclick="switchTab('uitgaven')">💸 Uitgaven</button>
+            <button class="tab-btn" onclick="switchTab('reports')">📊 Reports</button>
             <button class="tab-btn" onclick="switchTab('backup')">💾 Backup</button>
             <button class="tab-btn" onclick="switchTab('dashboard')">📈 Dashboard</button>
         </div>
@@ -108,32 +119,84 @@
             </div>
         </div>
 
-        <!-- TAB 2: BONS -->
-        <div id="bons" class="tab-content">
+        <!-- TAB 2: BONNEN -->
+        <div id="bonnen" class="tab-content">
             <div class="form-section">
-                <h2>Alle Bons</h2>
-                <input type="text" id="search-bons" placeholder="Zoeken..." style="margin-bottom: 15px;">
-                <div id="bons-list"></div>
+                <h2>Alle Bonnen</h2>
+                <input type="text" id="search-bonnen" placeholder="Zoeken..." style="margin-bottom: 15px;">
+                <div id="bonnen-list"></div>
             </div>
         </div>
 
-        <!-- TAB 3: BEHEER -->
-        <div id="beheer" class="tab-content">
+        <!-- TAB 3: UITGAVEN -->
+        <div id="uitgaven" class="tab-content">
             <div class="form-section">
-                <h2>Beheer Transacties</h2>
-                <input type="text" id="search-beheer" placeholder="Zoeken..." style="margin-bottom: 15px;">
-                <div id="beheer-list"></div>
+                <h2>Uitgave / Investering Registreren</h2>
+                <div id="msg-uitgaven"></div>
+                <div class="grid-3">
+                    <div>
+                        <label>Type</label>
+                        <select id="expense-type">
+                            <option value="operationeel">Operationeel</option>
+                            <option value="investering">Investering</option>
+                            <option value="andere">Andere</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Omschrijving</label>
+                        <input type="text" id="expense-desc" placeholder="Bijv. Huurkosten">
+                    </div>
+                    <div>
+                        <label>Bedrag (€)</label>
+                        <input type="number" id="expense-bedrag" placeholder="0.00" step="0.01" min="0">
+                    </div>
+                </div>
+                <button class="btn-primary" onclick="saveUitgave()">💸 Opslaan</button>
+            </div>
+
+            <div class="form-section">
+                <h2>Alle Uitgaven</h2>
+                <input type="text" id="search-uitgaven" placeholder="Zoeken..." style="margin-bottom: 15px;">
+                <div id="uitgaven-list"></div>
             </div>
         </div>
 
-        <!-- TAB 4: BACKUP -->
+        <!-- TAB 4: REPORTS -->
+        <div id="reports" class="tab-content">
+            <div class="form-section">
+                <h2>Financial Reports</h2>
+                
+                <div class="filter-section">
+                    <h3 style="margin-bottom: 15px; color: #1F3354;">Filter opties</h3>
+                    <div class="grid-3">
+                        <div>
+                            <label>Periode</label>
+                            <select id="report-period" onchange="updateReportPeriod()">
+                                <option value="custom">Custom (Van/Tot)</option>
+                                <option value="maand">Deze Maand</option>
+                                <option value="kwartaal">Dit Kwartaal</option>
+                                <option value="jaar">Dit Jaar</option>
+                                <option value="alles">Alles</option>
+                            </select>
+                        </div>
+                        <div id="report-van-div" style="display: none;">
+                            <label>Van</label>
+                            <input type="date" id="report-van">
+                        </div>
+                        <div id="report-tot-div" style="display: none;">
+                            <label>Tot</label>
+                            <input type="date" id="report-tot">
+                        </div>
+                    </div>
+                    <button class="btn-secondary" style="margin-top: 15px; width: 100%;" onclick="genererReport()">📊 Genereer Report</button>
+                </div>
+
+                <div id="report-content"></div>
+            </div>
+        </div>
+
+        <!-- TAB 5: BACKUP -->
         <div id="backup" class="tab-content">
-            <div class="form-section">
-                <h2>☁️ Firebase Sync Status</h2>
-                <p id="firebase-status" style="color: #666; margin-bottom: 15px;">Controleer verbinding...</p>
-                <button class="btn-secondary" style="background: #4285f4; width: 100%;" onclick="manualSync()">🔄 Handmatig Syncen</button>
-            </div>
-
             <div class="form-section">
                 <h2>💾 Lokale Backup</h2>
                 <button class="btn-secondary" style="background: #27ae60; width: 100%;" onclick="downloadBackup()">💾 Download Backup (JSON)</button>
@@ -158,26 +221,38 @@
             </div>
         </div>
 
-        <!-- TAB 5: DASHBOARD -->
+        <!-- TAB 6: DASHBOARD -->
         <div id="dashboard" class="tab-content">
             <div class="form-section">
-                <h2>Dashboard</h2>
+                <h2>Dashboard (Alle Periodes)</h2>
                 <div class="stats">
                     <div class="stat-item">
                         <span>Transacties</span>
                         <strong id="stat-count">0</strong>
                     </div>
                     <div class="stat-item">
-                        <span>Totale Omzet</span>
+                        <span>Omzet</span>
                         <strong id="stat-omzet">€ 0.00</strong>
                     </div>
                     <div class="stat-item">
                         <span>Retours</span>
                         <strong id="stat-retours">€ 0.00</strong>
                     </div>
-                    <div class="stat-item" style="background: #f0f8ff;">
-                        <span>Netto</span>
-                        <strong id="stat-netto" style="color: #c00000;">€ 0.00</strong>
+                    <div class="stat-item">
+                        <span>Netto Omzet</span>
+                        <strong id="stat-netto">€ 0.00</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>BTW 21% (verschuldigd)</span>
+                        <strong id="stat-btw" style="color: #e74c3c;">€ 0.00</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>Uitgaven</span>
+                        <strong id="stat-uitgaven">€ 0.00</strong>
+                    </div>
+                    <div class="stat-item stat-total">
+                        <span>Netto Winst</span>
+                        <strong id="stat-winst" style="color: #27ae60;">€ 0.00</strong>
                     </div>
                 </div>
             </div>
@@ -190,7 +265,7 @@
     </div>
 
     <script>
-        // Firebase Config
+        // ===== FIREBASE CONFIG =====
         const firebaseConfig = {
             apiKey: "AIzaSyDemoKey",
             authDomain: "tk-transactie-app.firebaseapp.com",
@@ -198,28 +273,25 @@
             projectId: "tk-transactie-app"
         };
 
-        let firebaseApp = null;
-        let firebaseDB = null;
+        let firebaseApp = null, firebaseDB = null;
         let db = null, SQL = null;
-        let allTransactions = [];
+        let allTransacties = [], allUitgaven = [];
         let dbReady = false;
         let isOnline = navigator.onLine;
 
-        // Firebase Init
+        // Firebase init
         try {
             firebaseApp = firebase.initializeApp(firebaseConfig);
             firebaseDB = firebase.database();
-            console.log('✅ Firebase ready');
-            loadFromFirebase();
         } catch (e) {
-            console.warn('Firebase unavailable:', e.message);
+            console.warn('Firebase unavailable');
         }
 
-        // Online/Offline Monitor
+        // Online/offline monitor
         window.addEventListener('online', () => {
             isOnline = true;
             updateStatus();
-            manualSync();
+            syncToFirebase();
         });
         window.addEventListener('offline', () => {
             isOnline = false;
@@ -227,28 +299,29 @@
         });
 
         function updateStatus() {
-            const statusEl = document.getElementById('status');
+            const el = document.getElementById('status');
             if (isOnline && firebaseDB) {
-                statusEl.className = 'status-bar status-online';
-                statusEl.textContent = '🟢 Online - Data synced met Firebase';
+                el.className = 'status-bar status-online';
+                el.textContent = '🟢 Online - Data syncet met Firebase';
             } else {
-                statusEl.className = 'status-bar status-offline';
-                statusEl.textContent = '🔴 Offline - Lokale mode (data synct wanneer online)';
+                el.className = 'status-bar status-offline';
+                el.textContent = '🔴 Offline - Lokale mode (data syncet wanneer online)';
             }
         }
 
-        // Database Init
+        // ===== DATABASE INIT =====
         async function initDB() {
             try {
                 window.SQL = await initSqlJs({
-                    locateFile: (filename) => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${filename}`
+                    locateFile: (f) => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${f}`
                 });
                 SQL = window.SQL;
                 db = new SQL.Database();
                 dbReady = true;
-                
+
+                // Transacties table
                 db.run(`CREATE TABLE IF NOT EXISTS transacties (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    id INTEGER PRIMARY KEY,
                     tx_num TEXT UNIQUE,
                     datum TEXT,
                     klanttype TEXT,
@@ -257,87 +330,44 @@
                     prijs REAL,
                     is_retour INTEGER DEFAULT 0
                 );`);
-                
+
+                // Uitgaven table
+                db.run(`CREATE TABLE IF NOT EXISTS uitgaven (
+                    id INTEGER PRIMARY KEY,
+                    datum TEXT,
+                    type TEXT,
+                    omschrijving TEXT,
+                    bedrag REAL
+                );`);
+
+                loadAllData();
                 updateStatus();
                 updateDashboard();
-                console.log('✅ Database initialized');
+                loadFromFirebase();
+                console.log('✅ DB ready');
             } catch (e) {
                 console.error('DB error:', e);
                 alert('Database error: ' + e.message);
             }
         }
 
-        // Firebase Sync
-        function loadFromFirebase() {
-            if (!firebaseDB) {
-                initDB();
-                return;
-            }
-
-            firebaseDB.ref('transacties').on('value', (snapshot) => {
-                try {
-                    const fbData = snapshot.val();
-                    if (fbData && Array.isArray(fbData) && dbReady) {
-                        db.run('DELETE FROM transacties');
-                        fbData.forEach(tx => {
-                            db.run(
-                                'INSERT INTO transacties (tx_num, datum, klanttype, betalingswijze, product, prijs, is_retour) VALUES (?, ?, ?, ?, ?, ?, ?)',
-                                [tx.tx_num, tx.datum, tx.klanttype, tx.betalingswijze, tx.product, tx.prijs, tx.is_retour ? 1 : 0]
-                            );
-                        });
-                        loadAllTransactions();
-                        updateDashboard();
-                        console.log('📥 Synced ' + fbData.length + ' from Firebase');
-                    }
-                } catch (e) {
-                    console.error('Firebase sync error:', e);
-                }
-            }, (e) => {
-                console.warn('Firebase read error:', e);
-                if (!dbReady) initDB();
-            });
-        }
-
-        function manualSync() {
-            if (!firebaseDB || !dbReady) {
-                showMsg('backup-msg', 'Firebase niet beschikbaar', 'error');
-                return;
-            }
-
+        function loadAllData() {
             try {
-                const data = allTransactions.map(tx => ({
-                    tx_num: tx[1],
-                    datum: tx[2],
-                    klanttype: tx[3],
-                    betalingswijze: tx[4],
-                    product: tx[5],
-                    prijs: tx[6],
-                    is_retour: tx[7]
-                }));
-
-                firebaseDB.ref('transacties').set(data).then(() => {
-                    showMsg('backup-msg', '✅ Synced naar Firebase', 'success');
-                }).catch(e => {
-                    showMsg('backup-msg', '❌ Sync failed: ' + e.message, 'error');
-                });
+                let result = db.exec('SELECT * FROM transacties ORDER BY id DESC');
+                allTransacties = result.length > 0 ? result[0].values : [];
+                
+                result = db.exec('SELECT * FROM uitgaven ORDER BY id DESC');
+                allUitgaven = result.length > 0 ? result[0].values : [];
             } catch (e) {
-                showMsg('backup-msg', 'Fout: ' + e.message, 'error');
+                allTransacties = [];
+                allUitgaven = [];
             }
         }
 
-        // Load/Save
-        function loadAllTransactions() {
-            try {
-                const result = db.exec('SELECT * FROM transacties ORDER BY id DESC');
-                allTransactions = result.length > 0 ? result[0].values : [];
-            } catch (e) {
-                allTransactions = [];
-            }
-        }
-
+        // ===== TRANSACTIES =====
         function saveTransactie() {
             if (!dbReady) {
-                showMsg('msg-transactie', 'Database niet klaar', 'error');
+                showMsg('msg-transactie', 'DB niet klaar', 'error');
                 return;
             }
 
@@ -352,13 +382,7 @@
             }
 
             const now = new Date();
-            const tx_num = 'TX-' + now.getFullYear() + 
-                          String(now.getMonth()+1).padStart(2,'0') + 
-                          String(now.getDate()).padStart(2,'0') + 
-                          String(now.getHours()).padStart(2,'0') + 
-                          String(now.getMinutes()).padStart(2,'0') +
-                          String(now.getSeconds()).padStart(2,'0') +
-                          String(now.getMilliseconds()).padStart(3,'0');
+            const tx_num = 'TX-' + now.getFullYear() + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0') + String(now.getHours()).padStart(2,'0') + String(now.getMinutes()).padStart(2,'0') + String(now.getSeconds()).padStart(2,'0') + String(now.getMilliseconds()).padStart(3,'0');
 
             try {
                 db.run(
@@ -366,39 +390,185 @@
                     [tx_num, now.toISOString(), klanttype, betalingswijze, product, prijs]
                 );
                 
-                loadAllTransactions();
+                loadAllData();
                 showMsg('msg-transactie', '✅ Opgeslagen', 'success');
                 document.getElementById('product').value = '';
                 document.getElementById('prijs').value = '';
                 
-                if (isOnline && firebaseDB) manualSync();
+                if (isOnline && firebaseDB) syncToFirebase();
                 updateDashboard();
+                updateBonnenList();
             } catch (e) {
                 showMsg('msg-transactie', 'Fout: ' + e.message, 'error');
             }
         }
 
-        function downloadBackup() {
-            if (!allTransactions.length) {
-                showMsg('backup-msg', 'Geen transacties', 'error');
+        function updateBonnenList(search = '') {
+            let html = '';
+            allTransacties.forEach(tx => {
+                if (search && !tx[5].toLowerCase().includes(search.toLowerCase())) return;
+                html += `<div class="transaction-item ${tx[7] ? 'credit' : ''}">
+                    <div><strong>${tx[1]}</strong> | ${tx[5]} | € ${tx[6].toFixed(2)} | ${new Date(tx[2]).toLocaleDateString('nl-NL')}</div>
+                </div>`;
+            });
+            document.getElementById('bonnen-list').innerHTML = html || '<p>Geen bonnen</p>';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const search = document.getElementById('search-bonnen');
+            if (search) search.addEventListener('input', (e) => updateBonnenList(e.target.value));
+        });
+
+        // ===== UITGAVEN =====
+        function saveUitgave() {
+            if (!dbReady) {
+                showMsg('msg-uitgaven', 'DB niet klaar', 'error');
                 return;
             }
 
+            const type = document.getElementById('expense-type').value;
+            const desc = document.getElementById('expense-desc').value.trim();
+            const bedrag = parseFloat(document.getElementById('expense-bedrag').value);
+
+            if (!desc || isNaN(bedrag) || bedrag <= 0) {
+                showMsg('msg-uitgaven', 'Vul alles in', 'error');
+                return;
+            }
+
+            try {
+                db.run(
+                    'INSERT INTO uitgaven (datum, type, omschrijving, bedrag) VALUES (?, ?, ?, ?)',
+                    [new Date().toISOString(), type, desc, bedrag]
+                );
+                
+                loadAllData();
+                showMsg('msg-uitgaven', '✅ Opgeslagen', 'success');
+                document.getElementById('expense-desc').value = '';
+                document.getElementById('expense-bedrag').value = '';
+                
+                if (isOnline && firebaseDB) syncToFirebase();
+                updateDashboard();
+                updateUitgavenList();
+            } catch (e) {
+                showMsg('msg-uitgaven', 'Fout: ' + e.message, 'error');
+            }
+        }
+
+        function updateUitgavenList(search = '') {
+            let html = '';
+            allUitgaven.forEach(u => {
+                if (search && !u[3].toLowerCase().includes(search.toLowerCase())) return;
+                html += `<div class="transaction-item expense">
+                    <div><strong>${u[3]}</strong> | ${u[2]} | € ${u[4].toFixed(2)} | ${new Date(u[1]).toLocaleDateString('nl-NL')}</div>
+                </div>`;
+            });
+            document.getElementById('uitgaven-list').innerHTML = html || '<p>Geen uitgaven</p>';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const search = document.getElementById('search-uitgaven');
+            if (search) search.addEventListener('input', (e) => updateUitgavenList(e.target.value));
+        });
+
+        // ===== REPORTS =====
+        function updateReportPeriod() {
+            const period = document.getElementById('report-period').value;
+            const vanDiv = document.getElementById('report-van-div');
+            const totDiv = document.getElementById('report-tot-div');
+            
+            if (period === 'custom') {
+                vanDiv.style.display = 'block';
+                totDiv.style.display = 'block';
+            } else {
+                vanDiv.style.display = 'none';
+                totDiv.style.display = 'none';
+            }
+        }
+
+        function genererReport() {
+            const period = document.getElementById('report-period').value;
+            let van, tot;
+
+            const now = new Date();
+
+            if (period === 'custom') {
+                van = new Date(document.getElementById('report-van').value);
+                tot = new Date(document.getElementById('report-tot').value);
+                tot.setDate(tot.getDate() + 1);
+            } else if (period === 'maand') {
+                van = new Date(now.getFullYear(), now.getMonth(), 1);
+                tot = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+            } else if (period === 'kwartaal') {
+                const q = Math.floor(now.getMonth() / 3);
+                van = new Date(now.getFullYear(), q * 3, 1);
+                tot = new Date(now.getFullYear(), (q + 1) * 3, 1);
+            } else if (period === 'jaar') {
+                van = new Date(now.getFullYear(), 0, 1);
+                tot = new Date(now.getFullYear() + 1, 0, 1);
+            } else {
+                van = new Date(2000, 0, 1);
+                tot = new Date(2100, 0, 1);
+            }
+
+            const txs = allTransacties.filter(t => {
+                const d = new Date(t[2]);
+                return d >= van && d <= tot;
+            });
+
+            const ugs = allUitgaven.filter(u => {
+                const d = new Date(u[1]);
+                return d >= van && d <= tot;
+            });
+
+            const omzet = txs.filter(t => !t[7]).reduce((s, t) => s + t[6], 0);
+            const retours = txs.filter(t => t[7]).reduce((s, t) => s + t[6], 0);
+            const netto = omzet - retours;
+            const btw = netto * 0.21;
+            const uitgaven = ugs.reduce((s, u) => s + u[4], 0);
+            const winst = netto - uitgaven;
+
+            let html = `<div class="form-section">
+                <h3>Periode: ${van.toLocaleDateString('nl-NL')} tot ${tot.toLocaleDateString('nl-NL')}</h3>
+                <div class="stats">
+                    <div class="stat-item"><span>Transacties</span><strong>${txs.length}</strong></div>
+                    <div class="stat-item"><span>Omzet</span><strong>€ ${omzet.toFixed(2)}</strong></div>
+                    <div class="stat-item"><span>Retours</span><strong>€ ${retours.toFixed(2)}</strong></div>
+                    <div class="stat-item"><span>Netto</span><strong>€ ${netto.toFixed(2)}</strong></div>
+                    <div class="stat-item"><span>BTW 21%</span><strong>€ ${btw.toFixed(2)}</strong></div>
+                    <div class="stat-item"><span>Uitgaven</span><strong>€ ${uitgaven.toFixed(2)}</strong></div>
+                    <div class="stat-item stat-total"><span>Winst</span><strong style="color: #27ae60;">€ ${winst.toFixed(2)}</strong></div>
+                </div>
+
+                <h3 style="margin-top: 30px;">Transacties</h3>
+                <table>
+                    <tr><th>TX-Nr</th><th>Product</th><th>Bedrag</th><th>Type</th></tr>`;
+            
+            txs.forEach(t => {
+                html += `<tr><td>${t[1]}</td><td>${t[5]}</td><td>€ ${t[6].toFixed(2)}</td><td>${t[7] ? 'RETOUR' : 'VERKOOP'}</td></tr>`;
+            });
+
+            html += `</table>
+                <h3 style="margin-top: 30px;">Uitgaven</h3>
+                <table>
+                    <tr><th>Omschrijving</th><th>Type</th><th>Bedrag</th></tr>`;
+            
+            ugs.forEach(u => {
+                html += `<tr><td>${u[3]}</td><td>${u[2]}</td><td>€ ${u[4].toFixed(2)}</td></tr>`;
+            });
+
+            html += `</table></div>`;
+            document.getElementById('report-content').innerHTML = html;
+        }
+
+        // ===== BACKUP & EXPORT =====
+        function downloadBackup() {
             const backup = {
                 timestamp: new Date().toISOString(),
-                transacties: allTransactions.map(tx => ({
-                    tx_num: tx[1],
-                    datum: tx[2],
-                    klanttype: tx[3],
-                    betalingswijze: tx[4],
-                    product: tx[5],
-                    prijs: tx[6],
-                    is_retour: tx[7]
-                }))
+                transacties: allTransacties,
+                uitgaven: allUitgaven
             };
 
-            const json = JSON.stringify(backup, null, 2);
-            const blob = new Blob([json], { type: 'application/json' });
+            const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -416,19 +586,20 @@
                 reader.onload = (evt) => {
                     try {
                         const backup = JSON.parse(evt.target.result);
-                        if (!backup.transacties) throw new Error('Ongeldig bestand');
                         
                         db.run('DELETE FROM transacties');
                         backup.transacties.forEach(tx => {
-                            db.run(
-                                'INSERT INTO transacties (tx_num, datum, klanttype, betalingswijze, product, prijs, is_retour) VALUES (?, ?, ?, ?, ?, ?, ?)',
-                                [tx.tx_num, tx.datum, tx.klanttype, tx.betalingswijze, tx.product, tx.prijs, tx.is_retour ? 1 : 0]
-                            );
+                            db.run('INSERT INTO transacties VALUES (?, ?, ?, ?, ?, ?, ?, ?)', tx);
                         });
 
-                        loadAllTransactions();
-                        showMsg('backup-msg', '✅ Backup hersteld (' + backup.transacties.length + ' TX)', 'success');
-                        if (isOnline && firebaseDB) manualSync();
+                        db.run('DELETE FROM uitgaven');
+                        backup.uitgaven.forEach(u => {
+                            db.run('INSERT INTO uitgaven VALUES (?, ?, ?, ?, ?)', u);
+                        });
+
+                        loadAllData();
+                        showMsg('backup-msg', '✅ Hersteld', 'success');
+                        if (isOnline && firebaseDB) syncToFirebase();
                         updateDashboard();
                     } catch (e) {
                         showMsg('backup-msg', 'Fout: ' + e.message, 'error');
@@ -443,7 +614,7 @@
             const tot = document.getElementById('export-tot').value;
 
             if (!van || !tot) {
-                showMsg('backup-msg', 'Voer beide datums in', 'error');
+                showMsg('backup-msg', 'Voer datums in', 'error');
                 return;
             }
 
@@ -451,25 +622,17 @@
             const tDate = new Date(tot);
             tDate.setDate(tDate.getDate() + 1);
 
-            const filtered = allTransactions.filter(tx => {
-                const d = new Date(tx[2]);
+            const filtered = allTransacties.filter(t => {
+                const d = new Date(t[2]);
                 return d >= vDate && d <= tDate;
             });
 
-            const exportData = {
+            const blob = new Blob([JSON.stringify({
                 range: `${van} tot ${tot}`,
                 count: filtered.length,
-                transacties: filtered.map(tx => ({
-                    tx_num: tx[1],
-                    datum: tx[2],
-                    product: tx[5],
-                    prijs: tx[6],
-                    type: tx[7] ? 'RETOUR' : 'VERKOOP'
-                }))
-            };
-
-            const json = JSON.stringify(exportData, null, 2);
-            const blob = new Blob([json], { type: 'application/json' });
+                transacties: filtered
+            }, null, 2)], { type: 'application/json' });
+            
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -477,23 +640,73 @@
             a.click();
         }
 
+        // ===== DASHBOARD =====
         function updateDashboard() {
-            document.getElementById('stat-count').textContent = allTransactions.length;
-            const omzet = allTransactions.filter(t => !t[7]).reduce((s, t) => s + t[6], 0);
-            const retours = allTransactions.filter(t => t[7]).reduce((s, t) => s + t[6], 0);
+            const omzet = allTransacties.filter(t => !t[7]).reduce((s, t) => s + t[6], 0);
+            const retours = allTransacties.filter(t => t[7]).reduce((s, t) => s + t[6], 0);
             const netto = omzet - retours;
-            
+            const btw = netto * 0.21;
+            const uitgaven = allUitgaven.reduce((s, u) => s + u[4], 0);
+            const winst = netto - uitgaven;
+
+            document.getElementById('stat-count').textContent = allTransacties.length;
             document.getElementById('stat-omzet').textContent = '€ ' + omzet.toFixed(2);
             document.getElementById('stat-retours').textContent = '€ ' + retours.toFixed(2);
             document.getElementById('stat-netto').textContent = '€ ' + netto.toFixed(2);
+            document.getElementById('stat-btw').textContent = '€ ' + btw.toFixed(2);
+            document.getElementById('stat-uitgaven').textContent = '€ ' + uitgaven.toFixed(2);
+            document.getElementById('stat-winst').textContent = '€ ' + winst.toFixed(2);
 
             let html = '';
-            allTransactions.slice(0, 20).forEach(tx => {
-                html += `<div class="transaction-item ${tx[7] ? 'credit' : ''}"><div><strong>${tx[1]}</strong><br>${tx[5]} • € ${tx[6].toFixed(2)}</div></div>`;
+            allTransacties.slice(0, 20).forEach(t => {
+                html += `<div class="transaction-item"><div><strong>${t[1]}</strong> | ${t[5]} | € ${t[6].toFixed(2)}</div></div>`;
             });
             document.getElementById('dashboard-list').innerHTML = html;
         }
 
+        // ===== FIREBASE SYNC =====
+        function syncToFirebase() {
+            if (!firebaseDB) return;
+            try {
+                const data = {
+                    transacties: allTransacties,
+                    uitgaven: allUitgaven,
+                    synced: new Date().toISOString()
+                };
+                firebaseDB.ref('tk-data').set(data);
+                console.log('✅ Firebase synced');
+            } catch (e) {
+                console.error('Sync error:', e);
+            }
+        }
+
+        function loadFromFirebase() {
+            if (!firebaseDB) return;
+            firebaseDB.ref('tk-data').on('value', (snapshot) => {
+                const fbData = snapshot.val();
+                if (fbData && dbReady) {
+                    try {
+                        db.run('DELETE FROM transacties');
+                        fbData.transacties.forEach(tx => {
+                            db.run('INSERT INTO transacties VALUES (?, ?, ?, ?, ?, ?, ?, ?)', tx);
+                        });
+                        
+                        db.run('DELETE FROM uitgaven');
+                        fbData.uitgaven.forEach(u => {
+                            db.run('INSERT INTO uitgaven VALUES (?, ?, ?, ?, ?)', u);
+                        });
+                        
+                        loadAllData();
+                        updateDashboard();
+                        console.log('📥 Firebase loaded');
+                    } catch (e) {
+                        console.error('Load error:', e);
+                    }
+                }
+            });
+        }
+
+        // ===== UTIL =====
         function switchTab(name) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -505,7 +718,7 @@
             document.getElementById(id).innerHTML = `<div class="${type}">${msg}</div>`;
         }
 
-        // Start
+        // Init
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initDB);
         } else {
