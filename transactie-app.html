@@ -34,27 +34,23 @@
         
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
-        .form-group { margin-bottom: 15px; }
         label { display: block; font-weight: bold; margin-bottom: 5px; color: #1F3354; }
         input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; }
-        textarea { resize: vertical; min-height: 80px; }
         
         button { padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .btn-primary { background: #27ae60; color: white; width: 100%; margin-top: 10px; }
-        .btn-secondary { background: #3498db; color: white; padding: 8px 16px; margin-right: 10px; margin-bottom: 10px; }
+        .btn-secondary { background: #3498db; color: white; padding: 8px 16px; margin-right: 10px; }
         
         .success { color: #27ae60; padding: 10px; background: #d5f4e6; border-radius: 4px; margin-bottom: 10px; }
         .error { color: #c00000; padding: 10px; background: #ffe6e6; border-radius: 4px; margin-bottom: 10px; }
         
         .transaction-item { background: white; padding: 15px; margin-bottom: 10px; border-left: 4px solid #3498db; border-radius: 4px; }
-        .transaction-item.credit { border-left-color: #e74c3c; }
         .transaction-item.expense { border-left-color: #f39c12; }
         
         .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
         .stat-item { background: white; padding: 15px; border-radius: 4px; border-left: 4px solid #E8821E; }
         .stat-item span { display: block; color: #666; font-size: 12px; margin-bottom: 5px; }
         .stat-item strong { display: block; font-size: 18px; color: #1F3354; }
-        .stat-item.total { background: #f0f8ff; }
         
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th { background: #1F3354; color: white; padding: 10px; text-align: left; }
@@ -62,7 +58,6 @@
         tr:hover { background: #f5f5f5; }
         
         .filter-section { background: #f9f9f9; padding: 15px; border-radius: 4px; margin-bottom: 20px; }
-        .mini-btn { padding: 6px 12px; font-size: 12px; margin-right: 5px; }
     </style>
 </head>
 <body>
@@ -83,7 +78,6 @@
             <button class="tab-btn" data-tab="dashboard">📈 Dashboard</button>
         </div>
 
-        <!-- TAB 1: TRANSACTIE -->
         <div id="transactie" class="tab-content active">
             <div class="form-section">
                 <h2>Nieuwe Transactie</h2>
@@ -119,7 +113,6 @@
             </div>
         </div>
 
-        <!-- TAB 2: BONNEN -->
         <div id="bonnen" class="tab-content">
             <div class="form-section">
                 <h2>Alle Bonnen</h2>
@@ -128,7 +121,6 @@
             </div>
         </div>
 
-        <!-- TAB 3: UITGAVEN -->
         <div id="uitgaven" class="tab-content">
             <div class="form-section">
                 <h2>Uitgave / Investering Registreren</h2>
@@ -161,11 +153,9 @@
             </div>
         </div>
 
-        <!-- TAB 4: REPORTS -->
         <div id="reports" class="tab-content">
             <div class="form-section">
                 <h2>Financial Reports</h2>
-                
                 <div class="filter-section">
                     <h3 style="margin-bottom: 15px; color: #1F3354;">Filter opties</h3>
                     <div class="grid-3">
@@ -190,88 +180,43 @@
                     </div>
                     <button class="btn-secondary" style="margin-top: 15px; width: 100%;" onclick="genererReport()">📊 Genereer Report</button>
                 </div>
-
                 <div id="report-content"></div>
             </div>
         </div>
 
-        <!-- TAB 5: BACKUP -->
         <div id="backup" class="tab-content">
             <div class="form-section">
                 <h2>💾 Lokale Backup</h2>
-                <button class="btn-secondary" style="background: #27ae60; width: 100%;" onclick="downloadBackup()">💾 Download Backup (JSON)</button>
+                <button class="btn-secondary" style="background: #27ae60; width: 100%;" onclick="downloadBackup()">💾 Download Backup</button>
                 <button class="btn-secondary" style="background: #27ae60; width: 100%; margin-top: 10px;" onclick="uploadBackup()">📂 Upload Backup</button>
                 <input type="file" id="backup-file" accept=".json" style="display: none;">
                 <div id="backup-msg" style="margin-top: 15px;"></div>
             </div>
-
-            <div class="form-section">
-                <h2>📊 JSON Export (Datumrange)</h2>
-                <div class="grid-2">
-                    <div>
-                        <label>Van</label>
-                        <input type="date" id="export-van">
-                    </div>
-                    <div>
-                        <label>Tot</label>
-                        <input type="date" id="export-tot">
-                    </div>
-                </div>
-                <button class="btn-secondary" style="background: #e67e22; width: 100%; margin-top: 15px;" onclick="exportJSON()">📊 Download JSON</button>
-            </div>
         </div>
 
-        <!-- TAB 6: DASHBOARD -->
         <div id="dashboard" class="tab-content">
             <div class="form-section">
-                <h2>Dashboard (Alle Periodes)</h2>
+                <h2>Dashboard</h2>
                 <div class="stats">
-                    <div class="stat-item">
-                        <span>Transacties</span>
-                        <strong id="stat-count">0</strong>
-                    </div>
-                    <div class="stat-item">
-                        <span>Omzet</span>
-                        <strong id="stat-omzet">€ 0.00</strong>
-                    </div>
-                    <div class="stat-item">
-                        <span>Retours</span>
-                        <strong id="stat-retours">€ 0.00</strong>
-                    </div>
-                    <div class="stat-item">
-                        <span>Netto Omzet</span>
-                        <strong id="stat-netto">€ 0.00</strong>
-                    </div>
-                    <div class="stat-item">
-                        <span>BTW 21% (verschuldigd)</span>
-                        <strong id="stat-btw" style="color: #e74c3c;">€ 0.00</strong>
-                    </div>
-                    <div class="stat-item">
-                        <span>Uitgaven</span>
-                        <strong id="stat-uitgaven">€ 0.00</strong>
-                    </div>
-                    <div class="stat-item stat-total">
-                        <span>Netto Winst</span>
-                        <strong id="stat-winst" style="color: #27ae60;">€ 0.00</strong>
-                    </div>
+                    <div class="stat-item"><span>Transacties</span><strong id="stat-count">0</strong></div>
+                    <div class="stat-item"><span>Omzet</span><strong id="stat-omzet">€ 0.00</strong></div>
+                    <div class="stat-item"><span>Netto</span><strong id="stat-netto">€ 0.00</strong></div>
+                    <div class="stat-item"><span>BTW 21%</span><strong id="stat-btw" style="color: #e74c3c;">€ 0.00</strong></div>
+                    <div class="stat-item"><span>Uitgaven</span><strong id="stat-uitgaven">€ 0.00</strong></div>
+                    <div class="stat-item"><span>Winst</span><strong id="stat-winst" style="color: #27ae60;">€ 0.00</strong></div>
                 </div>
-            </div>
-
-            <div class="form-section">
-                <h2>Recente Transacties</h2>
-                <div id="dashboard-list"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // ===== FIREBASE CONFIG =====
-const firebaseConfig = {
-    apiKey: "AIzaSyBFH1hsL18Ai5WMT2zxkc-OtPa8zEvVP_o",
-    authDomain: "tk-transactie-app.firebaseapp.com",
-    databaseURL: "https://tk-transactie-app-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "tk-transactie-app"
-};
+        const firebaseConfig = {
+            apiKey: "AIzaSyBFH1hsL18Ai5WMT2zxkc-OtPa8zEvVP_o",
+            authDomain: "tk-transactie-app.firebaseapp.com",
+            databaseURL: "https://tk-transactie-app-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "tk-transactie-app"
+        };
+
         let firebaseApp = null, firebaseDB = null;
         let db = null, SQL = null;
         let allTransacties = [], allUitgaven = [];
@@ -279,36 +224,49 @@ const firebaseConfig = {
         let isOnline = navigator.onLine;
 
         // Firebase init
-        try {
-            firebaseApp = firebase.initializeApp(firebaseConfig);
-            firebaseDB = firebase.database();
-        } catch (e) {
-            console.warn('Firebase unavailable');
-        }
+        async function initFirebase() {
+            try {
+                console.log('🔥 Firebase init...');
+                
+                // Wacht op Firebase SDK
+                await new Promise((resolve) => {
+                    let i = 0;
+                    const check = setInterval(() => {
+                        if (typeof firebase !== 'undefined' && firebase.initializeApp) {
+                            clearInterval(check);
+                            resolve();
+                        }
+                        i++;
+                        if (i > 50) { clearInterval(check); resolve(); }
+                    }, 100);
+                });
 
-        // Online/offline monitor
-        window.addEventListener('online', () => {
-            isOnline = true;
-            updateStatus();
-            syncToFirebase();
-        });
-        window.addEventListener('offline', () => {
-            isOnline = false;
-            updateStatus();
-        });
+                if (!firebase.apps || firebase.apps.length === 0) {
+                    firebaseApp = firebase.initializeApp(firebaseConfig);
+                } else {
+                    firebaseApp = firebase.apps[0];
+                }
+                
+                firebaseDB = firebase.database();
+                console.log('✅ Firebase klaar!');
+                updateStatus();
+            } catch (e) {
+                console.error('Firebase error:', e);
+                updateStatus();
+            }
+        }
 
         function updateStatus() {
             const el = document.getElementById('status');
-            if (isOnline && firebaseDB) {
+            if (firebaseDB && navigator.onLine) {
                 el.className = 'status-bar status-online';
                 el.textContent = '🟢 Online - Data syncet met Firebase';
             } else {
                 el.className = 'status-bar status-offline';
-                el.textContent = '🔴 Offline - Lokale mode (data syncet wanneer online)';
+                el.textContent = '🔴 Offline - Lokale mode';
             }
         }
 
-        // ===== DATABASE INIT =====
         async function initDB() {
             try {
                 window.SQL = await initSqlJs({
@@ -318,7 +276,6 @@ const firebaseConfig = {
                 db = new SQL.Database();
                 dbReady = true;
 
-                // Transacties table
                 db.run(`CREATE TABLE IF NOT EXISTS transacties (
                     id INTEGER PRIMARY KEY,
                     tx_num TEXT UNIQUE,
@@ -330,7 +287,6 @@ const firebaseConfig = {
                     is_retour INTEGER DEFAULT 0
                 );`);
 
-                // Uitgaven table
                 db.run(`CREATE TABLE IF NOT EXISTS uitgaven (
                     id INTEGER PRIMARY KEY,
                     datum TEXT,
@@ -340,40 +296,32 @@ const firebaseConfig = {
                 );`);
 
                 loadAllData();
-                updateStatus();
                 updateDashboard();
-                loadFromFirebase();
-                console.log('✅ DB ready');
+                console.log('✅ Database klaar!');
             } catch (e) {
                 console.error('DB error:', e);
-                alert('Database error: ' + e.message);
             }
         }
 
         function loadAllData() {
             try {
-                let result = db.exec('SELECT * FROM transacties ORDER BY id DESC');
-                allTransacties = result.length > 0 ? result[0].values : [];
-                
-                result = db.exec('SELECT * FROM uitgaven ORDER BY id DESC');
-                allUitgaven = result.length > 0 ? result[0].values : [];
+                let r = db.exec('SELECT * FROM transacties ORDER BY id DESC');
+                allTransacties = r.length > 0 ? r[0].values : [];
+                r = db.exec('SELECT * FROM uitgaven ORDER BY id DESC');
+                allUitgaven = r.length > 0 ? r[0].values : [];
             } catch (e) {
-                allTransacties = [];
-                allUitgaven = [];
+                console.error('Load error:', e);
             }
         }
 
-        // ===== TRANSACTIES =====
         function saveTransactie() {
             if (!dbReady) {
-                showMsg('msg-transactie', 'DB niet klaar', 'error');
+                showMsg('msg-transactie', 'Database niet klaar', 'error');
                 return;
             }
 
             const product = document.getElementById('product').value.trim();
             const prijs = parseFloat(document.getElementById('prijs').value);
-            const klanttype = document.getElementById('klanttype').value;
-            const betalingswijze = document.getElementById('betaling').value;
 
             if (!product || isNaN(prijs) || prijs <= 0) {
                 showMsg('msg-transactie', 'Voer product en prijs in', 'error');
@@ -386,18 +334,13 @@ const firebaseConfig = {
             try {
                 db.run(
                     'INSERT INTO transacties (tx_num, datum, klanttype, betalingswijze, product, prijs, is_retour) VALUES (?, ?, ?, ?, ?, ?, 0)',
-                    [tx_num, now.toISOString(), klanttype, betalingswijze, product, prijs]
+                    [tx_num, now.toISOString(), document.getElementById('klanttype').value, document.getElementById('betaling').value, product, prijs]
                 );
                 
                 loadAllData();
-                showMsg('msg-transactie', '✅ Opgeslagen', 'success');
+                showMsg('msg-transactie', '✅ Opgeslagen');
                 document.getElementById('product').value = '';
                 document.getElementById('prijs').value = '';
-                
-                // Generate PDF
-                generatePDFBon(tx_num, product, prijs, klanttype, betalingswijze, now);
-                
-                if (isOnline && firebaseDB) syncToFirebase();
                 updateDashboard();
                 updateBonnenList();
             } catch (e) {
@@ -409,25 +352,12 @@ const firebaseConfig = {
             let html = '';
             allTransacties.forEach(tx => {
                 if (search && !tx[5].toLowerCase().includes(search.toLowerCase())) return;
-                html += `<div class="transaction-item ${tx[7] ? 'credit' : ''}">
-                    <div><strong>${tx[1]}</strong> | ${tx[5]} | € ${tx[6].toFixed(2)} | ${new Date(tx[2]).toLocaleDateString('nl-NL')}</div>
-                </div>`;
+                html += `<div class="transaction-item"><div><strong>${tx[1]}</strong> | ${tx[5]} | € ${tx[6].toFixed(2)}</div></div>`;
             });
             document.getElementById('bonnen-list').innerHTML = html || '<p>Geen bonnen</p>';
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const search = document.getElementById('search-bonnen');
-            if (search) search.addEventListener('input', (e) => updateBonnenList(e.target.value));
-        });
-
-        // ===== UITGAVEN =====
         function saveUitgave() {
-            if (!dbReady) {
-                showMsg('msg-uitgaven', 'DB niet klaar', 'error');
-                return;
-            }
-
             const type = document.getElementById('expense-type').value;
             const desc = document.getElementById('expense-desc').value.trim();
             const bedrag = parseFloat(document.getElementById('expense-bedrag').value);
@@ -437,60 +367,35 @@ const firebaseConfig = {
                 return;
             }
 
-            try {
-                db.run(
-                    'INSERT INTO uitgaven (datum, type, omschrijving, bedrag) VALUES (?, ?, ?, ?)',
-                    [new Date().toISOString(), type, desc, bedrag]
-                );
-                
-                loadAllData();
-                showMsg('msg-uitgaven', '✅ Opgeslagen', 'success');
-                document.getElementById('expense-desc').value = '';
-                document.getElementById('expense-bedrag').value = '';
-                
-                if (isOnline && firebaseDB) syncToFirebase();
-                updateDashboard();
-                updateUitgavenList();
-            } catch (e) {
-                showMsg('msg-uitgaven', 'Fout: ' + e.message, 'error');
-            }
+            db.run('INSERT INTO uitgaven (datum, type, omschrijving, bedrag) VALUES (?, ?, ?, ?)',
+                [new Date().toISOString(), type, desc, bedrag]);
+            
+            loadAllData();
+            showMsg('msg-uitgaven', '✅ Opgeslagen');
+            document.getElementById('expense-desc').value = '';
+            document.getElementById('expense-bedrag').value = '';
+            updateDashboard();
+            updateUitgavenList();
         }
 
         function updateUitgavenList(search = '') {
             let html = '';
             allUitgaven.forEach(u => {
                 if (search && !u[3].toLowerCase().includes(search.toLowerCase())) return;
-                html += `<div class="transaction-item expense">
-                    <div><strong>${u[3]}</strong> | ${u[2]} | € ${u[4].toFixed(2)} | ${new Date(u[1]).toLocaleDateString('nl-NL')}</div>
-                </div>`;
+                html += `<div class="transaction-item expense"><div><strong>${u[3]}</strong> | € ${u[4].toFixed(2)}</div></div>`;
             });
             document.getElementById('uitgaven-list').innerHTML = html || '<p>Geen uitgaven</p>';
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const search = document.getElementById('search-uitgaven');
-            if (search) search.addEventListener('input', (e) => updateUitgavenList(e.target.value));
-        });
-
-        // ===== REPORTS =====
         function updateReportPeriod() {
             const period = document.getElementById('report-period').value;
-            const vanDiv = document.getElementById('report-van-div');
-            const totDiv = document.getElementById('report-tot-div');
-            
-            if (period === 'custom') {
-                vanDiv.style.display = 'block';
-                totDiv.style.display = 'block';
-            } else {
-                vanDiv.style.display = 'none';
-                totDiv.style.display = 'none';
-            }
+            document.getElementById('report-van-div').style.display = period === 'custom' ? 'block' : 'none';
+            document.getElementById('report-tot-div').style.display = period === 'custom' ? 'block' : 'none';
         }
 
         function genererReport() {
             const period = document.getElementById('report-period').value;
             let van, tot;
-
             const now = new Date();
 
             if (period === 'custom') {
@@ -512,68 +417,30 @@ const firebaseConfig = {
                 tot = new Date(2100, 0, 1);
             }
 
-            const txs = allTransacties.filter(t => {
-                const d = new Date(t[2]);
-                return d >= van && d <= tot;
-            });
+            const txs = allTransacties.filter(t => new Date(t[2]) >= van && new Date(t[2]) <= tot);
+            const omzet = txs.reduce((s, t) => s + t[6], 0);
+            const btw = omzet * 0.21;
+            const ugs = allUitgaven.reduce((s, u) => s + u[4], 0);
 
-            const ugs = allUitgaven.filter(u => {
-                const d = new Date(u[1]);
-                return d >= van && d <= tot;
-            });
-
-            const omzet = txs.filter(t => !t[7]).reduce((s, t) => s + t[6], 0);
-            const retours = txs.filter(t => t[7]).reduce((s, t) => s + t[6], 0);
-            const netto = omzet - retours;
-            const btw = netto * 0.21;
-            const uitgaven = ugs.reduce((s, u) => s + u[4], 0);
-            const winst = netto - uitgaven;
-
-            let html = `<div class="form-section">
-                <h3>Periode: ${van.toLocaleDateString('nl-NL')} tot ${tot.toLocaleDateString('nl-NL')}</h3>
+            let html = `<h3>Periode: ${van.toLocaleDateString('nl-NL')} tot ${tot.toLocaleDateString('nl-NL')}</h3>
                 <div class="stats">
                     <div class="stat-item"><span>Transacties</span><strong>${txs.length}</strong></div>
                     <div class="stat-item"><span>Omzet</span><strong>€ ${omzet.toFixed(2)}</strong></div>
-                    <div class="stat-item"><span>Retours</span><strong>€ ${retours.toFixed(2)}</strong></div>
-                    <div class="stat-item"><span>Netto</span><strong>€ ${netto.toFixed(2)}</strong></div>
-                    <div class="stat-item"><span>BTW 21%</span><strong>€ ${btw.toFixed(2)}</strong></div>
-                    <div class="stat-item"><span>Uitgaven</span><strong>€ ${uitgaven.toFixed(2)}</strong></div>
-                    <div class="stat-item stat-total"><span>Winst</span><strong style="color: #27ae60;">€ ${winst.toFixed(2)}</strong></div>
-                </div>
-
-                <h3 style="margin-top: 30px;">Transacties</h3>
-                <table>
-                    <tr><th>TX-Nr</th><th>Product</th><th>Bedrag</th><th>Type</th></tr>`;
-            
-            txs.forEach(t => {
-                html += `<tr><td>${t[1]}</td><td>${t[5]}</td><td>€ ${t[6].toFixed(2)}</td><td>${t[7] ? 'RETOUR' : 'VERKOOP'}</td></tr>`;
-            });
-
-            html += `</table>
-                <h3 style="margin-top: 30px;">Uitgaven</h3>
-                <table>
-                    <tr><th>Omschrijving</th><th>Type</th><th>Bedrag</th></tr>`;
-            
-            ugs.forEach(u => {
-                html += `<tr><td>${u[3]}</td><td>${u[2]}</td><td>€ ${u[4].toFixed(2)}</td></tr>`;
-            });
-
-            html += `</table></div>`;
+                    <div class="stat-item"><span>BTW</span><strong>€ ${btw.toFixed(2)}</strong></div>
+                    <div class="stat-item"><span>Uitgaven</span><strong>€ ${ugs.toFixed(2)}</strong></div>
+                </div>`;
             document.getElementById('report-content').innerHTML = html;
         }
 
-        // ===== BACKUP & EXPORT =====
         function downloadBackup() {
-            const backup = {
+            const backup = JSON.stringify({
                 timestamp: new Date().toISOString(),
                 transacties: allTransacties,
                 uitgaven: allUitgaven
-            };
+            }, null, 2);
 
-            const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url;
+            a.href = 'data:text/json,' + encodeURIComponent(backup);
             a.download = `TK_Backup_${new Date().toISOString().split('T')[0]}.json`;
             a.click();
         }
@@ -588,20 +455,16 @@ const firebaseConfig = {
                 reader.onload = (evt) => {
                     try {
                         const backup = JSON.parse(evt.target.result);
-                        
                         db.run('DELETE FROM transacties');
                         backup.transacties.forEach(tx => {
                             db.run('INSERT INTO transacties VALUES (?, ?, ?, ?, ?, ?, ?, ?)', tx);
                         });
-
                         db.run('DELETE FROM uitgaven');
                         backup.uitgaven.forEach(u => {
                             db.run('INSERT INTO uitgaven VALUES (?, ?, ?, ?, ?)', u);
                         });
-
                         loadAllData();
-                        showMsg('backup-msg', '✅ Hersteld', 'success');
-                        if (isOnline && firebaseDB) syncToFirebase();
+                        showMsg('backup-msg', '✅ Hersteld');
                         updateDashboard();
                     } catch (e) {
                         showMsg('backup-msg', 'Fout: ' + e.message, 'error');
@@ -611,175 +474,18 @@ const firebaseConfig = {
             };
         }
 
-        function exportJSON() {
-            const van = document.getElementById('export-van').value;
-            const tot = document.getElementById('export-tot').value;
-
-            if (!van || !tot) {
-                showMsg('backup-msg', 'Voer datums in', 'error');
-                return;
-            }
-
-            const vDate = new Date(van);
-            const tDate = new Date(tot);
-            tDate.setDate(tDate.getDate() + 1);
-
-            const filtered = allTransacties.filter(t => {
-                const d = new Date(t[2]);
-                return d >= vDate && d <= tDate;
-            });
-
-            const blob = new Blob([JSON.stringify({
-                range: `${van} tot ${tot}`,
-                count: filtered.length,
-                transacties: filtered
-            }, null, 2)], { type: 'application/json' });
-            
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `Export_${van}_to_${tot}.json`;
-            a.click();
-        }
-
-        // ===== DASHBOARD =====
         function updateDashboard() {
-            const omzet = allTransacties.filter(t => !t[7]).reduce((s, t) => s + t[6], 0);
-            const retours = allTransacties.filter(t => t[7]).reduce((s, t) => s + t[6], 0);
-            const netto = omzet - retours;
-            const btw = netto * 0.21;
-            const uitgaven = allUitgaven.reduce((s, u) => s + u[4], 0);
-            const winst = netto - uitgaven;
+            const omzet = allTransacties.reduce((s, t) => s + t[6], 0);
+            const btw = omzet * 0.21;
+            const ugs = allUitgaven.reduce((s, u) => s + u[4], 0);
+            const winst = omzet - ugs;
 
             document.getElementById('stat-count').textContent = allTransacties.length;
             document.getElementById('stat-omzet').textContent = '€ ' + omzet.toFixed(2);
-            document.getElementById('stat-retours').textContent = '€ ' + retours.toFixed(2);
-            document.getElementById('stat-netto').textContent = '€ ' + netto.toFixed(2);
+            document.getElementById('stat-netto').textContent = '€ ' + omzet.toFixed(2);
             document.getElementById('stat-btw').textContent = '€ ' + btw.toFixed(2);
-            document.getElementById('stat-uitgaven').textContent = '€ ' + uitgaven.toFixed(2);
+            document.getElementById('stat-uitgaven').textContent = '€ ' + ugs.toFixed(2);
             document.getElementById('stat-winst').textContent = '€ ' + winst.toFixed(2);
-
-            let html = '';
-            allTransacties.slice(0, 20).forEach(t => {
-                html += `<div class="transaction-item"><div><strong>${t[1]}</strong> | ${t[5]} | € ${t[6].toFixed(2)}</div></div>`;
-            });
-            document.getElementById('dashboard-list').innerHTML = html;
-        }
-
-        // ===== FIREBASE SYNC =====
-        function generatePDFBon(tx_num, product, prijs, klanttype, betalingswijze, datum) {
-            try {
-                const doc = new jsPDF();
-                const pageWidth = doc.internal.pageSize.getWidth();
-                const pageHeight = doc.internal.pageSize.getHeight();
-
-                // Header
-                doc.setFillColor(31, 51, 84); // Navy
-                doc.rect(0, 0, pageWidth, 40, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(20);
-                doc.text('TK HANDELSONDERNEMING', 15, 25);
-                
-                doc.setTextColor(232, 130, 30); // Oranje
-                doc.setFontSize(10);
-                doc.text('KASSABON', pageWidth - 30, 15);
-
-                // Reset
-                doc.setTextColor(0, 0, 0);
-                doc.setFontSize(11);
-                let y = 55;
-
-                // Info
-                doc.text(`TX-Nummer: ${tx_num}`, 15, y);
-                y += 8;
-                doc.text(`Datum: ${datum.toLocaleDateString('nl-NL')} ${datum.toLocaleTimeString('nl-NL')}`, 15, y);
-                y += 8;
-                doc.text(`Klant: ${klanttype === 'b2b' ? 'B2B (Zakelijk)' : 'B2C (Anoniem)'}`, 15, y);
-                y += 8;
-                doc.text(`Betaling: ${betalingswijze === 'tikkie' ? 'Tikkie' : betalingswijze === 'overschrijving' ? 'Overschrijving' : 'Contant'}`, 15, y);
-                y += 15;
-
-                // Product
-                doc.setFillColor(232, 130, 30);
-                doc.rect(15, y - 5, pageWidth - 30, 7, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.text('Product', 20, y);
-                doc.text('Bedrag', pageWidth - 35, y);
-                y += 12;
-
-                // Items
-                doc.setTextColor(0, 0, 0);
-                doc.text(product, 20, y);
-                doc.text(`€ ${prijs.toFixed(2)}`, pageWidth - 35, y);
-                y += 15;
-
-                // Totaal
-                doc.setFillColor(31, 51, 84);
-                doc.rect(15, y - 5, pageWidth - 30, 10, 'F');
-                doc.setTextColor(232, 130, 30);
-                doc.setFontSize(14);
-                doc.text('TOTAAL:', 20, y + 3);
-                doc.text(`€ ${prijs.toFixed(2)}`, pageWidth - 35, y + 3);
-                y += 20;
-
-                // Footer
-                doc.setTextColor(102, 102, 102);
-                doc.setFontSize(9);
-                if (klanttype === 'b2c') {
-                    doc.text('Deze bon is een kwitantie van aankoop.', 15, y);
-                    y += 6;
-                    doc.text('Bewaar deze bon voor reclamatie.', 15, y);
-                }
-                y += 8;
-                doc.text('Bedankt voor uw aankoop!', 15, y);
-
-                // Download
-                doc.save(`Bon_${tx_num}.pdf`);
-                showMsg('msg-transactie', `✅ PDF gedownload: Bon_${tx_num}.pdf`, 'success');
-            } catch (e) {
-                console.error('PDF error:', e);
-                showMsg('msg-transactie', `⚠️ PDF niet gedownload: ${e.message}`, 'error');
-            }
-        }
-        function syncToFirebase() {
-            if (!firebaseDB) return;
-            try {
-                const data = {
-                    transacties: allTransacties,
-                    uitgaven: allUitgaven,
-                    synced: new Date().toISOString()
-                };
-                firebaseDB.ref('tk-data').set(data);
-                console.log('✅ Firebase synced');
-            } catch (e) {
-                console.error('Sync error:', e);
-            }
-        }
-
-        function loadFromFirebase() {
-            if (!firebaseDB) return;
-            firebaseDB.ref('tk-data').on('value', (snapshot) => {
-                const fbData = snapshot.val();
-                if (fbData && dbReady) {
-                    try {
-                        db.run('DELETE FROM transacties');
-                        fbData.transacties.forEach(tx => {
-                            db.run('INSERT INTO transacties VALUES (?, ?, ?, ?, ?, ?, ?, ?)', tx);
-                        });
-                        
-                        db.run('DELETE FROM uitgaven');
-                        fbData.uitgaven.forEach(u => {
-                            db.run('INSERT INTO uitgaven VALUES (?, ?, ?, ?, ?)', u);
-                        });
-                        
-                        loadAllData();
-                        updateDashboard();
-                        console.log('📥 Firebase loaded');
-                    } catch (e) {
-                        console.error('Load error:', e);
-                    }
-                }
-            });
         }
 
         function switchTab(name) {
@@ -789,82 +495,29 @@ const firebaseConfig = {
             document.querySelector(`[data-tab="${name}"]`).classList.add('active');
         }
 
-        function showMsg(id, msg, type) {
-            document.getElementById(id).innerHTML = `<div class="${type}">${msg}</div>`;
+        function showMsg(id, msg, type = 'success') {
+            const div = document.getElementById(id);
+            if (div) div.innerHTML = `<div class="${type}">${msg}</div>`;
         }
 
-        // Initialize event listeners
         function initEventListeners() {
-            // Tab buttons
             document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    switchTab(btn.getAttribute('data-tab'));
-                });
+                btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab')));
             });
 
-            // Search bonnen
-            const searchBonnen = document.getElementById('search-bonnen');
-            if (searchBonnen) {
-                searchBonnen.addEventListener('input', (e) => updateBonnenList(e.target.value));
-            }
+            const sb = document.getElementById('search-bonnen');
+            if (sb) sb.addEventListener('input', (e) => updateBonnenList(e.target.value));
 
-            // Search uitgaven
-            const searchUitgaven = document.getElementById('search-uitgaven');
-            if (searchUitgaven) {
-                searchUitgaven.addEventListener('input', (e) => updateUitgavenList(e.target.value));
-            }
-
-            // Report period filter
-            const reportPeriod = document.getElementById('report-period');
-            if (reportPeriod) {
-                reportPeriod.addEventListener('change', updateReportPeriod);
-            }
-
-            // Backup file upload
-            const backupFile = document.getElementById('backup-file');
-            if (backupFile) {
-                backupFile.addEventListener('change', (e) => {
-                    const file = e.target.files[0];
-                    if (!file) return;
-
-                    const reader = new FileReader();
-                    reader.onload = (evt) => {
-                        try {
-                            const backup = JSON.parse(evt.target.result);
-                            
-                            db.run('DELETE FROM transacties');
-                            backup.transacties.forEach(tx => {
-                                db.run('INSERT INTO transacties VALUES (?, ?, ?, ?, ?, ?, ?, ?)', tx);
-                            });
-
-                            db.run('DELETE FROM uitgaven');
-                            backup.uitgaven.forEach(u => {
-                                db.run('INSERT INTO uitgaven VALUES (?, ?, ?, ?, ?)', u);
-                            });
-
-                            loadAllData();
-                            showMsg('backup-msg', '✅ Hersteld', 'success');
-                            if (isOnline && firebaseDB) syncToFirebase();
-                            updateDashboard();
-                        } catch (e) {
-                            showMsg('backup-msg', 'Fout: ' + e.message, 'error');
-                        }
-                    };
-                    reader.readAsText(file);
-                });
-            }
+            const su = document.getElementById('search-uitgaven');
+            if (su) su.addEventListener('input', (e) => updateUitgavenList(e.target.value));
         }
 
-        // Init
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
-                initDB();
-                setTimeout(initEventListeners, 100);
-            });
-        } else {
-            initDB();
+        window.addEventListener('load', async () => {
+            await initFirebase();
+            await initDB();
             initEventListeners();
-        }
+            updateStatus();
+        });
     </script>
 </body>
 </html>
