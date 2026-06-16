@@ -3,63 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TK Handelsonderneming - Transactie App v2.0</title>
+    <title>TK Transactie App v2.0</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Lato', sans-serif; background: #f5f5f5; color: #333; }
-        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .header { text-align: center; padding: 20px 0; border-bottom: 3px solid #c00000; margin-bottom: 30px; }
-        .logo { max-width: 120px; height: auto; margin-bottom: 10px; }
-        h1 { color: #1F3354; font-size: 28px; }
+        body { font-family: Lato, sans-serif; background: #f5f5f5; color: #333; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 20px; background: white; }
+        
+        header { text-align: center; padding: 30px 0; border-bottom: 3px solid #c00000; }
+        header img { max-height: 80px; margin-bottom: 10px; }
+        h1 { color: #1F3354; font-size: 28px; margin-bottom: 5px; }
         .subtitle { color: #E8821E; font-size: 14px; }
-        .tabs { display: flex; gap: 10px; margin: 20px 0; border-bottom: 2px solid #eee; }
-        .tab-btn { padding: 10px 20px; background: none; border: none; cursor: pointer; color: #666; border-bottom: 3px solid transparent; font-weight: 600; transition: all 0.3s; }
+        
+        .tabs { display: flex; gap: 10px; margin: 20px 0 30px 0; border-bottom: 2px solid #ddd; overflow-x: auto; }
+        .tab-btn { padding: 12px 20px; border: none; background: transparent; cursor: pointer; color: #666; font-weight: bold; border-bottom: 3px solid transparent; transition: all 0.3s; }
+        .tab-btn:hover { color: #c00000; }
         .tab-btn.active { color: #c00000; border-bottom-color: #c00000; }
+        
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .form-section { background: #fafafa; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #E8821E; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: 600; color: #1F3354; font-size: 14px; }
-        select, input, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; font-size: 14px; }
-        select:focus, input:focus, textarea:focus { outline: none; border-color: #c00000; box-shadow: 0 0 5px rgba(192, 0, 0, 0.2); }
-        button { background: #c00000; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 14px; transition: background 0.3s; margin-right: 10px; margin-bottom: 10px; }
-        button:hover { background: #a00000; }
-        .btn-secondary { background: #666; }
-        .btn-secondary:hover { background: #555; }
-        .btn-success { background: #27ae60; }
-        .btn-success:hover { background: #229954; }
-        .transaction-item { background: #f9f9f9; padding: 12px; margin: 8px 0; border-radius: 4px; border-left: 3px solid #1F3354; display: flex; justify-content: space-between; align-items: center; }
-        .transaction-item.credit { border-left-color: #e74c3c; }
-        .transaction-info { flex: 1; }
-        .transaction-actions { display: flex; gap: 5px; }
-        .transaction-actions button { margin: 0; padding: 6px 12px; font-size: 12px; }
-        .checkbox-group { display: flex; align-items: center; gap: 10px; }
-        .checkbox-group input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; }
-        .error { background: #fee; color: #c00; padding: 10px; border-radius: 4px; margin-bottom: 15px; }
-        .success { background: #efe; color: #060; padding: 10px; border-radius: 4px; margin-bottom: 15px; }
+        
+        .form-section { background: #f9f9f9; padding: 20px; margin-bottom: 20px; border-left: 4px solid #E8821E; border-radius: 4px; }
+        h2 { color: #1F3354; font-size: 18px; margin-bottom: 15px; }
+        
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
-        h2 { color: #1F3354; margin-bottom: 15px; font-size: 20px; }
-        .stats { background: #f0f0f0; padding: 15px; border-radius: 4px; margin: 15px 0; }
-        .stat-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #ddd; }
-        .stat-item:last-child { border-bottom: none; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #1F3354; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; }
+        textarea { resize: vertical; min-height: 80px; }
+        
+        button { padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: all 0.3s; }
+        .btn-primary { background: #27ae60; color: white; width: 100%; margin-top: 10px; }
+        .btn-primary:hover { background: #229954; }
+        .btn-secondary { background: #3498db; color: white; padding: 8px 16px; margin-right: 10px; margin-bottom: 10px; }
+        .btn-secondary:hover { background: #2980b9; }
+        
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+        .stat-item { background: white; padding: 15px; border-radius: 4px; border-left: 4px solid #E8821E; }
+        .stat-item span { display: block; color: #666; font-size: 12px; margin-bottom: 5px; }
+        .stat-item strong { display: block; font-size: 18px; color: #1F3354; }
+        
+        .transaction-item { background: white; padding: 15px; margin-bottom: 10px; border-left: 4px solid #3498db; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
+        .transaction-item.credit { border-left-color: #e74c3c; background: #ffe6e6; }
+        .transaction-info { flex: 1; }
+        .transaction-actions { display: flex; gap: 10px; }
+        
+        .success { color: #27ae60; padding: 10px; background: #d5f4e6; border-radius: 4px; margin-bottom: 10px; }
+        .error { color: #c00000; padding: 10px; background: #ffe6e6; border-radius: 4px; margin-bottom: 10px; }
+        
+        small { color: #999; }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <img src="data:image/jpeg;base64,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" alt="TK" class="logo" onerror="this.style.display='none'">
+        <header>
+            <svg width="80" height="80" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 10px;">
+                <rect width="400" height="400" fill="#1F3354"/>
+                <text x="200" y="220" font-size="120" font-weight="bold" text-anchor="middle" fill="#E8821E" font-family="Arial">TK</text>
+            </svg>
             <h1>TK Transactie App v2.0</h1>
             <p class="subtitle">Restpartijen • Garanties • Retours</p>
-        </div>
+        </header>
 
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('transactie')">💾 Nieuwe Transactie</button>
             <button class="tab-btn" onclick="switchTab('bons')">📋 Alle Bons</button>
             <button class="tab-btn" onclick="switchTab('beheer')">🔧 Beheer</button>
-            <button class="tab-btn" onclick="switchTab('garantie')">🔍 Garantie Zoeken</button>
+            <button class="tab-btn" onclick="switchTab('garantie')">🔍 Garantie</button>
             <button class="tab-btn" onclick="switchTab('belasting')">📊 Belastingrapport</button>
             <button class="tab-btn" onclick="switchTab('dashboard')">📈 Dashboard</button>
         </div>
@@ -73,133 +84,134 @@
                 <div class="grid-2">
                     <div>
                         <div class="form-group">
-                            <label for="klanttype">Klanttype</label>
+                            <label>Klanttype</label>
                             <select id="klanttype" onchange="toggleKlantType()">
                                 <option value="b2c" selected>B2C - Anoniem</option>
                                 <option value="b2b">B2B - Zakelijk</option>
                             </select>
                         </div>
-
                         <div class="form-group">
-                            <label for="betaling">Betalingswijze</label>
+                            <label>Betalingswijze</label>
                             <select id="betaling">
                                 <option value="tikkie" selected>Tikkie</option>
                                 <option value="overschrijving">Overschrijving</option>
                                 <option value="contant">Contant</option>
                             </select>
                         </div>
-
-                        <div id="b2b-section" style="display:none;">
-                            <div class="form-group">
-                                <label for="bedrijf">Bedrijfsnaam</label>
-                                <input type="text" id="bedrijf" placeholder="Bijv. Pro Bandenservice">
-                            </div>
-                            <div class="form-group">
-                                <label for="kvk">KvK Nummer</label>
-                                <input type="text" id="kvk" placeholder="Bijv. 93210647">
-                            </div>
-                        </div>
-
+                    </div>
+                    <div id="b2b-section" style="display: none;">
                         <div class="form-group">
-                            <label for="product-select">Kies Product</label>
-                            <select id="product-select" onchange="onProductSelected()">
+                            <label>Bedrijfsnaam</label>
+                            <input type="text" id="bedrijf" placeholder="Bedrijfsnaam">
+                        </div>
+                        <div class="form-group">
+                            <label>KvK-nummer</label>
+                            <input type="text" id="kvk" placeholder="KvK-nummer">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div>
+                        <div class="form-group">
+                            <label>Kies Product</label>
+                            <select id="product-select" onchange="setProductName()">
                                 <option value="">-- Selecteer een product --</option>
                             </select>
                         </div>
                     </div>
-
                     <div>
                         <div class="form-group">
-                            <label for="custom-product">Of voer eigen beschrijving in</label>
-                            <input type="text" id="custom-product" placeholder="Bijv. Samsung TV 55 inch">
+                            <label>Of voer eigen beschrijving in</label>
+                            <input type="text" id="custom-product" placeholder="Bijv. Samsung TV 55 inch LED">
                         </div>
+                    </div>
+                </div>
 
+                <div class="grid-2">
+                    <div>
                         <div class="form-group">
-                            <label for="conditie">Conditie</label>
+                            <label>Conditie</label>
                             <select id="conditie">
-                                <option value="Nieuw">Nieuw (Restpartij/Single Item)</option>
-                                <option value="Lichte Schade">Lichte Schade</option>
-                                <option value="Overjarig">Overjarig Model</option>
+                                <option>Nieuw (Restpartij/Single Item)</option>
+                                <option>Licht gebruikt</option>
+                                <option>Gebruikt</option>
+                                <option>Refurbished</option>
                             </select>
                         </div>
-
+                    </div>
+                    <div>
                         <div class="form-group">
-                            <label for="prijs">Prijs (€)</label>
-                            <input type="number" id="prijs" step="0.01" placeholder="0.00">
+                            <label>Prijs (€)</label>
+                            <input type="number" id="prijs" placeholder="0.00" step="0.01" min="0">
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="opmerkingen">Opmerkingen</label>
-                    <textarea id="opmerkingen" rows="2" placeholder="Bijzonderheden..."></textarea>
+                    <label>Opmerkingen</label>
+                    <textarea id="opmerkingen" placeholder="Bijzonderheden..."></textarea>
                 </div>
 
-                <button onclick="saveAndGenerateBon()" class="btn-success">💾 Opslaan & PDF Bon Genereren</button>
+                <button class="btn-primary" onclick="saveAndGenerateBon()">💾 Opslaan & PDF Bon Genereren</button>
             </div>
         </div>
 
         <!-- TAB 2: ALLE BONS -->
         <div id="bons" class="tab-content">
             <div class="form-section">
-                <h2>Alle Transacties & Bons</h2>
-                <input type="text" id="search-transactie" placeholder="Zoeken op product/bedrijf..." style="margin-bottom: 15px; width: 100%;">
+                <h2>Alle Bons</h2>
+                <input type="text" id="search-transactie" placeholder="Zoeken..." style="margin-bottom: 15px;">
                 <div id="transaction-list"></div>
             </div>
         </div>
 
-        <!-- TAB 3: GARANTIE ZOEKEN -->
-        <div id="garantie" class="tab-content">
-            <div class="form-section">
-                <h2>🔍 Garantie Zoeken (Anonieme Matching)</h2>
-                <p style="margin-bottom: 15px; font-size: 13px; color: #666;">Klant geeft bedrag + datum van Tikkie-betaling. App zoekt originele transactie (±2 uur venster).</p>
-                <div id="msg-garantie"></div>
-
-                <div class="grid-2">
-                    <div>
-                        <div class="form-group">
-                            <label for="zoek-bedrag">Bedrag (€)</label>
-                            <input type="number" id="zoek-bedrag" step="0.01" placeholder="Bijv. 250.00">
-                        </div>
-                    </div>
-                    <div>
-                        <div class="form-group">
-                            <label for="zoek-datum">Datum & Tijd (van Tikkie)</label>
-                            <input type="datetime-local" id="zoek-datum">
-                        </div>
-                    </div>
-                </div>
-
-                <button onclick="zoekGarantie()" class="btn-secondary">🔍 Zoeken</button>
-
-                <div id="garantie-resultaat" style="margin-top: 20px;"></div>
-            </div>
-        </div>
-
-        <!-- TAB 5: BEHEER TRANSACTIES -->
+        <!-- TAB 3: BEHEER -->
         <div id="beheer" class="tab-content">
             <div class="form-section">
-                <h2>🔧 Transacties Beheer (Edit/Delete)</h2>
-                <input type="text" id="search-beheer" placeholder="Zoeken..." style="margin-bottom: 15px; width: 100%;">
+                <h2>Beheer Transacties (Edit/Delete)</h2>
+                <input type="text" id="search-beheer" placeholder="Zoeken..." style="margin-bottom: 15px;">
                 <div id="beheer-list"></div>
             </div>
         </div>
 
-        <!-- TAB 6: BELASTINGRAPPORT -->
-        <div id="belasting" class="tab-content">
+        <!-- TAB 4: GARANTIE -->
+        <div id="garantie" class="tab-content">
             <div class="form-section">
-                <h2>📊 Belastingrapport (Kwartaal Export)</h2>
-                
+                <h2>Garantie Zoeken</h2>
                 <div class="grid-2">
                     <div>
                         <div class="form-group">
-                            <label for="rapport-jaar">Jaar</label>
+                            <label>Zoekbedrag (€)</label>
+                            <input type="number" id="zoek-bedrag" placeholder="0.00" step="0.01">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label>Datum (±2 uur)</label>
+                            <input type="datetime-local" id="zoek-datum">
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-secondary" onclick="zoekGarantie()">🔍 Zoeken</button>
+                <div id="garantie-resultaat" style="margin-top: 20px;"></div>
+            </div>
+        </div>
+
+        <!-- TAB 5: BELASTINGRAPPORT -->
+        <div id="belasting" class="tab-content">
+            <div class="form-section">
+                <h2>Belastingrapport (Kwartaal Export)</h2>
+                <div class="grid-2">
+                    <div>
+                        <div class="form-group">
+                            <label>Jaar</label>
                             <input type="number" id="rapport-jaar" value="2026" min="2020" max="2099">
                         </div>
                     </div>
                     <div>
                         <div class="form-group">
-                            <label for="rapport-kwartaal">Kwartaal</label>
+                            <label>Kwartaal</label>
                             <select id="rapport-kwartaal">
                                 <option value="1">Q1 (Jan-Mrt)</option>
                                 <option value="2">Q2 (Apr-Jun)</option>
@@ -209,35 +221,56 @@
                         </div>
                     </div>
                 </div>
-
-                <button onclick="genererRapport()" class="btn-secondary">📋 Genereer Rapport</button>
-                <button onclick="exportExcel()" class="btn-secondary" style="background: #27ae60;">📊 Download Excel</button>
-                <button onclick="exportRapportPDF()" class="btn-secondary" style="background: #e74c3c;">📄 Download PDF</button>
-
+                <button class="btn-secondary" onclick="genererRapport()">📋 Genereer Rapport</button>
+                <button class="btn-secondary" style="background: #27ae60;" onclick="exportExcel()">📊 Download Excel</button>
+                <button class="btn-secondary" style="background: #e74c3c;" onclick="exportRapportPDF()">📄 Download PDF</button>
                 <div id="rapport-content" style="margin-top: 20px;"></div>
+            </div>
+        </div>
+
+        <!-- TAB 6: DASHBOARD -->
+        <div id="dashboard" class="tab-content">
+            <div class="form-section">
+                <h2>Dashboard & Marge Berekening</h2>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span>Totaal Transacties:</span>
+                        <strong id="stat-count">0</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>Totale Omzet:</span>
+                        <strong id="stat-omzet">€ 0.00</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>Retours:</span>
+                        <strong id="stat-retours">€ 0.00</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>Derving:</span>
+                        <strong id="stat-derving">€ 0.00</strong>
+                    </div>
+                    <div class="stat-item" style="background: #f0f8ff;">
+                        <span>Netto Omzet:</span>
+                        <strong id="stat-netto" style="color: #c00000;">€ 0.00</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>Recente Transacties</h2>
+                <div id="dashboard-list"></div>
             </div>
         </div>
     </div>
 
     <script>
-        const PRODUCTS = [
-            { id: 1, name: "Cloudpillo Topper", price: 250 },
-            { id: 2, name: "Intex Jacuzzi Olijfgroen", price: 375 },
-            { id: 3, name: "NB Evo-N mt 43", price: 100 },
-            { id: 4, name: "Ninja Ice Cream", price: 130 },
-            { id: 5, name: "Berg Reppy Skelter Blauw", price: 90 },
-            { id: 6, name: "Ooni Volt 2 Pizza Oven", price: 250 },
-            { id: 7, name: "Sjoef Bikes Meisje Unicorn", price: 90 },
-            { id: 8, name: "Robot Grasmaaier", price: 400 }
-        ];
-
         let db = null, SQL = null;
         let allTransactions = [];
         let dbReady = false;
+        let rapportData = null;
 
         async function initDB() {
             try {
-                // Zeg sql.js waar het WASM bestand zit
                 window.SQL = await initSqlJs({
                     locateFile: (filename) => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${filename}`
                 });
@@ -251,54 +284,49 @@
                 console.log('✅ Database geinitialiseerd');
             } catch (e) {
                 console.error('DB fout:', e);
-                alert('Database init fout: ' + e.message + '\n\nVervers de pagina en probeer opnieuw.');
+                alert('Database init fout: ' + e.message + '\n\nVervers pagina en probeer opnieuw.');
             }
         }
 
-        // Start init onmiddellijk
-        initDB();
-
         function createSchema() {
-            db.run(`
-                CREATE TABLE IF NOT EXISTS transacties (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    tx_num TEXT UNIQUE,
-                    datum TEXT,
-                    klanttype TEXT,
-                    betalingswijze TEXT,
-                    bedrijf TEXT,
-                    kvk TEXT,
-                    product TEXT,
-                    conditie TEXT,
-                    prijs REAL,
-                    opmerkingen TEXT,
-                    is_retour INTEGER DEFAULT 0,
-                    original_tx_id INTEGER,
-                    derving_reden TEXT
-                );
-            `);
+            db.run(`CREATE TABLE IF NOT EXISTS transacties (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                tx_num TEXT UNIQUE,
+                datum TEXT,
+                klanttype TEXT,
+                betalingswijze TEXT,
+                bedrijf TEXT,
+                kvk TEXT,
+                product TEXT,
+                conditie TEXT,
+                prijs REAL,
+                opmerkingen TEXT,
+                is_retour INTEGER DEFAULT 0,
+                original_tx_id INTEGER,
+                derving_reden TEXT
+            );`);
             saveDB();
         }
 
         function populateProducts() {
-            const sel = document.getElementById('product-select');
-            PRODUCTS.forEach(p => {
+            const products = [
+                { id: 1, name: "Cloudpillo Topper", price: 250 },
+                { id: 2, name: "Intex Jacuzzi Olijfgroen", price: 375 },
+                { id: 3, name: "NB Evo-N mt 43", price: 100 },
+                { id: 4, name: "Ninja Ice Cream", price: 130 },
+                { id: 5, name: "Berg Reppy Skelter Blauw", price: 90 },
+                { id: 6, name: "Ooni Volt 2 Pizza Oven", price: 250 },
+                { id: 7, name: "Sjoef Bikes Meisje Unicorn", price: 90 },
+                { id: 8, name: "Robot Grasmaaier", price: 400 }
+            ];
+
+            const select = document.getElementById('product-select');
+            products.forEach(p => {
                 const opt = document.createElement('option');
                 opt.value = p.id;
-                opt.textContent = p.name + ' (€' + p.price + ')';
-                sel.appendChild(opt);
+                opt.textContent = `${p.name} (€${p.price})`;
+                select.appendChild(opt);
             });
-        }
-
-        function onProductSelected() {
-            const id = document.getElementById('product-select').value;
-            if (id) {
-                const p = PRODUCTS.find(x => x.id == id);
-                if (p) {
-                    document.getElementById('custom-product').value = p.name;
-                    document.getElementById('prijs').value = p.price;
-                }
-            }
         }
 
         function toggleKlantType() {
@@ -306,9 +334,36 @@
             document.getElementById('b2b-section').style.display = type === 'b2b' ? 'block' : 'none';
         }
 
+        function setProductName() {
+            const select = document.getElementById('product-select');
+            const selected = select.options[select.selectedIndex];
+            if (selected.value) {
+                document.getElementById('custom-product').value = selected.text.split(' (€')[0];
+                document.getElementById('prijs').value = selected.text.match(/€([\d.]+)/)[1];
+            }
+        }
+
+        function saveDB() {
+            const data = db.export();
+            const arr = Array.from(data);
+            const blob = new Blob([arr], { type: 'application/octet-stream' });
+            const url = URL.createObjectURL(blob);
+            localStorage.setItem('tk_db_v2', JSON.stringify(Array.from(data)));
+        }
+
+        function loadAllTransactions() {
+            try {
+                const result = db.exec('SELECT * FROM transacties ORDER BY id DESC');
+                allTransactions = result.length > 0 ? result[0].values : [];
+            } catch (e) {
+                console.error('Load error:', e);
+                allTransactions = [];
+            }
+        }
+
         function saveAndGenerateBon() {
             if (!dbReady || !db) {
-                showMsg('msg-transactie', '⏳ Database wordt nog geladen... wacht even.', 'error');
+                showMsg('msg-transactie', '⏳ Database laden...', 'error');
                 return;
             }
 
@@ -322,12 +377,11 @@
             const opmerkingen = document.getElementById('opmerkingen').value.trim();
 
             if (!product || isNaN(prijs) || prijs <= 0) {
-                showMsg('msg-transactie', 'Voer product en geldige prijs in', 'error');
+                showMsg('msg-transactie', 'Voer product en prijs in', 'error');
                 return;
             }
 
             const now = new Date();
-            // Format: TX-YYYYMMDDHHMMSS-XXX (met milliseconden voor uniciteit)
             const tx_num = 'TX-' + now.getFullYear() + 
                           String(now.getMonth()+1).padStart(2,'0') + 
                           String(now.getDate()).padStart(2,'0') + 
@@ -344,337 +398,167 @@
                 saveDB();
                 generatePDF(tx_num, product, prijs, conditie, klanttype, betalingswijze, bedrijf, now);
                 showMsg('msg-transactie', '✅ Transactie opgeslagen & PDF klaar', 'success');
-                resetForm();
+                document.getElementById('custom-product').value = '';
+                document.getElementById('prijs').value = '';
                 loadAllTransactions();
+                updateDashboard();
             } catch (e) {
                 showMsg('msg-transactie', 'Fout: ' + e.message, 'error');
-                console.error('Save error:', e);
             }
         }
 
         function generatePDF(tx_num, product, prijs, conditie, klanttype, betalingswijze, bedrijf, datum) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            const pageWidth = doc.internal.pageSize.getWidth();
-            const pageHeight = doc.internal.pageSize.getHeight();
-            const margin = 15;
+            const w = doc.internal.pageSize.getWidth();
+            const h = doc.internal.pageSize.getHeight();
+            const m = 15;
 
-            // Logo linksboven (groter)
-            const logoBase64 = 'data:image/jpeg;base64,LOGO_PLACEHOLDER';
-            try {
-                doc.addImage(logoBase64, 'JPEG', margin, margin, 30, 30);
-            } catch (e) {
-                // Logo load fout - continue
-            }
-
-            // Titel rechtsboven
-            doc.setTextColor(31, 51, 84); // Navy
-            doc.setFontSize(24);
-            doc.setFont(undefined, 'bold');
-            doc.text('KASSABON', pageWidth - margin, margin + 12, { align: 'right' });
-
-            // Header info blok (Navy background)
+            // Header Navy
             doc.setFillColor(31, 51, 84);
-            doc.rect(margin, 55, pageWidth - 2*margin, 8, 'F');
+            doc.rect(0, 0, w, 50, 'F');
             doc.setTextColor(255, 255, 255);
-            doc.setFontSize(11);
+            doc.setFontSize(16);
             doc.setFont(undefined, 'bold');
-            doc.text('TK HANDELSONDERNEMING', margin + 5, 60);
+            doc.text('TK HANDELSONDERNEMING', m, 20);
+            doc.setFontSize(12);
+            doc.text('Kassabon', m, 32);
 
             // Oranje lijn
             doc.setDrawColor(232, 130, 30);
             doc.setLineWidth(1.5);
-            doc.line(margin, 64, pageWidth - margin, 64);
+            doc.line(m, 45, w - m, 45);
 
-            // Transactie info (2 kolommen)
             doc.setTextColor(31, 51, 84);
             doc.setFontSize(10);
+            let y = 58;
+
             doc.setFont(undefined, 'bold');
-            let y = 72;
-            
-            const col1X = margin;
-            const col2X = pageWidth / 2;
-            
-            // Kolom 1
-            doc.text('Transactie Nr:', col1X, y);
+            doc.text('TX-Nr:', m, y);
             doc.setFont(undefined, 'normal');
-            doc.text(tx_num, col1X + 45, y);
-            
-            // Kolom 2
+            doc.text(tx_num, m + 45, y);
+            y += 7;
+
             doc.setFont(undefined, 'bold');
-            doc.text('Datum/Tijd:', col2X, y);
+            doc.text('Datum/Tijd:', m, y);
             doc.setFont(undefined, 'normal');
-            doc.text(datum.toLocaleDateString('nl-NL') + ' ' + datum.toLocaleTimeString('nl-NL'), col2X + 30, y);
-            
-            y += 8;
-            
-            // Klanttype & Betaling
+            doc.text(datum.toLocaleDateString('nl-NL') + ' ' + datum.toLocaleTimeString('nl-NL'), m + 45, y);
+            y += 7;
+
             doc.setFont(undefined, 'bold');
-            doc.text('Klanttype:', col1X, y);
+            doc.text('Klant:', m, y);
             doc.setFont(undefined, 'normal');
-            doc.text(klanttype === 'b2c' ? 'B2C (Anoniem)' : 'B2B: ' + bedrijf, col1X + 45, y);
-            
+            doc.text(klanttype === 'b2c' ? 'B2C (Anoniem)' : 'B2B: ' + bedrijf, m + 45, y);
+            y += 7;
+
             doc.setFont(undefined, 'bold');
-            doc.text('Betaling:', col2X, y);
+            doc.text('Betaling:', m, y);
             doc.setFont(undefined, 'normal');
-            const betaalText = betalingswijze === 'tikkie' ? 'Tikkie' : betalingswijze === 'overschrijving' ? 'Overschrijving' : 'Contant';
-            doc.text(betaalText, col2X + 30, y);
-            
+            const betaalTxt = betalingswijze === 'tikkie' ? 'Tikkie' : betalingswijze === 'overschrijving' ? 'Overschrijving' : 'Contant';
+            doc.text(betaalTxt, m + 45, y);
             y += 12;
 
-            // Product section (Oranje background)
+            // Product section
             doc.setFillColor(232, 130, 30);
-            doc.rect(margin, y - 5, pageWidth - 2*margin, 6, 'F');
+            doc.rect(m, y - 3, w - 2*m, 6, 'F');
             doc.setTextColor(255, 255, 255);
             doc.setFont(undefined, 'bold');
-            doc.text('PRODUCT', margin + 5, y);
-            
-            y += 12;
-            doc.setTextColor(31, 51, 84);
-            doc.setFont(undefined, 'bold');
-            doc.text('Omschrijving:', margin, y);
-            doc.setFont(undefined, 'normal');
-            doc.setFontSize(9);
-            const productLines = doc.splitTextToSize(product, pageWidth - 2*margin - 10);
-            productLines.forEach((line, idx) => {
-                doc.text(line, margin + 5, y + 5 + (idx * 4));
-            });
-            y += productLines.length * 4 + 5;
-            
-            doc.setFontSize(10);
-            doc.setFont(undefined, 'bold');
-            doc.text('Conditie: ' + conditie, margin, y);
-            
+            doc.text('PRODUCT', m + 5, y);
             y += 10;
 
-            // Bedrag section (Navy background)
+            doc.setTextColor(31, 51, 84);
+            doc.setFontSize(9);
+            const pLines = doc.splitTextToSize(product, w - 2*m - 10);
+            pLines.forEach(line => { doc.text(line, m + 5, y); y += 4; });
+            y += 3;
+
+            doc.setFontSize(10);
+            doc.text('Conditie: ' + conditie, m, y);
+            y += 10;
+
+            // Bedrag Navy
             doc.setFillColor(31, 51, 84);
-            doc.rect(margin, y, pageWidth - 2*margin, 14, 'F');
-            doc.setTextColor(232, 130, 30); // Oranje text
-            doc.setFontSize(18);
+            doc.rect(m, y, w - 2*m, 14, 'F');
+            doc.setTextColor(232, 130, 30);
+            doc.setFontSize(16);
             doc.setFont(undefined, 'bold');
-            doc.text('€ ' + prijs.toFixed(2), pageWidth / 2, y + 10, { align: 'center' });
-            
+            doc.text('€ ' + prijs.toFixed(2), w / 2, y + 9, { align: 'center' });
             y += 18;
 
-            // Disclaimer (alleen B2C)
+            // Disclaimer
             if (klanttype === 'b2c') {
                 doc.setTextColor(100, 100, 100);
                 doc.setFontSize(7);
                 doc.setFont(undefined, 'normal');
-                y += 3;
-                const disclaimer = "Dit product betreft een uniek single-item afkomstig uit een restpartij (zonder regresrecht). Op deze transactie is uitsluitend de wettelijke conformiteitsgarantie van toepassing. Vanwege de unieke voorraadpositie (enkelstuks) is levering van een vervangend exemplaar bij een defect uitgesloten. Indien het product binnen de wettelijke kaders een aantoonbaar defect vertoont, heeft u recht op kosteloze reparatie of – indien reparatie onuitvoerbaar is – volledige ontbinding (restitutie van het aankoopbedrag) tegen inlevering van het product. Omruiling of geld terug wegens spijt/verkeerde maat is UITGESLOTEN (koop is koop).";
-                const disclaimerLines = doc.splitTextToSize(disclaimer, pageWidth - 2*margin - 5);
-                disclaimerLines.forEach(line => {
-                    if (y + 2.5 > pageHeight - 15) {
-                        doc.addPage();
-                        y = 15;
-                    }
-                    doc.text(line, margin + 2, y);
-                    y += 2.5;
-                });
+                const disc = "Dit product betreft een uniek single-item afkomstig uit een restpartij (zonder regresrecht). Omruiling of geld terug wegens spijt is UITGESLOTEN.";
+                const dLines = doc.splitTextToSize(disc, w - 2*m - 5);
+                dLines.forEach(line => { doc.text(line, m + 2, y); y += 2.5; });
             }
 
-            // Footer
             doc.setFontSize(10);
             doc.setTextColor(31, 51, 84);
             doc.setFont(undefined, 'bold');
-            doc.text('Bedankt voor uw aankoop!', pageWidth / 2, pageHeight - 12, { align: 'center' });
+            doc.text('Bedankt voor uw aankoop!', w / 2, h - 12, { align: 'center' });
 
-            // Download
             doc.save('Bon_' + tx_num + '.pdf');
         }
 
-        function zoekGarantie() {
-            const bedrag = parseFloat(document.getElementById('zoek-bedrag').value);
-            const datum = document.getElementById('zoek-datum').value;
-
-            if (isNaN(bedrag) || !datum) {
-                showMsg('msg-garantie', 'Voer bedrag en datum in', 'error');
-                return;
-            }
-
-            const dtObj = new Date(datum);
-            const minTime = new Date(dtObj.getTime() - 2 * 60 * 60 * 1000);
-            const maxTime = new Date(dtObj.getTime() + 2 * 60 * 60 * 1000);
-
-            try {
-                const result = db.exec(
-                    'SELECT * FROM transacties WHERE prijs = ? AND datum BETWEEN ? AND ? AND is_retour = 0',
-                    [bedrag, minTime.toISOString(), maxTime.toISOString()]
-                );
-
-                let html = '';
-                if (result.length > 0 && result[0].values.length > 0) {
-                    showMsg('msg-garantie', '✅ Transactie gevonden!', 'success');
-                    result[0].values.forEach(row => {
-                        const [id, tx_num, d, klanttype, bedrijf, kvk, product, conditie, prijs, opm, is_ret, orig_id, derv] = row;
-                        html += `
-                            <div class="transaction-item">
-                                <div class="transaction-info">
-                                    <strong>${tx_num}</strong><br>
-                                    Product: ${product} (${conditie})<br>
-                                    Datum: ${new Date(d).toLocaleString('nl-NL')}<br>
-                                    Bedrag: € ${prijs.toFixed(2)}
-                                </div>
-                            </div>
-                        `;
-                    });
-                } else {
-                    showMsg('msg-garantie', '❌ Geen transactie gevonden binnen ±2 uur', 'error');
-                }
-                document.getElementById('garantie-resultaat').innerHTML = html;
-            } catch (e) {
-                showMsg('msg-garantie', 'Fout: ' + e.message, 'error');
-            }
-        }
-
-        function loadAllTransactions() {
-            try {
-                const result = db.exec('SELECT * FROM transacties ORDER BY datum DESC');
-                allTransactions = result.length > 0 ? result[0].values : [];
-                updateTransactionList();
-            } catch (e) {
-                allTransactions = [];
-            }
-        }
-
         function updateTransactionList(searchTerm = '') {
-            const list = document.getElementById('transaction-list');
             const filtered = allTransactions.filter(tx => {
                 if (!searchTerm) return true;
-                const [,tx_num,,,,,product] = tx;
-                const search = searchTerm.toLowerCase();
-                return (product + tx_num).toLowerCase().includes(search);
+                return (tx[1] + tx[7]).toLowerCase().includes(searchTerm.toLowerCase());
             });
 
             let html = '';
             filtered.forEach(tx => {
-                const [id, tx_num, datum, klanttype, betalingswijze, bedrijf, kvk, product, conditie, prijs, opm, is_retour, orig_id, derv_reden] = tx;
-                const cssClass = is_retour ? 'credit' : '';
-                const label = is_retour ? '↩️ RETOUR' : '✓ Verkoop';
-                const betaalLabel = betalingswijze === 'tikkie' ? '📱' : betalingswijze === 'overschrijving' ? '💳' : '💵';
+                const [id, tx_num, datum, klanttype, betalingswijze, bedrijf, kvk, product, conditie, prijs, opm, is_ret] = tx;
+                const icon = betalingswijze === 'tikkie' ? '📱' : betalingswijze === 'overschrijving' ? '💳' : '💵';
                 html += `
-                    <div class="transaction-item ${cssClass}">
+                    <div class="transaction-item ${is_ret ? 'credit' : ''}">
                         <div class="transaction-info">
-                            <strong>${tx_num} ${label} ${betaalLabel}</strong><br>
-                            ${klanttype === 'b2c' ? 'B2C (Anoniem)' : 'B2B: ' + bedrijf}<br>
-                            Product: ${product} (${conditie})<br>
-                            Bedrag: € ${prijs.toFixed(2)} | ${new Date(datum).toLocaleDateString('nl-NL')}
+                            <strong>${tx_num} ${icon}</strong><br>
+                            ${product} • € ${prijs.toFixed(2)}<br>
+                            <small>${new Date(datum).toLocaleDateString('nl-NL')}</small>
                         </div>
                         <div class="transaction-actions">
-                            <button onclick="reprintBon('${tx_num}')" class="btn-secondary">🖨️ Print</button>
-                            <button onclick="startRetour(${id}, '${tx_num}', ${prijs})" class="btn-secondary">↩️ Retour</button>
+                            <button class="btn-secondary" onclick="reprintBon('${tx_num}')">🖨️ Print</button>
+                            <button class="btn-secondary" style="background: #e74c3c;" onclick="startRetour(${id}, '${tx_num}', ${prijs})">↩️ Retour</button>
                         </div>
                     </div>
                 `;
             });
-            list.innerHTML = html || '<p>Geen transacties</p>';
+            document.getElementById('transaction-list').innerHTML = html || '<p>Geen transacties</p>';
         }
 
         function reprintBon(tx_num) {
             const tx = allTransactions.find(t => t[1] === tx_num);
             if (!tx) return;
-            const [,,,klanttype, betalingswijze, bedrijf, kvk, product, conditie, prijs, opm] = tx;
-            generatePDF(tx_num, product, prijs, conditie, klanttype, betalingswijze, bedrijf, new Date());
+            const [,,,klanttype, betalingswijze, bedrijf,,product,,prijs] = tx;
+            generatePDF(tx_num, product, prijs, '', klanttype, betalingswijze, bedrijf, new Date());
         }
 
         function startRetour(id, tx_num, bedrag) {
-            // Modal dialog ipv prompt
-            const choice = confirm('🔄 RETOUR - Kies reden:\n\n[OK] = Defect (derving - geen regres)\n[CANCEL] = Klantretour (gewone retour)');
+            const choice = confirm('Reden retour:\n[OK] Defect\n[CANCEL] Klantretour');
+            const label = choice ? 'Defect' : 'Klantretour';
             
-            const is_derving = choice ? 1 : 0;
-            const derving_label = choice ? 'Defect (geen regres)' : 'Klantretour';
-            const retour_tx_num = tx_num + (choice ? '-DEFECT' : '-RETOUR');
-
             try {
                 db.run(
                     'INSERT INTO transacties (tx_num, datum, klanttype, betalingswijze, bedrijf, kvk, product, conditie, prijs, is_retour, original_tx_id, derving_reden) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)',
-                    [retour_tx_num, new Date().toISOString(), 'retour', 'retour', '', '', '', '', -bedrag, id, derving_label]
+                    [tx_num + '-RET', new Date().toISOString(), 'retour', 'retour', '', '', '', '', -bedrag, id, label]
                 );
                 saveDB();
                 loadAllTransactions();
+                alert('✅ Creditnota: ' + label);
                 updateDashboard();
-                alert('✅ Creditnota aangemaakt:\n' + retour_tx_num + '\nReden: ' + derving_label);
-            } catch (e) {
-                alert('Fout: ' + e.message);
-            }
-        }
-
-        function updateDashboard() {
-            const omzet = allTransactions.filter(t => !t[10]).reduce((s, t) => s + t[8], 0);
-            const retours = allTransactions.filter(t => t[10]).reduce((s, t) => s + Math.abs(t[8]), 0);
-            const derving = allTransactions.filter(t => t[10] && t[12]).reduce((s, t) => s + Math.abs(t[8]), 0);
-            const netto = omzet - retours;
-
-            document.getElementById('stat-count').textContent = allTransactions.filter(t => !t[10]).length;
-            document.getElementById('stat-omzet').textContent = '€ ' + omzet.toFixed(2);
-            document.getElementById('stat-retours').textContent = '€ ' + retours.toFixed(2);
-            document.getElementById('stat-derving').textContent = '€ ' + derving.toFixed(2);
-            document.getElementById('stat-netto').textContent = '€ ' + netto.toFixed(2);
-
-            let dashlist = '';
-            allTransactions.slice(0, 20).forEach(tx => {
-                const [id, tx_num, datum, klanttype, betalingswijze, bedrijf, kvk, product, conditie, prijs, opm, is_ret, orig_id, derv] = tx;
-                const betaalIcon = betalingswijze === 'tikkie' ? '📱' : betalingswijze === 'overschrijving' ? '💳' : '💵';
-                dashlist += `<div class="transaction-item ${is_ret ? 'credit' : ''}"><div><strong>${tx_num}</strong> ${betaalIcon} • ${product} • € ${prijs.toFixed(2)}</div></div>`;
-            });
-            document.getElementById('dashboard-list').innerHTML = dashlist;
-        }
-
-        function resetForm() {
-            document.getElementById('product-select').value = '';
-            document.getElementById('custom-product').value = '';
-            document.getElementById('prijs').value = '';
-            document.getElementById('opmerkingen').value = '';
-        }
-
-        function saveDB() {
-            const data = db.export();
-            localStorage.setItem('tk_db_v2', btoa(String.fromCharCode(...new Uint8Array(data))));
-        }
-
-        function editTransaction(id) {
-            const tx = allTransactions.find(t => t[0] === id);
-            if (!tx) return;
-            const [,tx_num, datum, klanttype, betalingswijze, bedrijf, kvk, product, conditie, prijs, opm] = tx;
-            
-            const newProduct = prompt('Product:', product);
-            if (!newProduct) return;
-            const newPrijs = parseFloat(prompt('Prijs:', prijs));
-            if (isNaN(newPrijs)) return;
-            
-            try {
-                db.run('UPDATE transacties SET product=?, prijs=? WHERE id=?', [newProduct, newPrijs, id]);
-                saveDB();
-                loadAllTransactions();
-                alert('✅ Transactie gewijzigd');
-                updateBeheerList();
-            } catch (e) {
-                alert('Fout: ' + e.message);
-            }
-        }
-
-        function deleteTransaction(id, tx_num) {
-            if (!confirm('❌ Weet je zeker dat je ' + tx_num + ' wilt verwijderen?')) return;
-            
-            try {
-                db.run('DELETE FROM transacties WHERE id=?', [id]);
-                saveDB();
-                loadAllTransactions();
-                alert('✅ Transactie verwijderd');
-                updateBeheerList();
             } catch (e) {
                 alert('Fout: ' + e.message);
             }
         }
 
         function updateBeheerList(searchTerm = '') {
-            const list = document.getElementById('beheer-list');
             const filtered = allTransactions.filter(tx => {
                 if (!searchTerm) return true;
-                const [,,,,,,product] = tx;
-                return product.toLowerCase().includes(searchTerm.toLowerCase());
+                return tx[7].toLowerCase().includes(searchTerm.toLowerCase());
             });
 
             let html = '';
@@ -684,192 +568,199 @@
                     <div class="transaction-item">
                         <div class="transaction-info">
                             <strong>${tx_num}</strong><br>
-                            ${product} • € ${prijs.toFixed(2)}<br>
-                            ${new Date(datum).toLocaleDateString('nl-NL')}
+                            ${product} • € ${prijs.toFixed(2)}
                         </div>
                         <div class="transaction-actions">
-                            <button onclick="editTransaction(${id})" class="btn-secondary" style="background: #f39c12;">✏️ Edit</button>
-                            <button onclick="deleteTransaction(${id}, '${tx_num}')" class="btn-secondary" style="background: #e74c3c;">🗑️ Delete</button>
+                            <button class="btn-secondary" style="background: #f39c12;" onclick="editTx(${id})">✏️ Edit</button>
+                            <button class="btn-secondary" style="background: #e74c3c;" onclick="deleteTx(${id}, '${tx_num}')">🗑️ Delete</button>
                         </div>
                     </div>
                 `;
             });
-            list.innerHTML = html || '<p>Geen transacties</p>';
+            document.getElementById('beheer-list').innerHTML = html || '<p>Geen transacties</p>';
         }
 
-        let rapportData = null;
+        function editTx(id) {
+            const tx = allTransactions.find(t => t[0] === id);
+            if (!tx) return;
+            const newProd = prompt('Product:', tx[7]);
+            if (!newProd) return;
+            const newPrijs = parseFloat(prompt('Prijs:', tx[9]));
+            if (isNaN(newPrijs)) return;
+            
+            try {
+                db.run('UPDATE transacties SET product=?, prijs=? WHERE id=?', [newProd, newPrijs, id]);
+                saveDB();
+                loadAllTransactions();
+                updateBeheerList();
+                alert('✅ Gewijzigd');
+            } catch (e) {
+                alert('Fout: ' + e.message);
+            }
+        }
+
+        function deleteTx(id, tx_num) {
+            if (!confirm('Verwijderen: ' + tx_num + '?')) return;
+            try {
+                db.run('DELETE FROM transacties WHERE id=?', [id]);
+                saveDB();
+                loadAllTransactions();
+                updateBeheerList();
+                alert('✅ Verwijderd');
+            } catch (e) {
+                alert('Fout: ' + e.message);
+            }
+        }
+
+        function zoekGarantie() {
+            const bedrag = parseFloat(document.getElementById('zoek-bedrag').value);
+            const datum = new Date(document.getElementById('zoek-datum').value);
+            if (isNaN(bedrag)) return;
+
+            const matches = allTransactions.filter(tx => {
+                const txDate = new Date(tx[2]);
+                const diffMins = Math.abs((txDate - datum) / 60000);
+                return Math.abs(tx[9] - bedrag) < 0.01 && diffMins <= 120;
+            });
+
+            let html = '';
+            matches.forEach(tx => {
+                const [,tx_num,,,,,,product,,prijs] = tx;
+                html += `<div class="transaction-item"><strong>${tx_num}</strong><br>${product} • € ${prijs.toFixed(2)}</div>`;
+            });
+            document.getElementById('garantie-resultaat').innerHTML = html || '<p>Geen match gevonden</p>';
+        }
 
         function genererRapport() {
             const jaar = parseInt(document.getElementById('rapport-jaar').value);
             const kwartaal = parseInt(document.getElementById('rapport-kwartaal').value);
             
-            const maandStart = (kwartaal - 1) * 3 + 1;
-            const maandEind = kwartaal * 3;
-            
-            const dateStart = new Date(jaar, maandStart - 1, 1);
-            const dateEnd = new Date(jaar, maandEind, 0, 23, 59, 59);
+            const mStart = (kwartaal - 1) * 3 + 1;
+            const dStart = new Date(jaar, mStart - 1, 1);
+            const dEnd = new Date(jaar, mStart + 2, 31);
 
-            const rapport = allTransactions.filter(tx => {
-                const txDate = new Date(tx[2]);
-                return txDate >= dateStart && txDate <= dateEnd;
+            const data = allTransactions.filter(tx => {
+                const d = new Date(tx[2]);
+                return d >= dStart && d <= dEnd;
             });
 
-            rapportData = {
-                jaar,
-                kwartaal,
-                transacties: rapport,
-                dateStart,
-                dateEnd
-            };
+            rapportData = { jaar, kwartaal, data };
 
-            // Bereken totalen
-            const verkopenB2C = rapport.filter(t => !t[11] && t[3] === 'b2c').reduce((s, t) => s + t[9], 0);
-            const verkopenB2B = rapport.filter(t => !t[11] && t[3] === 'b2b').reduce((s, t) => s + t[9], 0);
-            const retours = rapport.filter(t => t[11]).reduce((s, t) => s + Math.abs(t[9]), 0);
-            const totaalOmzet = verkopenB2C + verkopenB2B;
-            const netto = totaalOmzet - retours;
-            const btw21 = netto * 0.21;
-            const brutoBtw = netto + btw21;
+            const verkopenB2C = data.filter(t => !t[11] && t[3] === 'b2c').reduce((s, t) => s + t[9], 0);
+            const verkopenB2B = data.filter(t => !t[11] && t[3] === 'b2b').reduce((s, t) => s + t[9], 0);
+            const retours = data.filter(t => t[11]).reduce((s, t) => s + Math.abs(t[9]), 0);
+            const netto = verkopenB2C + verkopenB2B - retours;
+            const btw = netto * 0.21;
 
-            let html = `
-                <div class="stats">
-                    <div class="stat-item"><span>Periode:</span> <strong>Q${kwartaal} ${jaar}</strong></div>
-                    <div class="stat-item"><span>Verkopen B2C:</span> <strong>€ ${verkopenB2C.toFixed(2)}</strong></div>
-                    <div class="stat-item"><span>Verkopen B2B:</span> <strong>€ ${verkopenB2B.toFixed(2)}</strong></div>
-                    <div class="stat-item"><span>Retours:</span> <strong>€ ${retours.toFixed(2)}</strong></div>
-                    <div class="stat-item"><span>Netto Omzet:</span> <strong>€ ${netto.toFixed(2)}</strong></div>
-                    <div class="stat-item" style="background: #fff3cd;"><span>BTW 21% (verschuldigd):</span> <strong>€ ${btw21.toFixed(2)}</strong></div>
-                    <div class="stat-item" style="background: #f0f8ff;"><span>Bruto (incl. BTW):</span> <strong>€ ${brutoBtw.toFixed(2)}</strong></div>
-                </div>
+            let html = `<div class="stats">
+                <div class="stat-item"><span>Q${kwartaal} ${jaar}</span><strong>${data.length} TX</strong></div>
+                <div class="stat-item"><span>B2C Verkoop</span><strong>€ ${verkopenB2C.toFixed(2)}</strong></div>
+                <div class="stat-item"><span>B2B Verkoop</span><strong>€ ${verkopenB2B.toFixed(2)}</strong></div>
+                <div class="stat-item"><span>Retours</span><strong>€ ${retours.toFixed(2)}</strong></div>
+                <div class="stat-item"><span>Netto</span><strong>€ ${netto.toFixed(2)}</strong></div>
+                <div class="stat-item" style="background: #fff3cd;"><span>BTW 21%</span><strong>€ ${btw.toFixed(2)}</strong></div>
+                <div class="stat-item" style="background: #f0f8ff;"><span>Bruto</span><strong>€ ${(netto + btw).toFixed(2)}</strong></div>
+            </div>`;
 
-                <h3 style="margin-top: 20px; color: #1F3354;">Transactiedetails</h3>
-                <div style="max-height: 400px; overflow-y: auto;">
-            `;
-
-            rapport.forEach(tx => {
-                const [id, tx_num, datum, klanttype, betaling, bedrijf, kvk, product, conditie, prijs, opm, is_ret] = tx;
-                const label = is_ret ? '↩️ RETOUR' : '✓';
-                html += `
-                    <div class="transaction-item ${is_ret ? 'credit' : ''}">
-                        <div><strong>${label} ${tx_num}</strong><br>${product}<br>€ ${prijs.toFixed(2)}</div>
-                    </div>
-                `;
-            });
-
-            html += `</div>`;
             document.getElementById('rapport-content').innerHTML = html;
         }
 
         function exportExcel() {
-            if (!rapportData) { alert('Genereer eerst een rapport'); return; }
-            
-            const { jaar, kwartaal, transacties } = rapportData;
-            let csv = 'TX-NUMMER,DATUM,KLANTTYPE,PRODUCT,BEDRAG,STATUS\n';
-            
-            transacties.forEach(tx => {
-                const [,tx_num, datum, klanttype,,,,product,,prijs,,is_ret] = tx;
-                const status = is_ret ? 'RETOUR' : 'VERKOOP';
-                csv += `${tx_num},${new Date(datum).toLocaleDateString('nl-NL')},${klanttype},${product},${prijs.toFixed(2)},${status}\n`;
+            if (!rapportData) { alert('Genereer eerst rapport'); return; }
+            const { jaar, kwartaal, data } = rapportData;
+            let csv = 'TX-NUMMER,DATUM,PRODUCT,BEDRAG,TYPE\n';
+            data.forEach(tx => {
+                const [,num,d,,,,,p,,pr,,r] = tx;
+                csv += `${num},${new Date(d).toLocaleDateString('nl-NL')},${p},${pr},${r ? 'RETOUR' : 'VERKOOP'}\n`;
             });
-
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `TK_Belastingrapport_Q${kwartaal}_${jaar}.csv`;
-            link.click();
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Rapport_Q${kwartaal}_${jaar}.csv`;
+            a.click();
         }
 
         function exportRapportPDF() {
-            if (!rapportData) { alert('Genereer eerst een rapport'); return; }
-            
-            const { jaar, kwartaal, transacties } = rapportData;
+            if (!rapportData) { alert('Genereer eerst rapport'); return; }
+            const { jaar, kwartaal, data } = rapportData;
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-
-            // Header
+            
             doc.setFillColor(31, 51, 84);
             doc.rect(0, 0, doc.internal.pageSize.getWidth(), 30, 'F');
             doc.setTextColor(255, 255, 255);
-            doc.setFontSize(16);
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
             doc.text('TK Belastingrapport Q' + kwartaal + ' ' + jaar, 15, 18);
 
-            // Totalen
-            let y = 45;
+            let y = 50;
             doc.setTextColor(31, 51, 84);
-            doc.setFontSize(11);
+            doc.setFontSize(10);
+            
+            const totNetto = data.filter(t => !t[11]).reduce((s, t) => s + t[9], 0);
+            const btw = totNetto * 0.21;
+
             doc.setFont(undefined, 'bold');
+            doc.text('Netto Omzet: € ' + totNetto.toFixed(2), 15, y);
+            y += 8;
+            doc.text('BTW 21%: € ' + btw.toFixed(2), 15, y);
+            y += 8;
+            doc.text('Totaal: € ' + (totNetto + btw).toFixed(2), 15, y);
 
-            const verkopenB2C = transacties.filter(t => !t[11] && t[3] === 'b2c').reduce((s, t) => s + t[9], 0);
-            const verkopenB2B = transacties.filter(t => !t[11] && t[3] === 'b2b').reduce((s, t) => s + t[9], 0);
-            const retours = transacties.filter(t => t[11]).reduce((s, t) => s + Math.abs(t[9]), 0);
-            const netto = verkopenB2C + verkopenB2B - retours;
-            const btw = netto * 0.21;
-
-            doc.text('Netto Omzet: € ' + netto.toFixed(2), 15, y); y += 7;
-            doc.text('BTW 21%: € ' + btw.toFixed(2), 15, y); y += 7;
-            doc.text('TOTAAL (Bruto): € ' + (netto + btw).toFixed(2), 15, y); y += 15;
-
-            // Tabel
-            doc.setFontSize(9);
-            doc.setFont(undefined, 'normal');
-            doc.text('TX-NUMMER', 15, y);
-            doc.text('PRODUCT', 45, y);
-            doc.text('BEDRAG', 150, y);
-            y += 5;
-
-            transacties.slice(0, 30).forEach(tx => {
-                const [,tx_num,,,,,,,product,,prijs] = tx;
-                doc.text(tx_num, 15, y);
-                const productShort = product.substring(0, 40);
-                doc.text(productShort, 45, y);
-                doc.text('€ ' + prijs.toFixed(2), 150, y);
-                y += 5;
-                if (y > 270) {
-                    doc.addPage();
-                    y = 20;
-                }
-            });
-
-            doc.save('Belastingrapport_Q' + kwartaal + '_' + jaar + '.pdf');
+            doc.save('Rapport_Q' + kwartaal + '_' + jaar + '.pdf');
         }
 
-        // Event listeners voor tabs
-        document.addEventListener('DOMContentLoaded', function() {
-            const searchBeheer = document.getElementById('search-beheer');
-            if (searchBeheer) {
-                searchBeheer.addEventListener('input', (e) => {
-                    updateBeheerList(e.target.value);
-                });
-            }
-        });
+        function updateDashboard() {
+            const count = allTransactions.length;
+            const omzet = allTransactions.filter(t => !t[11]).reduce((s, t) => s + t[9], 0);
+            const retours = allTransactions.filter(t => t[11]).reduce((s, t) => s + Math.abs(t[9]), 0);
+            const derving = allTransactions.filter(t => t[13] === 'Defect').reduce((s, t) => s + Math.abs(t[9]), 0);
+            const netto = omzet - retours;
 
-        function switchTab(tabName) {
+            document.getElementById('stat-count').textContent = count;
+            document.getElementById('stat-omzet').textContent = '€ ' + omzet.toFixed(2);
+            document.getElementById('stat-retours').textContent = '€ ' + retours.toFixed(2);
+            document.getElementById('stat-derving').textContent = '€ ' + derving.toFixed(2);
+            document.getElementById('stat-netto').textContent = '€ ' + netto.toFixed(2);
+
+            let dashHtml = '';
+            allTransactions.slice(0, 20).forEach(tx => {
+                const [,num,,,,,,p,,pr,,r] = tx;
+                const icon = r ? '↩️' : '✓';
+                dashHtml += `<div class="transaction-item ${r ? 'credit' : ''}"><div><strong>${icon} ${num}</strong><br>${p} • € ${pr.toFixed(2)}</div></div>`;
+            });
+            document.getElementById('dashboard-list').innerHTML = dashHtml;
+        }
+
+        function switchTab(name) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(tabName).classList.add('active');
+            document.getElementById(name).classList.add('active');
             event.target.classList.add('active');
 
-            if (tabName === 'bons') {
-                const searchInput = document.getElementById('search-transactie');
-                if (searchInput) {
-                    searchInput.addEventListener('input', (e) => {
-                        updateTransactionList(e.target.value);
-                    });
-                }
-                loadAllTransactions();
-            } else if (tabName === 'beheer') {
+            if (name === 'bons') {
+                document.getElementById('search-transactie').addEventListener('input', (e) => {
+                    updateTransactionList(e.target.value);
+                });
+            } else if (name === 'beheer') {
+                document.getElementById('search-beheer').addEventListener('input', (e) => {
+                    updateBeheerList(e.target.value);
+                });
                 updateBeheerList();
-            } else if (tabName === 'dashboard') {
-                updateDashboard();
             }
         }
 
-        function showMsg(elemId, msg, type) {
-            const elem = document.getElementById(elemId);
-            elem.innerHTML = `<div class="${type}">${msg}</div>`;
+        function showMsg(id, msg, type) {
+            document.getElementById(id).innerHTML = `<div class="${type}">${msg}</div>`;
         }
 
-        initDB();
+        // Start database na pagina load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initDB);
+        } else {
+            initDB();
+        }
     </script>
 </body>
 </html>
